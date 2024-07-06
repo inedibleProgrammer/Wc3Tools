@@ -5,9 +5,6 @@ function TestFramework_Create()
   function testFramework.TestRunner()
     for k1, suite in pairs(testFramework.Suites) do
       for k2, test in pairs(suite.Tests) do
-        -- xpcall(suite.Setup(), print)
-        -- xpcall(test, print)
-        -- xpcall(suite.Teardown(), print)
         suite.Setup()
         test()
         suite.Teardown()
