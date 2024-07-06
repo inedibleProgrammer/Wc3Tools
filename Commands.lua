@@ -1,8 +1,8 @@
-function Commands_Create()
+function map.Commands_Create(wc3api)
   
 end
 
-function Commands_Tests(testFramework)
+function map.Commands_Tests(testFramework)
   testFramework.Suites.CommandsSuite = {}
   testFramework.Suites.CommandsSuite.Tests = {}
   local tsc = testFramework.Suites.CommandsSuite

@@ -1,16 +1,13 @@
-
-
-function LaunchLua()
-
+function map.UnitTests()
+  local testFramework = map.TestFramework_Create()
+  map.Commands_Tests(testFramework)
+  xpcall(testFramework.TestRunner, print)
 end
 
-function UnitTests()
-  local testFramework = TestFramework_Create()
-  Commands_Tests(testFramework)
-  testFramework.TestRunner()
+function map.LaunchLua()
+  print("Map Start")
 end
 
-
-UnitTests()
+map.UnitTests()
 
 
