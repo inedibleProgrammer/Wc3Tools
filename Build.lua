@@ -2,8 +2,9 @@ Build = {}
 Build.Combined = "Combined.lua"
 
 Build.SourceFiles = {
-  "FileOne.lua",
-  "FileTwo.lua",
+  "Commands.lua",
+  "TestFramework.lua",
+  "LaunchLua.lua",
 }
 
 function main()
