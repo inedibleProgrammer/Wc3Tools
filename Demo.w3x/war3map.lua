@@ -2,11 +2,14 @@ gg_trg_LaunchLua = nil
 function InitGlobals()
 end
 
-function Commands_Create()
-  
+map = {}
+map.version = "Alpha"
+map.commit = "0c19507e6834f5032bbc1578b857cca25ad1679c"
+function map.Commands_Create(wc3api)
+  print(wc3api)
 end
 
-function Commands_Tests(testFramework)
+function map.Commands_Tests(testFramework)
   testFramework.Suites.CommandsSuite = {}
   testFramework.Suites.CommandsSuite.Tests = {}
   local tsc = testFramework.Suites.CommandsSuite
@@ -18,18 +21,18 @@ function Commands_Tests(testFramework)
   end
 
   function tsc.Tests.DummyTest()
-    assert(true)
+    assert(false)
   end
 end
 
 
-function TestFramework_Create()
+function map.TestFramework_Create()
   local testFramework = {}
   testFramework.Suites = {}
 
   function testFramework.TestRunner()
-    for k1, suite in pairs(testFramework.Suites) do
-      for k2, test in pairs(suite.Tests) do
+    for _, suite in pairs(testFramework.Suites) do
+      for _, test in pairs(suite.Tests) do
         suite.Setup()
         test()
         suite.Teardown()
@@ -40,92 +43,25 @@ function TestFramework_Create()
   return testFramework
 end
 
---[[
--- Example Usage: 
-print("Start")
-dummyTestFramework = TestFramework_Create()
-dummyTestFramework.Suites.Dummy = {}
-dummyTestFramework.Suites.Dummy.Tests = {}
-
-function dummyTestFramework.Suites.Dummy.Setup()
-  print("Setup")
+function map.UnitTests()
+  local testFramework = map.TestFramework_Create()
+  map.Commands_Tests(testFramework)
+  xpcall(testFramework.TestRunner, print)
+  -- testFramework.TestRunner()
 end
 
-function dummyTestFramework.Suites.Dummy.Teardown()
-  print("Teardown")
-end
-
-function dummyTestFramework.Suites.Dummy.Tests.FirstTest()
-  print("First Test")
-end
-
-function dummyTestFramework.Suites.Dummy.Tests.SecondTest()
-  print("Second Test")
-end
-
-dummyTestFramework.TestRunner()
-print("End")
---]]
-
---[[
-
-TestFramework = {}
-TestFramework.Suites = {}
-
-
-TestFramework.Suites.Dummy = {}
-function TestFramework.Suites.Dummy.Setup()
-  print("Setup")
-end
-
-function TestFramework.Suites.Dummy.Teardown()
-  print("Teardown")
-end
-
-function TestFramework.Suites.Dummy.Tests.MyFirstTest()
-  print("My First Test")
-end
-
-function TestFramework.Suites.Dummy.Tests.MySecondTest()
-  print("My Second Test")
-end
-
-
-function TestFramework.Runner()
-  for k1,suite in pairs(TestFramework.Suites) do
-    print(suite)
-    print(TestFramework.Suites.Dummy)
-  end
-end
-
-
-TestFramework.Runner()
-
-
-    for k2, test in pairs(suites.Tests) do
-      print(test)
-      -- xpcall(suites.Setup, print)
-      -- xpcall(test, print)
-      -- xpcall(suites.Teardown, print)
-    end
-]]
-
-function UnitTests()
-  local testFramework = TestFramework_Create()
-  Commands_Tests(testFramework)
-  testFramework.TestRunner()
-end
-
-function LaunchLua()
+function map.LaunchLua()
   print("Map Start")
+  map.UnitTests()
+  print("Map End")
 end
 
-UnitTests()
+map.UnitTests()
 
 
 
 function Trig_LaunchLua_Actions()
-    LaunchLua()
+    map.LaunchLua()
 end
 
 function InitTrig_LaunchLua()

@@ -6,6 +6,8 @@ end
 
 function map.LaunchLua()
   print("Map Start")
+  map.UnitTests()
+  print("Map End")
 end
 
 map.UnitTests()

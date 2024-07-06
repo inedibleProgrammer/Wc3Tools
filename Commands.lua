@@ -1,5 +1,5 @@
 function map.Commands_Create(wc3api)
-  
+  print(wc3api)
 end
 
 function map.Commands_Tests(testFramework)
@@ -14,7 +14,7 @@ function map.Commands_Tests(testFramework)
   end
 
   function tsc.Tests.DummyTest()
-    assert(true)
+    assert(false)
   end
 end
 
