@@ -8,8 +8,15 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.NO_EXACT_MATCH = false
 
   function realWc3Api.CreateTrigger()
-    local t = CreateTrigger()
-    return t
+    return CreateTrigger()
+  end
+
+  function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+    TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+  end
+
+  function realWc3Api.Player(playerNum)
+    return Player(playerNum)
   end
 
   return realWc3Api

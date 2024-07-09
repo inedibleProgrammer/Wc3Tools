@@ -49,10 +49,10 @@ function map.Commands_Tests(testFramework)
 
     local dummyCmd = {}
     dummyCmd.activator = "-dummy"
-    dummyCmd.users = {0}
+    dummyCmd.users = {wc3api.Player(0)}
     dummyCmd.dummyVar = 0
     function dummyCmd:Handler()
-      print(#self)
+      cmdString = wc3api.GetPlayerChatString()
       self.dummyVar = 1
     end
 
