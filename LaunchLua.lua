@@ -7,7 +7,7 @@ end
 
 function map.LaunchLua()
   print("Map Start")
-  map.UnitTests()
+  -- map.UnitTests()
   map.Game_Start()
   print("Map End")
 end
