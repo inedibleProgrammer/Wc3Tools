@@ -37,6 +37,9 @@ function map.Commands_Tests(testFramework)
     return ""
   end
 
+  function wc3api.Player()
+  end
+
   function tsc.Setup() end
   function tsc.Teardown() end
 

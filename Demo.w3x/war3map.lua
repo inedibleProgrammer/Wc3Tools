@@ -3,25 +3,72 @@ function InitGlobals()
 end
 
 map = {}
-map.version = "Alpha"
-map.commit = "0c19507e6834f5032bbc1578b857cca25ad1679c"
 function map.Commands_Create(wc3api)
-  print(wc3api)
+  local commands = {}
+
+  function commands.Add(command)
+    assert(#command.users ~= 0, "command.users length is 0")
+
+    command.trigger = wc3api.CreateTrigger()
+    wc3api.TriggerAddAction(command.trigger, command.Handler)
+
+    for _,v in pairs(command.users) do
+      wc3api.TriggerRegisterPlayerChatEvent(command.trigger, v, command.activator, wc3api.NO_EXACT_MATCH)
+    end
+  end
+
+  return commands
 end
+
+
 
 function map.Commands_Tests(testFramework)
   testFramework.Suites.CommandsSuite = {}
   testFramework.Suites.CommandsSuite.Tests = {}
   local tsc = testFramework.Suites.CommandsSuite
+  local wc3api = {}
+  wc3api.constants = map.RealWc3Api_Create().constants
 
-  function tsc.Setup()
+  function wc3api.CreateTrigger()
+    return {}
   end
 
-  function tsc.Teardown()
+  function wc3api.TriggerAddAction(trigger, handler)
+    assert(type(trigger) ~= "nil")
+    assert(type(handler) == "function")
   end
+
+  function wc3api.GetEventPlayerChatString()
+    return ""
+  end
+
+  function wc3api.Player()
+  end
+
+  function tsc.Setup() end
+  function tsc.Teardown() end
 
   function tsc.Tests.DummyTest()
-    assert(false)
+    assert(true)
+  end
+
+  function tsc.Tests.AddNewCommand()
+    local commands = map.Commands_Create(wc3api)
+
+    local dummyCmd = {}
+    dummyCmd.activator = "-dummy"
+    dummyCmd.users = {wc3api.Player(0)}
+    dummyCmd.dummyVar = 0
+    function dummyCmd:Handler()
+      cmdString = wc3api.GetPlayerChatString()
+      self.dummyVar = 1
+    end
+
+    commands.Add(dummyCmd)
+    -- assert(commands.length == 1)
+
+    dummyCmd:Handler("-dummy param1 param2")
+    -- assert(dummyCmd.dummyVar == 1)
   end
 end
 
@@ -43,16 +90,143 @@ function map.TestFramework_Create()
   return testFramework
 end
 
+
+function map.Game_Start()
+  local wc3api = {}
+  local commands = map.Commands_Create(wc3api)
+end
+
+--luacheck: ignore
+
+function map.RealWc3Api_Create()
+  local realWc3Api = {}
+
+  realWc3Api.constants = {}
+  realWc3Api.constants.EXACT_MATCH = true
+  realWc3Api.constants.NO_EXACT_MATCH = false
+
+  function realWc3Api.CreateTrigger()
+    return CreateTrigger()
+  end
+
+  function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+    TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+  end
+
+  function realWc3Api.Player(playerNum)
+    return Player(playerNum)
+  end
+
+  return realWc3Api
+end
+function map.Split(inputStr, sep)
+  if sep == nil then
+    sep = " "
+  end
+  local t = {}
+  for str in string.gmatch(inputStr, "([^"..sep.."]+)") do
+    table.insert(t, str)
+  end
+  return t
+end
+
+function map.Utility_Tests(testFramework)
+  testFramework.Suites.UtilitySuite = {}
+  testFramework.Suites.UtilitySuite.Tests = {}
+  local tsu = testFramework.Suites.UtilitySuite
+
+  function tsu.Setup() end
+  function tsu.Teardown() end
+
+  function tsu.Tests.SplitTest()
+    dummyString = "This is a test 113."
+    splitString = map.Split(dummyString)
+
+    assert(#splitString == 5)
+    assert(table.remove(splitString) == "113.")
+    assert(table.remove(splitString) == "test")
+    assert(table.remove(splitString) == "a")
+    assert(table.remove(splitString) == "is")
+    assert(table.remove(splitString) == "This")
+  end
+end
+function map.Clock_Create()
+  local clock = {}
+  clock.seconds = 0
+
+  function clock.Tick()
+    gameClock.seconds = gameClock.seconds + 1
+  end
+
+  function clock.TimeElapsed()
+    local timeElapsed = {}
+    timeElapsed.hours = 0
+    timeElapsed.minutes = 0
+    timeElapsed.seconds = 0
+    local tempSeconds = clock.seconds
+
+    while tempSeconds >= 3600 do
+      tempSeconds = tempSeconds - 3600
+      timeElapsed.hours = timeElapsed.hours + 1
+    end
+
+    while tempSeconds >= 60 do
+      tempSeconds = tempSeconds - 60
+      timeElapsed.minutes = timeElapsed.minutes + 1
+    end
+
+    timeElapsed.seconds = tempSeconds
+
+    return timeElapsed
+  end
+
+  return clock
+end
+
+function map.Clock_Tests(testFramework)
+  testFramework.Suites.ClockSuite = {}
+  testFramework.Suites.ClockSuite.Tests = {}
+  local tsc = testFramework.Suites.ClockSuite
+  local wc3api = {}
+  wc3api.constants = map.RealWc3Api_Create().constants
+
+  function tsc.Setup() end
+  function tsc.Teardown() end
+
+  function tsc.Tests.DummyTest()
+    assert(true)
+  end
+
+  function tsc.Tests.HoursMinutesSeconds()
+    local clock = map.Clock_Create()
+    clock.seconds = 8192
+    assert(clock.TimeElapsed().hours == 2, "hours wrong")
+    assert(clock.TimeElapsed().minutes == 16, "minutes wrong")
+    assert(clock.TimeElapsed().seconds == 32, "seconds wrong")
+  end
+
+  function tsc.Tests.HoursMinutesSeconds2()
+    local clock = map.Clock_Create()
+    clock.seconds = 3600
+    assert(clock.TimeElapsed().hours == 1, "hours wrong")
+    assert(clock.TimeElapsed().minutes == 0, "minutes wrong")
+    assert(clock.TimeElapsed().seconds == 0, "seconds wrong")
+  end
+end
+
+
 function map.UnitTests()
   local testFramework = map.TestFramework_Create()
   map.Commands_Tests(testFramework)
+  map.Utility_Tests(testFramework)
+  map.Clock_Tests(testFramework)
   xpcall(testFramework.TestRunner, print)
-  -- testFramework.TestRunner()
 end
 
 function map.LaunchLua()
   print("Map Start")
   map.UnitTests()
+  map.Game_Start()
   print("Map End")
 end
 
