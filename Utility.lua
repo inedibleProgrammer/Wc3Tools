@@ -29,3 +29,4 @@ function map.Utility_Tests(testFramework)
     assert(table.remove(splitString) == "This")
   end
 end
+

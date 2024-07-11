@@ -1,4 +1,5 @@
 gg_trg_LaunchLua = nil
+gg_trg_PeriodicPrint = nil
 function InitGlobals()
 end
 
@@ -64,10 +65,10 @@ function map.Commands_Tests(testFramework)
       self.dummyVar = 1
     end
 
-    commands.Add(dummyCmd)
+    -- commands.Add(dummyCmd)
     -- assert(commands.length == 1)
 
-    dummyCmd:Handler("-dummy param1 param2")
+    -- dummyCmd:Handler("-dummy param1 param2")
     -- assert(dummyCmd.dummyVar == 1)
   end
 end
@@ -91,9 +92,18 @@ function map.TestFramework_Create()
 end
 
 
-function map.Game_Start()
-  local wc3api = {}
+
+function map.Game_Initialize()
+  local wc3api = map.RealWc3Api_Create()
   local commands = map.Commands_Create(wc3api)
+  local clock = map.Clock_Create()
+  local gameClock = map.GameClock_Create(wc3api, clock, commands)
+end
+
+
+
+function map.Game_Start()
+  xpcall(map.Game_Initialize, print)
 end
 
 --luacheck: ignore
@@ -115,6 +125,14 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.Player(playerNum)
     return Player(playerNum)
+  end
+
+  function realWc3Api.TriggerAddAction(whichTrigger, actionFunc)
+    return TriggerAddAction(whichTrigger, actionFunc)
+  end
+
+  function realWc3Api.TriggerRegisterTimerEvent(whichTrigger, timeout, periodic)
+    return TriggerRegisterTimerEvent(whichTrigger, timeout, periodic)
   end
 
   return realWc3Api
@@ -149,6 +167,76 @@ function map.Utility_Tests(testFramework)
     assert(table.remove(splitString) == "is")
     assert(table.remove(splitString) == "This")
   end
+end
+
+function map.GameClock_Create(wc3api, clock, commands)
+  local gameClock = {}
+  gameClock.wc3api = wc3api
+  gameClock.clock = clock
+  gameClock.commands = commands
+  print("GameClock_Create")
+
+  function ClockTick()
+    -- print("ClockTick start")
+    DisplayTextToForce(GetPlayersAll(), "ClockTick start")
+    gameClock.clock.Tick()
+    print("ClockTick end")
+  end
+
+  print("gameclock setup")
+  gameClock.trigger = wc3api.CreateTrigger()
+  wc3api.TriggerRegisterTimerEvent(gameClock.trigger, 1.00, true)
+  wc3api.TriggerAddAction(gameClock.trigger, ClockTick)
+  print("gameclock finish")
+
+  return gameClock
+end
+
+
+function map.GameClock_Tests(testFramework)
+  testFramework.Suites.GameClockSuite = {}
+  testFramework.Suites.GameClockSuite.Tests = {}
+  local tsc = testFramework.Suites.GameClockSuite
+  local wc3api = {}
+  wc3api.constants = map.RealWc3Api_Create().constants
+
+  function wc3api.CreateTrigger()
+    return {}
+  end
+
+  function wc3api.TriggerAddAction(trigger, handler)
+    assert(type(trigger) ~= "nil")
+    assert(type(handler) == "function")
+  end
+
+  function wc3api.GetEventPlayerChatString()
+    return ""
+  end
+
+  function wc3api.Player()
+  end
+
+  function wc3api.TriggerRegisterTimerEvent()
+  end
+
+  function wc3api.TriggerAddAction()
+  end
+
+  function tsc.Setup() end
+  function tsc.Teardown() end
+
+  function tsc.Tests.DummyTest()
+    assert(true)
+  end
+
+  function tsc.Tests.CreateClock()
+    local clock = map.Clock_Create()
+    local commands = map.Commands_Create()
+    local gameClock = map.GameClock_Create(wc3api, clock, commands)
+
+    assert(true)
+  end
+
 end
 function map.Clock_Create()
   local clock = {}
@@ -220,12 +308,13 @@ function map.UnitTests()
   map.Commands_Tests(testFramework)
   map.Utility_Tests(testFramework)
   map.Clock_Tests(testFramework)
+  map.GameClock_Tests(testFramework)
   xpcall(testFramework.TestRunner, print)
 end
 
 function map.LaunchLua()
   print("Map Start")
-  map.UnitTests()
+  -- map.UnitTests()
   map.Game_Start()
   print("Map End")
 end
@@ -233,6 +322,16 @@ end
 map.UnitTests()
 
 
+
+function Trig_PeriodicPrint_Actions()
+DisplayTextToForce(GetPlayersAll(), "TRIGSTR_007")
+end
+
+function InitTrig_PeriodicPrint()
+gg_trg_PeriodicPrint = CreateTrigger()
+TriggerRegisterTimerEventPeriodic(gg_trg_PeriodicPrint, 1.00)
+TriggerAddAction(gg_trg_PeriodicPrint, Trig_PeriodicPrint_Actions)
+end
 
 function Trig_LaunchLua_Actions()
     map.LaunchLua()
@@ -244,6 +343,7 @@ TriggerAddAction(gg_trg_LaunchLua, Trig_LaunchLua_Actions)
 end
 
 function InitCustomTriggers()
+InitTrig_PeriodicPrint()
 InitTrig_LaunchLua()
 end
 

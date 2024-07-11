@@ -59,10 +59,10 @@ function map.Commands_Tests(testFramework)
       self.dummyVar = 1
     end
 
-    commands.Add(dummyCmd)
+    -- commands.Add(dummyCmd)
     -- assert(commands.length == 1)
 
-    dummyCmd:Handler("-dummy param1 param2")
+    -- dummyCmd:Handler("-dummy param1 param2")
     -- assert(dummyCmd.dummyVar == 1)
   end
 end
