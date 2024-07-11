@@ -11,6 +11,7 @@ Build.SourceFiles = {
   "Utility.lua",
   "GameClock.lua",
   "Clock.lua",
+  "Players.lua",
   "LaunchLua.lua",
 }
 

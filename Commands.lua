@@ -2,7 +2,7 @@ function map.Commands_Create(wc3api)
   local commands = {}
 
   function commands.Add(command)
-    assert(#command.users ~= 0, "command.users length is 0")
+    assert(#command.users ~= 0, "command.users length is 0 in " .. command.activator)
 
     command.trigger = wc3api.CreateTrigger()
     wc3api.TriggerAddAction(command.trigger, command.Handler)
@@ -39,6 +39,8 @@ function map.Commands_Tests(testFramework)
 
   function wc3api.Player()
   end
+
+  function wc3api.TriggerRegisterPlayerChatEvent() end
 
   function tsc.Setup() end
   function tsc.Teardown() end

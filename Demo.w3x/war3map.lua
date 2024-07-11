@@ -8,7 +8,7 @@ function map.Commands_Create(wc3api)
   local commands = {}
 
   function commands.Add(command)
-    assert(#command.users ~= 0, "command.users length is 0")
+    assert(#command.users ~= 0, "command.users length is 0 in " .. command.activator)
 
     command.trigger = wc3api.CreateTrigger()
     wc3api.TriggerAddAction(command.trigger, command.Handler)
@@ -45,6 +45,8 @@ function map.Commands_Tests(testFramework)
 
   function wc3api.Player()
   end
+
+  function wc3api.TriggerRegisterPlayerChatEvent() end
 
   function tsc.Setup() end
   function tsc.Teardown() end
@@ -97,7 +99,8 @@ function map.Game_Initialize()
   local wc3api = map.RealWc3Api_Create()
   local commands = map.Commands_Create(wc3api)
   local clock = map.Clock_Create()
-  local gameClock = map.GameClock_Create(wc3api, clock, commands)
+  local players = map.Players_Create(wc3api, commands)
+  local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
 end
 
 
@@ -114,6 +117,8 @@ function map.RealWc3Api_Create()
   realWc3Api.constants = {}
   realWc3Api.constants.EXACT_MATCH = true
   realWc3Api.constants.NO_EXACT_MATCH = false
+
+  realWc3Api.constants.bj_FORCE_ALL_PLAYERS = nil
 
   function realWc3Api.CreateTrigger()
     return CreateTrigger()
@@ -133,6 +138,54 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.TriggerRegisterTimerEvent(whichTrigger, timeout, periodic)
     return TriggerRegisterTimerEvent(whichTrigger, timeout, periodic)
+  end
+
+  function realWc3Api.DisplayTimedTextToPlayer(toPlayer, x, y, duration, message)
+    DisplayTimedTextToPlayer(toPlayer, x, y, duration, message)
+  end
+
+  function realWc3Api.DisplayTextToPlayer(toPlayer, x, y, message)
+    DisplayTextToPlayer(toPlayer, x, y, message)
+  end
+
+  function realWc3Api.GetPlayers()
+    return GetPlayers()
+  end
+
+  function realWc3Api.GetBJMaxPlayers()
+    return GetBJMaxPlayers()
+  end
+
+  function realWc3Api.GetPlayerId(whichPlayer)
+    return GetPlayerId(whichPlayer)
+  end
+
+  function realWc3Api.GetPlayerName(whichPlayer)
+    return GetPlayerName(whichPlayer)
+  end
+
+  function realWc3Api.GetPlayerRace(whichPlayer)
+    return GetPlayerRace(whichPlayer)
+  end
+
+  function realWc3Api.GetPlayerTeam(whichPlayer)
+    return GetPlayerTeam()
+  end
+
+  function realWc3Api.GetPlayerColor(whichPlayer)
+    return GetPlayerColor(whichPlayer)
+  end
+
+  function realWc3Api.GetPlayerController(whichPlayer)
+    return GetPlayerController(whichPlayer)
+  end
+
+  function realWc3Api.GetPlayerSlotState(whichPlayer)
+    return GetPlayerSlotState(whichPlayer)
+  end
+
+  function realWc3Api.GetTriggerPlayer()
+    return GetTriggerPlayer()
   end
 
   return realWc3Api
@@ -169,25 +222,34 @@ function map.Utility_Tests(testFramework)
   end
 end
 
-function map.GameClock_Create(wc3api, clock, commands)
+function map.GameClock_Create(wc3api, clock, commands, players)
   local gameClock = {}
   gameClock.wc3api = wc3api
   gameClock.clock = clock
   gameClock.commands = commands
-  print("GameClock_Create")
+  gameClock.players = players
+  -- print("GameClock_Create")
 
-  function ClockTick()
+  function gameClock.ClockTick()
     -- print("ClockTick start")
-    DisplayTextToForce(GetPlayersAll(), "ClockTick start")
+    -- DisplayTextToForce(GetPlayersAll(), "ClockTick start")
     gameClock.clock.Tick()
-    print("ClockTick end")
+    -- print("ClockTick end")
   end
 
-  print("gameclock setup")
+  -- print("gameclock setup")
   gameClock.trigger = wc3api.CreateTrigger()
   wc3api.TriggerRegisterTimerEvent(gameClock.trigger, 1.00, true)
-  wc3api.TriggerAddAction(gameClock.trigger, ClockTick)
-  print("gameclock finish")
+  wc3api.TriggerAddAction(gameClock.trigger, gameClock.ClockTick)
+  -- print("gameclock finish")
+
+  local displayTimeCommand = {}
+  displayTimeCommand.activator = "-time"
+  displayTimeCommand.users = players.ALL_PLAYERS
+  function displayTimeCommand:Handler()
+    wc3api.DisplayTextToPlayer(wc3api.GetTriggerPlayer(), 0, 0, "TIME PLACEHOLDER")
+  end
+  commands.Add(displayTimeCommand)
 
   return gameClock
 end
@@ -213,14 +275,18 @@ function map.GameClock_Tests(testFramework)
     return ""
   end
 
-  function wc3api.Player()
-  end
-
-  function wc3api.TriggerRegisterTimerEvent()
-  end
-
-  function wc3api.TriggerAddAction()
-  end
+  function wc3api.Player() return "dummy player ref" end
+  function wc3api.TriggerRegisterTimerEvent() end
+  function wc3api.TriggerAddAction() end
+  function wc3api.GetBJMaxPlayers() return 1 end
+  function wc3api.GetPlayerId() end
+  function wc3api.GetPlayerName() end
+  function wc3api.GetPlayerRace() end
+  function wc3api.GetPlayerTeam() end
+  function wc3api.GetPlayerColor() end
+  function wc3api.GetPlayerController() end
+  function wc3api.GetPlayerSlotState() end
+  function wc3api.TriggerRegisterPlayerChatEvent() end
 
   function tsc.Setup() end
   function tsc.Teardown() end
@@ -231,8 +297,9 @@ function map.GameClock_Tests(testFramework)
 
   function tsc.Tests.CreateClock()
     local clock = map.Clock_Create()
-    local commands = map.Commands_Create()
-    local gameClock = map.GameClock_Create(wc3api, clock, commands)
+    local commands = map.Commands_Create(wc3api)
+    local players = map.Players_Create(wc3api, commands)
+    local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
 
     assert(true)
   end
@@ -303,12 +370,76 @@ function map.Clock_Tests(testFramework)
 end
 
 
+function map.Players_Create(wc3api, commands)
+  local players = {}
+  players.wc3api = wc3api
+  players.commands = commands
+  players.list = {}
+  players.ALL_PLAYERS = {}
+
+  for i=0, wc3api.GetBJMaxPlayers() do
+    local player = {}
+    player.ref = wc3api.Player(i)
+    player.id = wc3api.GetPlayerId(player.ref)
+    player.name = wc3api.GetPlayerName(player.ref)
+    player.race = wc3api.GetPlayerRace(player.ref)
+    player.team = wc3api.GetPlayerTeam(player.ref)
+    player.playercolor = wc3api.GetPlayerColor(player.ref)
+    player.mapcontrol = wc3api.GetPlayerController(player.ref)
+    player.playerslotstate = wc3api.GetPlayerSlotState(player.ref)
+
+    table.insert(players.ALL_PLAYERS, player.ref)
+
+    table.insert(players.list, player)
+  end
+
+
+  return players
+end
+
+
+
+function map.Players_Tests(testFramework)
+  testFramework.Suites.PlayersSuite = {}
+  testFramework.Suites.PlayersSuite.Tests = {}
+  local tsc = testFramework.Suites.PlayersSuite
+  local wc3api = {}
+  wc3api.constants = map.RealWc3Api_Create().constants
+
+  function wc3api.CreateTrigger()
+    return {}
+  end
+
+  function wc3api.TriggerAddAction(trigger, handler)
+    assert(type(trigger) ~= "nil")
+    assert(type(handler) == "function")
+  end
+
+  function wc3api.GetEventPlayerChatString()
+    return ""
+  end
+
+  function wc3api.Player()
+  end
+
+  function tsc.Setup() end
+  function tsc.Teardown() end
+
+  function tsc.Tests.DummyTest()
+    assert(true)
+  end
+
+end
+
+
+
 function map.UnitTests()
   local testFramework = map.TestFramework_Create()
   map.Commands_Tests(testFramework)
   map.Utility_Tests(testFramework)
   map.Clock_Tests(testFramework)
   map.GameClock_Tests(testFramework)
+  map.Players_Tests(testFramework)
   xpcall(testFramework.TestRunner, print)
 end
 
