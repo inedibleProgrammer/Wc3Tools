@@ -21,6 +21,7 @@ function map.Players_Create(wc3api, commands)
     table.insert(players.list, player)
   end
 
+  local displayPlayerCmd = {}
 
   return players
 end

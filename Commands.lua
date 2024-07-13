@@ -2,13 +2,16 @@ function map.Commands_Create(wc3api)
   local commands = {}
 
   function commands.Add(command)
-    assert(#command.users ~= 0, "command.users length is 0 in " .. command.activator)
+    -- TODO: Log command added
+    if (#command.users <= 0) then
+      return
+    end
 
     command.trigger = wc3api.CreateTrigger()
     wc3api.TriggerAddAction(command.trigger, command.Handler)
 
-    for _,v in pairs(command.users) do
-      wc3api.TriggerRegisterPlayerChatEvent(command.trigger, v, command.activator, wc3api.NO_EXACT_MATCH)
+    for _,user in pairs(command.users) do
+      wc3api.TriggerRegisterPlayerChatEvent(command.trigger, user, command.activator, wc3api.NO_EXACT_MATCH)
     end
   end
 

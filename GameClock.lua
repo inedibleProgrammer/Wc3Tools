@@ -9,6 +9,7 @@ function map.GameClock_Create(wc3api, clock, commands, players)
   function gameClock.ClockTick()
     -- print("ClockTick start")
     -- DisplayTextToForce(GetPlayersAll(), "ClockTick start")
+    -- DisplayTextToForce(GetPlayersAll(), gameClock.clock.seconds)
     gameClock.clock.Tick()
     -- print("ClockTick end")
   end
@@ -23,7 +24,7 @@ function map.GameClock_Create(wc3api, clock, commands, players)
   displayTimeCommand.activator = "-time"
   displayTimeCommand.users = players.ALL_PLAYERS
   function displayTimeCommand:Handler()
-    wc3api.DisplayTextToPlayer(wc3api.GetTriggerPlayer(), 0, 0, "TIME PLACEHOLDER")
+    wc3api.DisplayTextToPlayer(wc3api.GetTriggerPlayer(), 0, 0, gameClock.clock.GetTimeString())
   end
   commands.Add(displayTimeCommand)
 

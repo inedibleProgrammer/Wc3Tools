@@ -3,7 +3,7 @@ function map.Clock_Create()
   clock.seconds = 0
 
   function clock.Tick()
-    gameClock.seconds = gameClock.seconds + 1
+    clock.seconds = clock.seconds + 1
   end
 
   function clock.TimeElapsed()
@@ -26,6 +26,16 @@ function map.Clock_Create()
     timeElapsed.seconds = tempSeconds
 
     return timeElapsed
+  end
+
+  function clock.GetTimeString()
+    local timeString = ""
+    local timeElapsed = clock.TimeElapsed()
+
+    timeString = tostring(timeElapsed.hours) .. ":" .. tostring(timeElapsed.minutes) .. ":" .. tostring(timeElapsed.seconds)
+    -- timeString = string.format("%02d:%02d:%02d", timeElapsed.hours, timeElapsed.minutes, timeElapsed.seconds) -- This doesn't work in wc3 for some reason
+
+    return timeString
   end
 
   return clock
@@ -59,6 +69,14 @@ function map.Clock_Tests(testFramework)
     assert(clock.TimeElapsed().hours == 1, "hours wrong")
     assert(clock.TimeElapsed().minutes == 0, "minutes wrong")
     assert(clock.TimeElapsed().seconds == 0, "seconds wrong")
+  end
+
+  function tsc.Tests.GetTimeAsString()
+    local clock = map.Clock_Create()
+    clock.seconds = 8192
+    assert(clock.GetTimeString() == "2:16:32")
+    clock.seconds = 3600
+    assert(clock.GetTimeString() == "1:0:0")
   end
 end
 

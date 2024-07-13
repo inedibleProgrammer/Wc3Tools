@@ -1,5 +1,5 @@
-gg_trg_LaunchLua = nil
 gg_trg_PeriodicPrint = nil
+gg_trg_LaunchLua = nil
 function InitGlobals()
 end
 
@@ -8,13 +8,16 @@ function map.Commands_Create(wc3api)
   local commands = {}
 
   function commands.Add(command)
-    assert(#command.users ~= 0, "command.users length is 0 in " .. command.activator)
+    -- TODO: Log command added
+    if (#command.users <= 0) then
+      return
+    end
 
     command.trigger = wc3api.CreateTrigger()
     wc3api.TriggerAddAction(command.trigger, command.Handler)
 
-    for _,v in pairs(command.users) do
-      wc3api.TriggerRegisterPlayerChatEvent(command.trigger, v, command.activator, wc3api.NO_EXACT_MATCH)
+    for _,user in pairs(command.users) do
+      wc3api.TriggerRegisterPlayerChatEvent(command.trigger, user, command.activator, wc3api.NO_EXACT_MATCH)
     end
   end
 
@@ -233,6 +236,7 @@ function map.GameClock_Create(wc3api, clock, commands, players)
   function gameClock.ClockTick()
     -- print("ClockTick start")
     -- DisplayTextToForce(GetPlayersAll(), "ClockTick start")
+    -- DisplayTextToForce(GetPlayersAll(), gameClock.clock.seconds)
     gameClock.clock.Tick()
     -- print("ClockTick end")
   end
@@ -247,7 +251,7 @@ function map.GameClock_Create(wc3api, clock, commands, players)
   displayTimeCommand.activator = "-time"
   displayTimeCommand.users = players.ALL_PLAYERS
   function displayTimeCommand:Handler()
-    wc3api.DisplayTextToPlayer(wc3api.GetTriggerPlayer(), 0, 0, "TIME PLACEHOLDER")
+    wc3api.DisplayTextToPlayer(wc3api.GetTriggerPlayer(), 0, 0, gameClock.clock.GetTimeString())
   end
   commands.Add(displayTimeCommand)
 
@@ -310,7 +314,7 @@ function map.Clock_Create()
   clock.seconds = 0
 
   function clock.Tick()
-    gameClock.seconds = gameClock.seconds + 1
+    clock.seconds = clock.seconds + 1
   end
 
   function clock.TimeElapsed()
@@ -333,6 +337,16 @@ function map.Clock_Create()
     timeElapsed.seconds = tempSeconds
 
     return timeElapsed
+  end
+
+  function clock.GetTimeString()
+    local timeString = ""
+    local timeElapsed = clock.TimeElapsed()
+
+    timeString = tostring(timeElapsed.hours) .. ":" .. tostring(timeElapsed.minutes) .. ":" .. tostring(timeElapsed.seconds)
+    -- timeString = string.format("10:07:05", timeElapsed.hours, timeElapsed.minutes, timeElapsed.seconds)
+
+    return timeString
   end
 
   return clock
@@ -367,6 +381,14 @@ function map.Clock_Tests(testFramework)
     assert(clock.TimeElapsed().minutes == 0, "minutes wrong")
     assert(clock.TimeElapsed().seconds == 0, "seconds wrong")
   end
+
+  function tsc.Tests.GetTimeAsString()
+    local clock = map.Clock_Create()
+    clock.seconds = 8192
+    -- assert(clock.GetTimeString() == "02:16:32")
+    clock.seconds = 3600
+    -- assert(clock.GetTimeString() == "01:00:00")
+  end
 end
 
 
@@ -393,6 +415,7 @@ function map.Players_Create(wc3api, commands)
     table.insert(players.list, player)
   end
 
+  local displayPlayerCmd = {}
 
   return players
 end
@@ -454,16 +477,6 @@ map.UnitTests()
 
 
 
-function Trig_PeriodicPrint_Actions()
-DisplayTextToForce(GetPlayersAll(), "TRIGSTR_007")
-end
-
-function InitTrig_PeriodicPrint()
-gg_trg_PeriodicPrint = CreateTrigger()
-TriggerRegisterTimerEventPeriodic(gg_trg_PeriodicPrint, 1.00)
-TriggerAddAction(gg_trg_PeriodicPrint, Trig_PeriodicPrint_Actions)
-end
-
 function Trig_LaunchLua_Actions()
     map.LaunchLua()
 end
@@ -474,7 +487,6 @@ TriggerAddAction(gg_trg_LaunchLua, Trig_LaunchLua_Actions)
 end
 
 function InitCustomTriggers()
-InitTrig_PeriodicPrint()
 InitTrig_LaunchLua()
 end
 
