@@ -5,6 +5,7 @@ function map.UnitTests()
   map.Clock_Tests(testFramework)
   map.GameClock_Tests(testFramework)
   map.Players_Tests(testFramework)
+  map.Logging_Tests(testFramework)
   xpcall(testFramework.TestRunner, print)
 end
 

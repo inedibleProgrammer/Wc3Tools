@@ -12,7 +12,8 @@ Build.SourceFiles = {
   "GameClock.lua",
   "Clock.lua",
   "Players.lua",
-  "LaunchLua.lua",
+  "Logging.lua",
+  "LaunchLua.lua", -- Must be last
 }
 
 function createMapFile()

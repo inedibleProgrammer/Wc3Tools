@@ -23,6 +23,24 @@ function map.Players_Create(wc3api, commands)
 
   local displayPlayerCmd = {}
 
+  function players.GetPlayerByName(name)
+    for _,player in pairs(players.list) do
+      if player.name == name then
+        return player
+      end
+    end
+    return nil
+  end
+
+  function players.GetPlayerByID(id)
+    for _,player in pairs(players.list) do
+      if player.id == id then
+        return player
+      end
+    end
+    return nil
+  end
+
   return players
 end
 
