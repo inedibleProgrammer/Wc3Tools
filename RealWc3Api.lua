@@ -109,6 +109,22 @@ function map.RealWc3Api_Create()
     return CreateGroup()
   end
 
+  function realWc3Api.DestroyGroup(whichGroup)
+    return DestroyGroup(whichGroup)
+  end
+
+  function realWc3Api.GroupAddUnit(whichGroup, whichUnit)
+    return GroupAddUnit(whichGroup, whichUnit)
+  end
+
+  function realWc3Api.GroupRemoveUnit(whichGroup, whichUnit)
+    return GroupRemoveUnit(whichGroup, whichUnit)
+  end
+
+  function realWc3Api.GroupClear(whichGroup)
+    return GroupClear(WhichGroup)
+  end
+
   function realWc3Api.ForGroup(whichGroup, callback)
     return ForGroup(whichGroup, callback)
   end
