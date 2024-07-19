@@ -1,8 +1,9 @@
 function map.Commands_Create(wc3api)
   local commands = {}
+  commands.list = {}
+  commands.count = 0
 
   function commands.Add(command)
-    -- TODO: Log command added
     if (#command.users <= 0) then
       return
     end
@@ -13,6 +14,9 @@ function map.Commands_Create(wc3api)
     for _,user in pairs(command.users) do
       wc3api.TriggerRegisterPlayerChatEvent(command.trigger, user, command.activator, wc3api.NO_EXACT_MATCH)
     end
+
+    table.insert(commands.list, command)
+    commands.count = commands.count + 1
   end
 
   return commands
