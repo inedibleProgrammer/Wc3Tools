@@ -77,5 +77,33 @@ function map.RealWc3Api_Create()
     return GetTriggerPlayer()
   end
 
+  function realWc3Api.TriggerRegisterEnterRectSimple(trig, r)
+    return TriggerRegisterEnterRectSimple(trig, r)
+  end
+
+  function realWc3Api.GetTriggerUnit()
+    return GetTriggerUnit()
+  end
+
+  function realWc3Api.GetUnitName()
+    return GetUnitName()
+  end
+
+  function realWc3Api.GetHeroProperName(whichHero)
+    return GetHeroProperName(whichHero)
+  end
+
+  function realWc3Api.IsHeroUnitId(unitId)
+    return IsHeroUnitId(unitId)
+  end
+
+  function realWc3Api.GetObjectName(objectId)
+    return GetObjectName(objectId)
+  end
+
+  function realWc3Api.GetUnitTypeId(whichUnit)
+    return GetUnitTypeId(whichUnit)
+  end
+
   return realWc3Api
 end

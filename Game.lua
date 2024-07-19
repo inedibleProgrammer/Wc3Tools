@@ -6,12 +6,15 @@ function map.Game_Initialize()
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
 
+  local worldEdit = players.GetPlayerByName("WorldEdit")
+  logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
+
   local function testLogging()
     -- local masterLich = players.GetPlayerByName("MasterLich#11192")
-    local worldEdit = players.GetPlayerByName("WorldEdit")
+    -- local worldEdit = players.GetPlayerByName("WorldEdit")
 
     -- logging.SetPlayerOptionByID(masterLich.id, logging.types.ALL)
-    logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
+    -- logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
 
     local function DumDum()
       local function DumDum2()
@@ -28,7 +31,7 @@ function map.Game_Initialize()
     wc3api.TriggerAddAction(dummyTrigger, DumDum)
   end
 
-  testLogging()
+  -- testLogging()
 
   local function testPlayers()
     for _,player in pairs(players.list) do
@@ -37,6 +40,25 @@ function map.Game_Initialize()
   end
 
   -- testPlayers()
+
+  local function testWalkOnCircle()
+    local function testWalkOnCircle2()
+      local testWalkOnCircleLog = {}
+      -- local triggerUnitName = wc3api.GetUnitName(wc3api.GetTriggerUnit())
+      -- local triggerUnitName = wc3api.GetObjectName(wc3api.GetUnitTypeId(wc3api.GetTriggerUnit()))
+      local unit = wc3api.GetTriggerUnit()
+      local unitid = wc3api.GetUnitTypeId(unit)
+      local unitname = wc3api.GetObjectName(unitid)
+      testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
+      testWalkOnCircleLog.type = logging.types.DEBUG
+      logging.Write(testWalkOnCircleLog)
+    end
+    xpcall(testWalkOnCircle2, print)
+  end
+
+  local unitWalksOnCircleTrigger = CreateTrigger()
+  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, gg_rct_testcop)
+  wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
 
 end
 

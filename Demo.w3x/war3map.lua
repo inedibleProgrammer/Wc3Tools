@@ -1,14 +1,59 @@
+gg_rct_testcop = nil
+gg_trg_quest = nil
+gg_trg_testcop = nil
 gg_trg_PeriodicPrint = nil
 gg_trg_LaunchLua = nil
+gg_trg_playerunits = nil
 function InitGlobals()
+end
+
+function CreateUnitsForPlayer0()
+local p = Player(0)
+local u
+local unitID
+local t
+local life
+
+u = BlzCreateUnitWithSkin(p, FourCC("Hpal"), 1724.8, -1939.8, 13.887, FourCC("Hpal"))
+end
+
+function CreateNeutralPassiveBuildings()
+local p = Player(PLAYER_NEUTRAL_PASSIVE)
+local u
+local unitID
+local t
+local life
+
+u = BlzCreateUnitWithSkin(p, FourCC("ncop"), 1984.0, -1792.0, 270.000, FourCC("ncop"))
+u = BlzCreateUnitWithSkin(p, FourCC("nico"), 1536.0, -1536.0, 270.000, FourCC("nico"))
+end
+
+function CreatePlayerBuildings()
+end
+
+function CreatePlayerUnits()
+CreateUnitsForPlayer0()
+end
+
+function CreateAllUnits()
+CreateNeutralPassiveBuildings()
+CreatePlayerBuildings()
+CreatePlayerUnits()
+end
+
+function CreateRegions()
+local we
+
+gg_rct_testcop = Rect(1888.0, -1888.0, 2080.0, -1696.0)
 end
 
 map = {}
 function map.Commands_Create(wc3api)
   local commands = {}
+  commands.list = {}
+  commands.count = 0
 
   function commands.Add(command)
-    -- TODO: Log command added
     if (#command.users <= 0) then
       return
     end
@@ -19,6 +64,9 @@ function map.Commands_Create(wc3api)
     for _,user in pairs(command.users) do
       wc3api.TriggerRegisterPlayerChatEvent(command.trigger, user, command.activator, wc3api.NO_EXACT_MATCH)
     end
+
+    table.insert(commands.list, command)
+    commands.count = commands.count + 1
   end
 
   return commands
@@ -104,12 +152,15 @@ function map.Game_Initialize()
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
 
+  local worldEdit = players.GetPlayerByName("WorldEdit")
+  logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
+
   local function testLogging()
     -- local masterLich = players.GetPlayerByName("MasterLich#11192")
-    local worldEdit = players.GetPlayerByName("WorldEdit")
+    -- local worldEdit = players.GetPlayerByName("WorldEdit")
 
     -- logging.SetPlayerOptionByID(masterLich.id, logging.types.ALL)
-    logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
+    -- logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
 
     local function DumDum()
       local function DumDum2()
@@ -126,7 +177,7 @@ function map.Game_Initialize()
     wc3api.TriggerAddAction(dummyTrigger, DumDum)
   end
 
-  testLogging()
+  -- testLogging()
 
   local function testPlayers()
     for _,player in pairs(players.list) do
@@ -135,6 +186,25 @@ function map.Game_Initialize()
   end
 
   -- testPlayers()
+
+  local function testWalkOnCircle()
+    local function testWalkOnCircle2()
+      local testWalkOnCircleLog = {}
+      -- local triggerUnitName = wc3api.GetUnitName(wc3api.GetTriggerUnit())
+      -- local triggerUnitName = wc3api.GetObjectName(wc3api.GetUnitTypeId(wc3api.GetTriggerUnit()))
+      local unit = wc3api.GetTriggerUnit()
+      local unitid = wc3api.GetUnitTypeId(unit)
+      local unitname = wc3api.GetObjectName(unitid)
+      testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
+      testWalkOnCircleLog.type = logging.types.DEBUG
+      logging.Write(testWalkOnCircleLog)
+    end
+    xpcall(testWalkOnCircle2, print)
+  end
+
+  local unitWalksOnCircleTrigger = CreateTrigger()
+  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, gg_rct_testcop)
+  wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
 
 end
 
@@ -223,6 +293,34 @@ function map.RealWc3Api_Create()
     return GetTriggerPlayer()
   end
 
+  function realWc3Api.TriggerRegisterEnterRectSimple(trig, r)
+    return TriggerRegisterEnterRectSimple(trig, r)
+  end
+
+  function realWc3Api.GetTriggerUnit()
+    return GetTriggerUnit()
+  end
+
+  function realWc3Api.GetUnitName()
+    return GetUnitName()
+  end
+
+  function realWc3Api.GetHeroProperName(whichHero)
+    return GetHeroProperName(whichHero)
+  end
+
+  function realWc3Api.IsHeroUnitId(unitId)
+    return IsHeroUnitId(unitId)
+  end
+
+  function realWc3Api.GetObjectName(objectId)
+    return GetObjectName(objectId)
+  end
+
+  function realWc3Api.GetUnitTypeId(whichUnit)
+    return GetUnitTypeId(whichUnit)
+  end
+
   return realWc3Api
 end
 function map.Split(inputStr, sep)
@@ -270,6 +368,7 @@ function map.GameClock_Create(wc3api, clock, commands, players)
     -- DisplayTextToForce(GetPlayersAll(), "ClockTick start")
     -- DisplayTextToForce(GetPlayersAll(), gameClock.clock.seconds)
     gameClock.clock.Tick()
+    collectgarbage("collect")
     -- print("ClockTick end")
   end
 
@@ -376,7 +475,7 @@ function map.Clock_Create()
     local timeElapsed = clock.TimeElapsed()
 
     timeString = tostring(timeElapsed.hours) .. ":" .. tostring(timeElapsed.minutes) .. ":" .. tostring(timeElapsed.seconds)
-    -- timeString = string.format("10:07:05", timeElapsed.hours, timeElapsed.minutes, timeElapsed.seconds) -- This doesn't work in wc3 for some reason
+    -- timeString = string.format("10:07:08", timeElapsed.hours, timeElapsed.minutes, timeElapsed.seconds) -- This doesn't work in wc3 for some reason
 
     return timeString
   end
@@ -538,7 +637,7 @@ function map.Logging_Create(wc3api, gameClock, commands, players)
         -- print("4")
         if(playerLogOptions.id == player.id) then
           -- print("5")
-          local playerVisibilityOptionBinary = tonumber(playerLogOptions.visibility, 2)
+          local playerVisibilityOptionBinary = tonumber(playerLogOptions.visibility, 2)
           local logMessageTypeBinary = tonumber(logMessage.type, 2)
           -- print("6")
           -- print(playerVisibilityOptionBinary)
@@ -600,7 +699,7 @@ function map.Logging_Tests(testFramework)
     table.insert(players.list, player1)
     table.insert(players.list, player2)
     local logging = map.Logging_Create(wc3api, gameClock, commands, players)
-
+
     function gameClock.clock.GetTimeString() return "0:0:0" end
 
     local testCalled = 0
@@ -643,6 +742,19 @@ map.UnitTests()
 
 
 
+function Trig_playerunits_Func001002()
+KillUnit(GetTriggerUnit())
+end
+
+function Trig_playerunits_Actions()
+ForGroupBJ(GetUnitsInRectOfPlayer(GetPlayableMapRect(), Player(0)), Trig_playerunits_Func001002)
+end
+
+function InitTrig_playerunits()
+gg_trg_playerunits = CreateTrigger()
+TriggerAddAction(gg_trg_playerunits, Trig_playerunits_Actions)
+end
+
 function Trig_LaunchLua_Actions()
     map.LaunchLua()
 end
@@ -653,23 +765,46 @@ TriggerAddAction(gg_trg_LaunchLua, Trig_LaunchLua_Actions)
 end
 
 function InitCustomTriggers()
+InitTrig_playerunits()
 InitTrig_LaunchLua()
 end
 
 function RunInitializationTriggers()
+ConditionalTriggerExecute(gg_trg_playerunits)
 ConditionalTriggerExecute(gg_trg_LaunchLua)
 end
 
 function InitCustomPlayerSlots()
 SetPlayerStartLocation(Player(0), 0)
+ForcePlayerStartLocation(Player(0), 0)
 SetPlayerColor(Player(0), ConvertPlayerColor(0))
-SetPlayerRacePreference(Player(0), RACE_PREF_HUMAN)
+SetPlayerRacePreference(Player(0), RACE_PREF_RANDOM)
 SetPlayerRaceSelectable(Player(0), true)
 SetPlayerController(Player(0), MAP_CONTROL_USER)
+SetPlayerStartLocation(Player(1), 1)
+ForcePlayerStartLocation(Player(1), 1)
+SetPlayerColor(Player(1), ConvertPlayerColor(1))
+SetPlayerRacePreference(Player(1), RACE_PREF_RANDOM)
+SetPlayerRaceSelectable(Player(1), true)
+SetPlayerController(Player(1), MAP_CONTROL_USER)
 end
 
 function InitCustomTeams()
 SetPlayerTeam(Player(0), 0)
+SetPlayerState(Player(0), PLAYER_STATE_ALLIED_VICTORY, 1)
+SetPlayerTeam(Player(1), 0)
+SetPlayerState(Player(1), PLAYER_STATE_ALLIED_VICTORY, 1)
+SetPlayerAllianceStateAllyBJ(Player(0), Player(1), true)
+SetPlayerAllianceStateAllyBJ(Player(1), Player(0), true)
+SetPlayerAllianceStateVisionBJ(Player(0), Player(1), true)
+SetPlayerAllianceStateVisionBJ(Player(1), Player(0), true)
+end
+
+function InitAllyPriorities()
+SetStartLocPrioCount(0, 1)
+SetStartLocPrio(0, 0, 1, MAP_LOC_PRIO_HIGH)
+SetStartLocPrioCount(1, 1)
+SetStartLocPrio(1, 0, 0, MAP_LOC_PRIO_HIGH)
 end
 
 function main()
@@ -679,6 +814,8 @@ NewSoundEnvironment("Default")
 SetAmbientDaySound("CityScapeDay")
 SetAmbientNightSound("CityScapeNight")
 SetMapMusic("Music", true, 0)
+CreateRegions()
+CreateAllUnits()
 InitBlizzard()
 InitGlobals()
 InitCustomTriggers()
@@ -688,12 +825,13 @@ end
 function config()
 SetMapName("TRIGSTR_001")
 SetMapDescription("TRIGSTR_003")
-SetPlayers(1)
-SetTeams(1)
-SetGamePlacement(MAP_PLACEMENT_USE_MAP_SETTINGS)
-DefineStartLocation(0, 2816.0, 1792.0)
+SetPlayers(2)
+SetTeams(2)
+SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
+DefineStartLocation(0, 1984.0, -2368.0)
+DefineStartLocation(1, -1600.0, 1792.0)
 InitCustomPlayerSlots()
-SetPlayerSlotAvailable(Player(0), MAP_CONTROL_USER)
-InitGenericPlayerSlots()
+InitCustomTeams()
+InitAllyPriorities()
 end
 

@@ -11,6 +11,7 @@ function map.GameClock_Create(wc3api, clock, commands, players)
     -- DisplayTextToForce(GetPlayersAll(), "ClockTick start")
     -- DisplayTextToForce(GetPlayersAll(), gameClock.clock.seconds)
     gameClock.clock.Tick()
+    collectgarbage("collect")
     -- print("ClockTick end")
   end
 

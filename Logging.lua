@@ -20,7 +20,7 @@ function map.Logging_Create(wc3api, gameClock, commands, players)
 
   function logging.Write(logMessage)
     -- print("logging.Write")
-    -- print("1"))
+    -- print("1")
     local logString = tostring(logging.count) .. "#" .. logging.gameClock.clock.GetTimeString() .. "#" .. logMessage.type .. "#" .. logMessage.message
     -- print("2")
 
