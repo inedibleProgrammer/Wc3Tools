@@ -49,16 +49,27 @@ function map.Game_Initialize()
       local unit = wc3api.GetTriggerUnit()
       local unitid = wc3api.GetUnitTypeId(unit)
       local unitname = wc3api.GetObjectName(unitid)
-      testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
+      -- testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
+      testWalkOnCircleLog.message = "" .. type(gg_rct_testcop)
       testWalkOnCircleLog.type = logging.types.DEBUG
       logging.Write(testWalkOnCircleLog)
     end
     xpcall(testWalkOnCircle2, print)
   end
 
-  local unitWalksOnCircleTrigger = CreateTrigger()
+  local unitWalksOnCircleTrigger = wc3api.CreateTrigger()
   wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, gg_rct_testcop)
   wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
+
+
+
+
+  
+
+
+
+
+
 
 end
 

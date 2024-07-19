@@ -1,9 +1,9 @@
 gg_rct_testcop = nil
+gg_trg_playerunits = nil
 gg_trg_quest = nil
 gg_trg_testcop = nil
 gg_trg_PeriodicPrint = nil
 gg_trg_LaunchLua = nil
-gg_trg_playerunits = nil
 function InitGlobals()
 end
 
@@ -195,14 +195,15 @@ function map.Game_Initialize()
       local unit = wc3api.GetTriggerUnit()
       local unitid = wc3api.GetUnitTypeId(unit)
       local unitname = wc3api.GetObjectName(unitid)
-      testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
+      -- testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
+      testWalkOnCircleLog.message = "" .. type(gg_rct_testcop)
       testWalkOnCircleLog.type = logging.types.DEBUG
       logging.Write(testWalkOnCircleLog)
     end
     xpcall(testWalkOnCircle2, print)
   end
 
-  local unitWalksOnCircleTrigger = CreateTrigger()
+  local unitWalksOnCircleTrigger = wc3api.CreateTrigger()
   wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, gg_rct_testcop)
   wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
 
@@ -614,7 +615,16 @@ function map.Logging_Create(wc3api, gameClock, commands, players)
 
   logging.messages = {}
   logging.count = 0
-  logging.types = {TRACE = "000001", DEBUG = "000010", INFO = "000100", WARN = "001000", ERROR = "010000", FATAL = "100000", ALL = "111111", NONE = "000000"}
+  logging.types = {
+    TRACE = {bin = "000001", name = "TRACE"},
+    DEBUG = {bin = "000010", name = "DEBUG"},
+    INFO =  {bin = "000100", name = "INFO"},
+    WARN =  {bin = "001000", name = "WARN"},
+    ERROR = {bin = "010000", name = "ERROR"},
+    FATAL = {bin = "100000", name = "FATAL"},
+    ALL =   {bin = "111111", name = "ALL"},
+    NONE =  {bin = "000000", name = "NONE"}
+  }
   logging.playerOptions = {}
 
   for _,player in pairs(players.list) do
@@ -627,8 +637,8 @@ function map.Logging_Create(wc3api, gameClock, commands, players)
 
   function logging.Write(logMessage)
     -- print("logging.Write")
-    -- print("1")
-    local logString = tostring(logging.count) .. "#" .. logging.gameClock.clock.GetTimeString() .. "#" .. logMessage.type .. "#" .. logMessage.message
+    -- print("1"))
+    local logString = tostring(logging.count) .. "#" .. logging.gameClock.clock.GetTimeString() .. "#" .. logMessage.type.name .. "#" .. logMessage.message
     -- print("2")
 
     for _,player in pairs(players.list) do
@@ -637,8 +647,8 @@ function map.Logging_Create(wc3api, gameClock, commands, players)
         -- print("4")
         if(playerLogOptions.id == player.id) then
           -- print("5")
-          local playerVisibilityOptionBinary = tonumber(playerLogOptions.visibility, 2)
-          local logMessageTypeBinary = tonumber(logMessage.type, 2)
+          local playerVisibilityOptionBinary = tonumber(playerLogOptions.visibility.bin, 2)
+          local logMessageTypeBinary = tonumber(logMessage.type.bin, 2)
           -- print("6")
           -- print(playerVisibilityOptionBinary)
           -- print(logMessageTypeBinary)
