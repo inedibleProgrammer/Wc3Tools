@@ -64,7 +64,7 @@ function map.Game_Initialize()
 
 
 
-  
+  local g = wc3api.CreateGroup()
 
 
 

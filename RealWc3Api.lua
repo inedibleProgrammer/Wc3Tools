@@ -105,5 +105,41 @@ function map.RealWc3Api_Create()
     return GetUnitTypeId(whichUnit)
   end
 
+  function realWc3Api.CreateGroup()
+    return CreateGroup()
+  end
+
+  function realWc3Api.ForGroup(whichGroup, callback)
+    return ForGroup(whichGroup, callback)
+  end
+
+  function realWc3Api.GroupEnumUnitsInRect(whichGroup, r, filter)
+    return GroupEnumUnitsInRect(whichGroup, r, filter)
+  end
+
+  function realWc3Api.GroupEnumUnitsInRange(whichGroup, x, y, radius, filter)
+    return GroupEnumUnitsInRange(whichGroup, x, y, radius, filter)
+  end
+
+  function realWc3Api.GroupImmediateOrder(whichGroup, order)
+    return GroupImmediateOrder(whichGroup, order)
+  end
+
+  function realWc3Api.GroupImmediateOrderById(whichGroup, order)
+    return GroupImmediateOrderById(whichGroup, order)
+  end
+
+  function realWc3Api.GroupPointOrder(whichGroup, order, x, y)
+    return GroupPointOrder(whichGroup, order, x, y)
+  end
+
+  function realWc3Api.GroupTargetOrderById(whichGroup, order, targetWidget)
+    return GroupTargetOrderById(whichGroup, order, targetWidget)
+  end
+
+  function realWc3Api.GroupTargetOrder(whichGroup, order, targetWidget)
+    return GroupTargetOrder(whichGroup, order, targetWidget)
+  end
+
   return realWc3Api
 end
