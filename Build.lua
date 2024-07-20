@@ -13,6 +13,7 @@ Build.SourceFiles = {
   "Clock.lua",
   "Players.lua",
   "Logging.lua",
+  "UnitManager.lua",
   "LaunchLua.lua", -- Must be last
 }
 

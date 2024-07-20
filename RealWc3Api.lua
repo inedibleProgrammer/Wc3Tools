@@ -129,6 +129,14 @@ function map.RealWc3Api_Create()
     return ForGroup(whichGroup, callback)
   end
 
+  function realWc3Api.GetEnumUnit()
+    return GetEnumUnit()
+  end
+
+  function realWc3Api.GroupEnumUnitsOfPlayer(whichGroup, whichPlayer, filter)
+    return GroupEnumUnitsOfPlayer(whichGroup, whichPlayer, filter)
+  end
+
   function realWc3Api.GroupEnumUnitsInRect(whichGroup, r, filter)
     return GroupEnumUnitsInRect(whichGroup, r, filter)
   end
@@ -155,6 +163,58 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GroupTargetOrder(whichGroup, order, targetWidget)
     return GroupTargetOrder(whichGroup, order, targetWidget)
+  end
+
+  function realWc3Api.Rect(minx, miny, maxx, maxy)
+    return Rect(minx, miny, maxx, maxy)
+  end
+
+  function realWc3Api.RemoveRect(whichRect)
+    return RemoveRect(whichRect)
+  end
+
+  function realWc3Api.SetRect(whichRect, minx, miny, maxx, maxy)
+    return SetRect(whichRect, minx, miny, maxx, maxy)
+  end
+
+  function realWc3Api.GetRectCenterX(whichRect)
+    return GetRectCenterX(whichRect)
+  end
+
+  function realWc3Api.GetRectCenterY(whichRect)
+    return GetRectCenterY(whichRect)
+  end
+
+  function realWc3Api.GetRectMinX(whichRect)
+    return GetRectMinX(whichRect)
+  end
+
+  function realWc3Api.GetRectMinY(whichRect)
+    return GetRectMinY(whichRect)
+  end
+
+  function realWc3Api.GetRectMaxX(whichRect)
+    return GetRectMaxX(whichRect)
+  end
+
+  function realWc3Api.GetRectMaxY(whichRect)
+    return GetRectMaxY(whichRect)
+  end
+
+  function realWc3Api.CreateRegion()
+    return CreateRegion()
+  end
+
+  function realWc3Api.RemoveRegion(whichRegion)
+    return RemoveRegion(whichRegion)
+  end
+
+  function realWc3Api.RegionAddRect(whichRegion, r)
+    return RegionAddRect(whichRegion, r)
+  end
+
+  function realWc3Api.GetWorldBounds()
+    return GetWorldBounds()
   end
 
   return realWc3Api

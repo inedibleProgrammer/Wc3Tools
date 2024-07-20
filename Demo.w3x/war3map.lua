@@ -151,6 +151,7 @@ function map.Game_Initialize()
   local players = map.Players_Create(wc3api, commands)
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
+  local unitManager = map.UnitManager_Create(wc3api, logging, commands)
 
   local worldEdit = players.GetPlayerByName("WorldEdit")
   logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
@@ -206,6 +207,19 @@ function map.Game_Initialize()
   local unitWalksOnCircleTrigger = wc3api.CreateTrigger()
   wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, gg_rct_testcop)
   wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
+
+
+  local function testUnitManager()
+    local function testUnitManager2()
+      unitManager.ScanAllUnitsOwnedByPlayer(players.GetPlayerByName("WorldEdit"))
+    end
+    xpcall(testUnitManager2, print)
+  end
+
+  testUnitManager()
+
+
+
 
 end
 
@@ -320,6 +334,118 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetUnitTypeId(whichUnit)
     return GetUnitTypeId(whichUnit)
+  end
+
+  function realWc3Api.CreateGroup()
+    return CreateGroup()
+  end
+
+  function realWc3Api.DestroyGroup(whichGroup)
+    return DestroyGroup(whichGroup)
+  end
+
+  function realWc3Api.GroupAddUnit(whichGroup, whichUnit)
+    return GroupAddUnit(whichGroup, whichUnit)
+  end
+
+  function realWc3Api.GroupRemoveUnit(whichGroup, whichUnit)
+    return GroupRemoveUnit(whichGroup, whichUnit)
+  end
+
+  function realWc3Api.GroupClear(whichGroup)
+    return GroupClear(WhichGroup)
+  end
+
+  function realWc3Api.ForGroup(whichGroup, callback)
+    return ForGroup(whichGroup, callback)
+  end
+
+  function realWc3Api.GetEnumUnit()
+    return GetEnumUnit()
+  end
+
+  function realWc3Api.GroupEnumUnitsOfPlayer(whichGroup, whichPlayer, filter)
+    return GroupEnumUnitsOfPlayer(whichGroup, whichPlayer, filter)
+  end
+
+  function realWc3Api.GroupEnumUnitsInRect(whichGroup, r, filter)
+    return GroupEnumUnitsInRect(whichGroup, r, filter)
+  end
+
+  function realWc3Api.GroupEnumUnitsInRange(whichGroup, x, y, radius, filter)
+    return GroupEnumUnitsInRange(whichGroup, x, y, radius, filter)
+  end
+
+  function realWc3Api.GroupImmediateOrder(whichGroup, order)
+    return GroupImmediateOrder(whichGroup, order)
+  end
+
+  function realWc3Api.GroupImmediateOrderById(whichGroup, order)
+    return GroupImmediateOrderById(whichGroup, order)
+  end
+
+  function realWc3Api.GroupPointOrder(whichGroup, order, x, y)
+    return GroupPointOrder(whichGroup, order, x, y)
+  end
+
+  function realWc3Api.GroupTargetOrderById(whichGroup, order, targetWidget)
+    return GroupTargetOrderById(whichGroup, order, targetWidget)
+  end
+
+  function realWc3Api.GroupTargetOrder(whichGroup, order, targetWidget)
+    return GroupTargetOrder(whichGroup, order, targetWidget)
+  end
+
+  function realWc3Api.Rect(minx, miny, maxx, maxy)
+    return Rect(minx, miny, maxx, maxy)
+  end
+
+  function realWc3Api.RemoveRect(whichRect)
+    return RemoveRect(whichRect)
+  end
+
+  function realWc3Api.SetRect(whichRect, minx, miny, maxx, maxy)
+    return SetRect(whichRect, minx, miny, maxx, maxy)
+  end
+
+  function realWc3Api.GetRectCenterX(whichRect)
+    return GetRectCenterX(whichRect)
+  end
+
+  function realWc3Api.GetRectCenterY(whichRect)
+    return GetRectCenterY(whichRect)
+  end
+
+  function realWc3Api.GetRectMinX(whichRect)
+    return GetRectMinX(whichRect)
+  end
+
+  function realWc3Api.GetRectMinY(whichRect)
+    return GetRectMinY(whichRect)
+  end
+
+  function realWc3Api.GetRectMaxX(whichRect)
+    return GetRectMaxX(whichRect)
+  end
+
+  function realWc3Api.GetRectMaxY(whichRect)
+    return GetRectMaxY(whichRect)
+  end
+
+  function realWc3Api.CreateRegion()
+    return CreateRegion()
+  end
+
+  function realWc3Api.RemoveRegion(whichRegion)
+    return RemoveRegion(whichRegion)
+  end
+
+  function realWc3Api.RegionAddRect(whichRegion, r)
+    return RegionAddRect(whichRegion, r)
+  end
+
+  function realWc3Api.GetWorldBounds()
+    return GetWorldBounds()
   end
 
   return realWc3Api
@@ -513,7 +639,7 @@ function map.Clock_Tests(testFramework)
     assert(clock.TimeElapsed().minutes == 0, "minutes wrong")
     assert(clock.TimeElapsed().seconds == 0, "seconds wrong")
   end
-
+
   function tsc.Tests.GetTimeAsString()
     local clock = map.Clock_Create()
     clock.seconds = 8192
@@ -730,6 +856,42 @@ function map.Logging_Tests(testFramework)
   end
 
 end
+function map.UnitManager_Create(wc3api, logging, commands)
+  local unitManager = {}
+  unitManager.wc3api = wc3api
+  unitManager.logging = logging
+  unitManager.commands = commands
+
+
+  function unitManager.ScanAllUnitsOwnedByPlayer(player)
+    local group g = wc3api.CreateGroup()
+
+    local function filerUnits()
+      return true
+    end
+
+    wc3api.GroupEnumUnitsOfPlayer(g, player.ref, filterUnits)
+
+    local function testGroups()
+      local function testGroups2()
+        local testGroupLog = {}
+        testGroupLog.type = logging.types.DEBUG
+        local u = wc3api.GetEnumUnit()
+        local uid = wc3api.GetUnitTypeId(u)
+        local uname = wc3api.GetObjectName(uid)
+
+        testGroupLog.message = "unitname: " .. uname
+
+        logging.Write(testGroupLog)
+      end
+      xpcall(testGroups2, print)
+    end
+
+    wc3api.ForGroup(g, testGroups)
+  end
+
+  return unitManager
+end
 function map.UnitTests()
   local testFramework = map.TestFramework_Create()
   map.Commands_Tests(testFramework)
@@ -752,19 +914,6 @@ map.UnitTests()
 
 
 
-function Trig_playerunits_Func001002()
-KillUnit(GetTriggerUnit())
-end
-
-function Trig_playerunits_Actions()
-ForGroupBJ(GetUnitsInRectOfPlayer(GetPlayableMapRect(), Player(0)), Trig_playerunits_Func001002)
-end
-
-function InitTrig_playerunits()
-gg_trg_playerunits = CreateTrigger()
-TriggerAddAction(gg_trg_playerunits, Trig_playerunits_Actions)
-end
-
 function Trig_LaunchLua_Actions()
     map.LaunchLua()
 end
@@ -775,12 +924,10 @@ TriggerAddAction(gg_trg_LaunchLua, Trig_LaunchLua_Actions)
 end
 
 function InitCustomTriggers()
-InitTrig_playerunits()
 InitTrig_LaunchLua()
 end
 
 function RunInitializationTriggers()
-ConditionalTriggerExecute(gg_trg_playerunits)
 ConditionalTriggerExecute(gg_trg_LaunchLua)
 end
 

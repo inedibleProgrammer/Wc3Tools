@@ -5,6 +5,7 @@ function map.Game_Initialize()
   local players = map.Players_Create(wc3api, commands)
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
+  local unitManager = map.UnitManager_Create(wc3api, logging, commands)
 
   local worldEdit = players.GetPlayerByName("WorldEdit")
   logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
@@ -62,11 +63,14 @@ function map.Game_Initialize()
   wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
 
 
+  local function testUnitManager()
+    local function testUnitManager2()
+      unitManager.ScanAllUnitsOwnedByPlayer(players.GetPlayerByName("WorldEdit"))
+    end
+    xpcall(testUnitManager2, print)
+  end
 
-
-  local g = wc3api.CreateGroup()
-
-
+  testUnitManager()
 
 
 
