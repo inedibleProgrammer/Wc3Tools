@@ -7,6 +7,7 @@ function map.Game_Initialize()
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
   local unitManager = map.UnitManager_Create(wc3api, logging, commands)
   local editor = map.Editor_Create()
+  local colors = map.Colors_Create()
 
   local worldEdit = players.GetPlayerByName("WorldEdit")
   logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
@@ -52,7 +53,8 @@ function map.Game_Initialize()
       local unitid = wc3api.GetUnitTypeId(unit)
       local unitname = wc3api.GetObjectName(unitid)
       -- testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
-      testWalkOnCircleLog.message = "" .. type(editor.testcop)
+      -- testWalkOnCircleLog.message = "" .. type(editor.testcop)
+      testWalkOnCircleLog.message = colors.GetColoredString(type(editor.testcop), "blue")
       testWalkOnCircleLog.type = logging.types.DEBUG
       logging.Write(testWalkOnCircleLog)
     end

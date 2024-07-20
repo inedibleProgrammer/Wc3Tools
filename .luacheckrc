@@ -4,6 +4,7 @@ std = {
     "print",
     "assert",
     "pairs",
+    "ipairs",
     "xpcall",
     "type",
     "string",

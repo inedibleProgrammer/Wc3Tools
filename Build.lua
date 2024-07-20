@@ -5,6 +5,7 @@ MAP_VERSION = "Alpha"
 
 Build.SourceFiles = {
   "Commands.lua",
+  "Colors.lua",
   "TestFramework.lua",
   "Game.lua",
   "RealWc3Api.lua",
