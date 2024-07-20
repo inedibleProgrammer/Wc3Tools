@@ -6,6 +6,7 @@ function map.Game_Initialize()
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
   local unitManager = map.UnitManager_Create(wc3api, logging, commands)
+  local editor = map.Editor_Create()
 
   local worldEdit = players.GetPlayerByName("WorldEdit")
   logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
@@ -51,7 +52,7 @@ function map.Game_Initialize()
       local unitid = wc3api.GetUnitTypeId(unit)
       local unitname = wc3api.GetObjectName(unitid)
       -- testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
-      testWalkOnCircleLog.message = "" .. type(gg_rct_testcop)
+      testWalkOnCircleLog.message = "" .. type(editor.testcop)
       testWalkOnCircleLog.type = logging.types.DEBUG
       logging.Write(testWalkOnCircleLog)
     end
@@ -59,7 +60,7 @@ function map.Game_Initialize()
   end
 
   local unitWalksOnCircleTrigger = wc3api.CreateTrigger()
-  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, gg_rct_testcop)
+  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, editor.testcop)
   wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
 
 

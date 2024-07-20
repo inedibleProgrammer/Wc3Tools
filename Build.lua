@@ -8,6 +8,7 @@ Build.SourceFiles = {
   "TestFramework.lua",
   "Game.lua",
   "RealWc3Api.lua",
+  "Editor.lua",
   "Utility.lua",
   "GameClock.lua",
   "Clock.lua",
