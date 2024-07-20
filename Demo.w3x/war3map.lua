@@ -4,6 +4,7 @@ gg_trg_quest = nil
 gg_trg_testcop = nil
 gg_trg_PeriodicPrint = nil
 gg_trg_LaunchLua = nil
+gg_rct_startRect = nil
 function InitGlobals()
 end
 
@@ -15,6 +16,7 @@ local t
 local life
 
 u = BlzCreateUnitWithSkin(p, FourCC("Hpal"), 1724.8, -1939.8, 13.887, FourCC("Hpal"))
+u = BlzCreateUnitWithSkin(p, FourCC("h000"), 293.8, -1558.5, 129.313, FourCC("h000"))
 end
 
 function CreateNeutralPassiveBuildings()
@@ -45,6 +47,7 @@ function CreateRegions()
 local we
 
 gg_rct_testcop = Rect(1888.0, -1888.0, 2080.0, -1696.0)
+gg_rct_startRect = Rect(-2496.0, -2880.0, -1440.0, -1792.0)
 end
 
 map = {}
@@ -127,6 +130,80 @@ function map.Commands_Tests(testFramework)
 end
 
 
+function map.Colors_Create()
+  local colors = {}
+  colors.ColorList = {}
+
+  function colors.AddColor(text, number, hexCode)
+    local color = {}
+    color.text = text
+    color.number = number
+    color.hexCode = hexCode
+
+    table.insert(colors.ColorList, color)
+  end
+
+  -- This function returns a color object from text
+  function colors.GetColor_T(t)
+    for _,v in ipairs(colors.ColorList) do
+      if t == v.text then
+        return v
+      end
+    end
+  end
+
+  function colors.GetColor_N(n)
+    for _,v in ipairs(colors.ColorList) do
+      if n == v.number then
+        return v
+      end
+    end
+  end
+
+  function colors.GetColorCode(text)
+    for _,v in ipairs(colors.ColorList) do
+      if text == v.text then
+        return v.hexCode
+      end
+    end
+  end
+
+  function colors.GetColoredString(normalString, colorName)
+    local coloredString = "|c" .. colors.GetColorCode(colorName) .. normalString  .. "|r"
+    return coloredString
+  end
+
+  colors.AddColor("red", 1, "00FF0303")
+  colors.AddColor("blue", 2, "000042FF")
+  colors.AddColor("teal", 3, "001CE6B9")
+  colors.AddColor("purple", 4, "00540081")
+  colors.AddColor("yellow", 5, "00FFFC00")
+  colors.AddColor("orange", 6, "00FE8A0E")
+  colors.AddColor("green", 7, "0020C000")
+  colors.AddColor("pink", 8, "00E55BB0")
+  colors.AddColor("gray", 9, "00959697")
+  colors.AddColor("light_blue", 10, "007EBFF1")
+  colors.AddColor("dark_green", 11, "00106246")
+  colors.AddColor("brown", 12, "004E2A04")
+  colors.AddColor("maroon", 13, "009B0000")
+  colors.AddColor("navy", 14, "000000C3")
+  colors.AddColor("turquoise", 15, "0000EAFF")
+  colors.AddColor("violet", 16, "00BE00FE")
+  colors.AddColor("wheat", 17, "00EBCD87")
+  colors.AddColor("peach", 18, "00F8A48B")
+  colors.AddColor("mint", 19, "00BFFF80")
+  colors.AddColor("lavender", 20, "00DCB9EB")
+  colors.AddColor("coal", 21, "00282828")
+  colors.AddColor("snow", 22, "00EBF0FF")
+  colors.AddColor("emerald", 23, "0000781E")
+  colors.AddColor("peanut", 24, "00A46F33")
+  colors.AddColor("some_weird_green", 25, "0022744F")
+  colors.AddColor("gold", 26, "00FFD700")
+  colors.AddColor("bright_blue", 27, "0019CAF6")
+
+  return colors
+end
+
 function map.TestFramework_Create()
   local testFramework = {}
   testFramework.Suites = {}
@@ -146,15 +223,22 @@ end
 
 function map.Game_Initialize()
   local wc3api = map.RealWc3Api_Create()
+  local colors = map.Colors_Create()
   local commands = map.Commands_Create(wc3api)
   local clock = map.Clock_Create()
-  local players = map.Players_Create(wc3api, commands)
+  local players = map.Players_Create(wc3api, commands, colors)
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
   local unitManager = map.UnitManager_Create(wc3api, logging, commands)
+  local editor = map.Editor_Create()
 
   local worldEdit = players.GetPlayerByName("WorldEdit")
   logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
+
+  local gameStatusLog = {}
+  gameStatusLog.type = logging.types.INFO
+  gameStatusLog.message = "Game Start"
+  logging.Write(gameStatusLog)
 
   local function testLogging()
     -- local masterLich = players.GetPlayerByName("MasterLich#11192")
@@ -197,7 +281,8 @@ function map.Game_Initialize()
       local unitid = wc3api.GetUnitTypeId(unit)
       local unitname = wc3api.GetObjectName(unitid)
       -- testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
-      testWalkOnCircleLog.message = "" .. type(gg_rct_testcop)
+      -- testWalkOnCircleLog.message = "" .. type(editor.testcop)
+      testWalkOnCircleLog.message = colors.GetColoredString(type(editor.testcop), "blue")
       testWalkOnCircleLog.type = logging.types.DEBUG
       logging.Write(testWalkOnCircleLog)
     end
@@ -205,7 +290,7 @@ function map.Game_Initialize()
   end
 
   local unitWalksOnCircleTrigger = wc3api.CreateTrigger()
-  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, gg_rct_testcop)
+  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, editor.testcop)
   wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
 
 
@@ -216,11 +301,35 @@ function map.Game_Initialize()
     xpcall(testUnitManager2, print)
   end
 
-  testUnitManager()
+  -- testUnitManager()
+
+  local function testWagons()
+    local function testWagons2()
+      local startRectInfo = {}
+      startRectInfo.centerx = wc3api.GetRectCenterX(editor.startRect)
+      startRectInfo.centery = wc3api.GetRectCenterY(editor.startRect)
+
+      local u = wc3api.CreateUnit(players.GetPlayerByName("WorldEdit").ref,
+                                  wc3api.FourCC("h000"),
+                                  startRectInfo.centerx,
+                                  startRectInfo.centery,
+                                  0.00)
+      local wagonSpeedLog = {}
+      wagonSpeedLog.type = logging.types.DEBUG
+      wagonSpeedLog.message = "movespeed before: " .. wc3api.GetUnitMoveSpeed(u)
+      logging.Write(wagonSpeedLog)
+      wc3api.SetUnitMoveSpeed(u, 3000)
+      wagonSpeedLog.message = "movespeed after: " .. wc3api.GetUnitMoveSpeed(u)
+      logging.Write(wagonSpeedLog)
+    end
+    xpcall(testWagons2, print)
+  end
+
+  testWagons()
 
 
-
-
+  gameStatusLog.message = "Game End"
+  logging.Write(gameStatusLog)
 end
 
 
@@ -239,6 +348,11 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.NO_EXACT_MATCH = false
 
   realWc3Api.constants.bj_FORCE_ALL_PLAYERS = nil
+  realWc3Api.constants.EVENT_PLAYER_LEAVE = EVENT_PLAYER_LEAVE
+
+  function realWc3Api.BJDebugMsg(msg)
+    return BJDebugMsg(msg)
+  end
 
   function realWc3Api.CreateTrigger()
     return CreateTrigger()
@@ -265,7 +379,11 @@ function map.RealWc3Api_Create()
   end
 
   function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
-    TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+    return TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+  end
+
+  function realWc3Api.TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
+    return TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
   end
 
   function realWc3Api.Player(playerNum)
@@ -281,11 +399,11 @@ function map.RealWc3Api_Create()
   end
 
   function realWc3Api.DisplayTimedTextToPlayer(toPlayer, x, y, duration, message)
-    DisplayTimedTextToPlayer(toPlayer, x, y, duration, message)
+    return DisplayTimedTextToPlayer(toPlayer, x, y, duration, message)
   end
 
   function realWc3Api.DisplayTextToPlayer(toPlayer, x, y, message)
-    DisplayTextToPlayer(toPlayer, x, y, message)
+    return DisplayTextToPlayer(toPlayer, x, y, message)
   end
 
   function realWc3Api.GetPlayers()
@@ -338,6 +456,38 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetUnitName()
     return GetUnitName()
+  end
+
+  function realWc3Api.SetUnitMoveSpeed(whichUnit, newSpeed)
+    return SetUnitMoveSpeed(whichUnit, newSpeed)
+  end
+
+  function realWc3Api.GetUnitMoveSpeed(whichUnit)
+    return GetUnitMoveSpeed(whichUnit)
+  end
+
+  function realWc3Api.SetUnitPosition(whichUnit, newX, newY)
+    return SetUnitPosition(whichUnit, newX, newY)
+  end
+
+  function realWc3Api.KillUnit(whichUnit)
+    return KillUnit(whichUnit)
+  end
+
+  function realWc3Api.RemoveUnit(whichUnit)
+    return RemoveUnit(whichUnit)
+  end
+
+  function realWc3Api.FourCC(typeId)
+    return FourCC(typeId)
+  end
+
+  function realWc3Api.CreateUnitByName(whichPlayer, unitname, x, y, face)
+    return CreateUnitByName(whichPlayer, unitname, x, y, face)
+  end
+
+  function realWc3Api.CreateUnit(id, unitid, x, y, face)
+    return CreateUnit(id, unitid, x, y, face)
   end
 
   function realWc3Api.GetHeroProperName(whichHero)
@@ -470,6 +620,16 @@ function map.RealWc3Api_Create()
 
   return realWc3Api
 end
+--luacheck: ignore
+
+function map.Editor_Create()
+  local editor = {}
+
+  editor.testcop = gg_rct_testcop
+  editor.startRect = gg_rct_startRect
+
+  return editor
+end
 function map.Split(inputStr, sep)
   if sep == nil then
     sep = " "
@@ -569,6 +729,7 @@ function map.GameClock_Tests(testFramework)
   function wc3api.GetPlayerController() end
   function wc3api.GetPlayerSlotState() end
   function wc3api.TriggerRegisterPlayerChatEvent() end
+  function wc3api.TriggerRegisterPlayerEvent() end
 
   function tsc.Setup() end
   function tsc.Teardown() end
@@ -580,7 +741,8 @@ function map.GameClock_Tests(testFramework)
   function tsc.Tests.CreateClock()
     local clock = map.Clock_Create()
     local commands = map.Commands_Create(wc3api)
-    local players = map.Players_Create(wc3api, commands)
+    local colors = map.Colors_Create()
+    local players = map.Players_Create(wc3api, commands, colors)
     local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
 
     assert(true)
@@ -670,30 +832,14 @@ function map.Clock_Tests(testFramework)
 end
 
 
-function map.Players_Create(wc3api, commands)
+function map.Players_Create(wc3api, commands, colors)
   local players = {}
   players.wc3api = wc3api
   players.commands = commands
+  players.colors = colors
+
   players.list = {}
   players.ALL_PLAYERS = {}
-
-  for i=0, wc3api.GetBJMaxPlayers() do
-    local player = {}
-    player.ref = wc3api.Player(i)
-    player.id = wc3api.GetPlayerId(player.ref)
-    player.name = wc3api.GetPlayerName(player.ref)
-    player.race = wc3api.GetPlayerRace(player.ref)
-    player.team = wc3api.GetPlayerTeam(player.ref)
-    player.playercolor = wc3api.GetPlayerColor(player.ref)
-    player.mapcontrol = wc3api.GetPlayerController(player.ref)
-    player.playerslotstate = wc3api.GetPlayerSlotState(player.ref)
-
-    table.insert(players.ALL_PLAYERS, player.ref)
-
-    table.insert(players.list, player)
-  end
-
-  local displayPlayerCmd = {}
 
   function players.GetPlayerByName(name)
     for _,player in pairs(players.list) do
@@ -712,6 +858,38 @@ function map.Players_Create(wc3api, commands)
     end
     return nil
   end
+
+  local function PlayerLeavingHandler()
+    local p = wc3api.GetTriggerPlayer()
+    local pname = wc3api.GetPlayerName(p)
+    local player = players.GetPlayerByName(pname)
+
+    -- print(gp.coloredName .. " has left the game")
+    local coloredPName = colors.GetColoredString(pname, colors.GetColor_N(player.id + 1).text)
+    wc3api.BJDebugMsg(coloredPName .. " has left the game.")
+  end
+
+  players.playerLeavingTrigger = wc3api.CreateTrigger()
+  wc3api.TriggerAddAction(players.playerLeavingTrigger, PlayerLeavingHandler)
+  for i=0, wc3api.GetBJMaxPlayers() do
+    local player = {}
+    player.ref = wc3api.Player(i)
+    player.id = wc3api.GetPlayerId(player.ref)
+    player.name = wc3api.GetPlayerName(player.ref)
+    player.race = wc3api.GetPlayerRace(player.ref)
+    player.team = wc3api.GetPlayerTeam(player.ref)
+    player.playercolor = wc3api.GetPlayerColor(player.ref)
+    player.mapcontrol = wc3api.GetPlayerController(player.ref)
+    player.playerslotstate = wc3api.GetPlayerSlotState(player.ref)
+
+    table.insert(players.ALL_PLAYERS, player.ref)
+
+    wc3api.TriggerRegisterPlayerEvent(players.playerLeavingTrigger, player.ref, wc3api.constants.EVENT_PLAYER_LEAVE)
+
+    table.insert(players.list, player)
+  end
+
+
 
   return players
 end
@@ -735,6 +913,10 @@ function map.Players_Tests(testFramework)
   end
 
   function wc3api.GetEventPlayerChatString()
+    return ""
+  end
+
+  function wc3api.TriggerRegisterPlayerEvent()
     return ""
   end
 
@@ -924,10 +1106,10 @@ function map.UnitTests()
 end
 
 function map.LaunchLua()
-  print("Map Start")
+  -- print("Map Start")
   -- map.UnitTests()
-  map.Game_Start()
-  print("Map End")
+  xpcall(map.Game_Start, print)
+  -- print("Map End")
 end
 
 map.UnitTests()

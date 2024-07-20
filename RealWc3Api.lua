@@ -118,6 +118,38 @@ function map.RealWc3Api_Create()
     return GetUnitName()
   end
 
+  function realWc3Api.SetUnitMoveSpeed(whichUnit, newSpeed)
+    return SetUnitMoveSpeed(whichUnit, newSpeed)
+  end
+
+  function realWc3Api.GetUnitMoveSpeed(whichUnit)
+    return GetUnitMoveSpeed(whichUnit)
+  end
+
+  function realWc3Api.SetUnitPosition(whichUnit, newX, newY)
+    return SetUnitPosition(whichUnit, newX, newY)
+  end
+
+  function realWc3Api.KillUnit(whichUnit)
+    return KillUnit(whichUnit)
+  end
+
+  function realWc3Api.RemoveUnit(whichUnit)
+    return RemoveUnit(whichUnit)
+  end
+
+  function realWc3Api.FourCC(typeId)
+    return FourCC(typeId)
+  end
+
+  function realWc3Api.CreateUnitByName(whichPlayer, unitname, x, y, face)
+    return CreateUnitByName(whichPlayer, unitname, x, y, face)
+  end
+
+  function realWc3Api.CreateUnit(id, unitid, x, y, face)
+    return CreateUnit(id, unitid, x, y, face)
+  end
+
   function realWc3Api.GetHeroProperName(whichHero)
     return GetHeroProperName(whichHero)
   end

@@ -78,12 +78,35 @@ function map.Game_Initialize()
     xpcall(testUnitManager2, print)
   end
 
-  testUnitManager()
+  -- testUnitManager()
+
+  local function testWagons()
+    local function testWagons2()
+      local startRectInfo = {}
+      startRectInfo.centerx = wc3api.GetRectCenterX(editor.startRect)
+      startRectInfo.centery = wc3api.GetRectCenterY(editor.startRect)
+
+      local u = wc3api.CreateUnit(players.GetPlayerByName("WorldEdit").ref,
+                                  wc3api.FourCC("h000"),
+                                  startRectInfo.centerx,
+                                  startRectInfo.centery,
+                                  0.00)
+      local wagonSpeedLog = {}
+      wagonSpeedLog.type = logging.types.DEBUG
+      wagonSpeedLog.message = "movespeed before: " .. wc3api.GetUnitMoveSpeed(u)
+      logging.Write(wagonSpeedLog)
+      wc3api.SetUnitMoveSpeed(u, 3000)
+      wagonSpeedLog.message = "movespeed after: " .. wc3api.GetUnitMoveSpeed(u)
+      logging.Write(wagonSpeedLog)
+    end
+    xpcall(testWagons2, print)
+  end
+
+  testWagons()
 
 
   gameStatusLog.message = "Game End"
   logging.Write(gameStatusLog)
-
 end
 
 
