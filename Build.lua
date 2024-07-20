@@ -5,14 +5,17 @@ MAP_VERSION = "Alpha"
 
 Build.SourceFiles = {
   "Commands.lua",
+  "Colors.lua",
   "TestFramework.lua",
   "Game.lua",
   "RealWc3Api.lua",
+  "Editor.lua",
   "Utility.lua",
   "GameClock.lua",
   "Clock.lua",
   "Players.lua",
   "Logging.lua",
+  "UnitManager.lua",
   "LaunchLua.lua", -- Must be last
 }
 

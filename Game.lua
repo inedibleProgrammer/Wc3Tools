@@ -1,13 +1,21 @@
 function map.Game_Initialize()
   local wc3api = map.RealWc3Api_Create()
+  local colors = map.Colors_Create()
   local commands = map.Commands_Create(wc3api)
   local clock = map.Clock_Create()
-  local players = map.Players_Create(wc3api, commands)
+  local players = map.Players_Create(wc3api, commands, colors)
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
+  local unitManager = map.UnitManager_Create(wc3api, logging, commands)
+  local editor = map.Editor_Create()
 
   local worldEdit = players.GetPlayerByName("WorldEdit")
   logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
+
+  local gameStatusLog = {}
+  gameStatusLog.type = logging.types.INFO
+  gameStatusLog.message = "Game Start"
+  logging.Write(gameStatusLog)
 
   local function testLogging()
     -- local masterLich = players.GetPlayerByName("MasterLich#11192")
@@ -50,7 +58,8 @@ function map.Game_Initialize()
       local unitid = wc3api.GetUnitTypeId(unit)
       local unitname = wc3api.GetObjectName(unitid)
       -- testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
-      testWalkOnCircleLog.message = "" .. type(gg_rct_testcop)
+      -- testWalkOnCircleLog.message = "" .. type(editor.testcop)
+      testWalkOnCircleLog.message = colors.GetColoredString(type(editor.testcop), "blue")
       testWalkOnCircleLog.type = logging.types.DEBUG
       logging.Write(testWalkOnCircleLog)
     end
@@ -58,18 +67,22 @@ function map.Game_Initialize()
   end
 
   local unitWalksOnCircleTrigger = wc3api.CreateTrigger()
-  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, gg_rct_testcop)
+  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, editor.testcop)
   wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
 
 
+  local function testUnitManager()
+    local function testUnitManager2()
+      unitManager.ScanAllUnitsOwnedByPlayer(players.GetPlayerByName("WorldEdit"))
+    end
+    xpcall(testUnitManager2, print)
+  end
+
+  testUnitManager()
 
 
-  
-
-
-
-
-
+  gameStatusLog.message = "Game End"
+  logging.Write(gameStatusLog)
 
 end
 
