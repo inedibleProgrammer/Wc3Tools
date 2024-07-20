@@ -244,6 +244,26 @@ function map.RealWc3Api_Create()
     return CreateTrigger()
   end
 
+  function realWc3Api.Condition(func)
+    return Condition(func)
+  end
+
+  function realWc3Api.DestroyCondition(c)
+    return DestroyCondition(c)
+  end
+
+  function realWc3Api.Filter(func)
+    return Filter(func)
+  end
+
+  function realWc3Api.DestroyFilter(f)
+    return DestroyFilter(f)
+  end
+
+  function realWc3Api.DestroyBoolExpr(e)
+    return DestroyBoolExpr(e)
+  end
+
   function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
     TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
   end
@@ -639,7 +659,7 @@ function map.Clock_Tests(testFramework)
     assert(clock.TimeElapsed().minutes == 0, "minutes wrong")
     assert(clock.TimeElapsed().seconds == 0, "seconds wrong")
   end
-
+
   function tsc.Tests.GetTimeAsString()
     local clock = map.Clock_Create()
     clock.seconds = 8192
@@ -866,11 +886,11 @@ function map.UnitManager_Create(wc3api, logging, commands)
   function unitManager.ScanAllUnitsOwnedByPlayer(player)
     local group g = wc3api.CreateGroup()
 
-    local function filerUnits()
+    local function filterUnits()
       return true
     end
 
-    wc3api.GroupEnumUnitsOfPlayer(g, player.ref, filterUnits)
+    wc3api.GroupEnumUnitsOfPlayer(g, player.ref, wc3api.Filter(filterUnits))
 
     local function testGroups()
       local function testGroups2()

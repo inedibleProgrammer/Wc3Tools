@@ -13,6 +13,26 @@ function map.RealWc3Api_Create()
     return CreateTrigger()
   end
 
+  function realWc3Api.Condition(func)
+    return Condition(func)
+  end
+
+  function realWc3Api.DestroyCondition(c)
+    return DestroyCondition(c)
+  end
+
+  function realWc3Api.Filter(func)
+    return Filter(func)
+  end
+
+  function realWc3Api.DestroyFilter(f)
+    return DestroyFilter(f)
+  end
+
+  function realWc3Api.DestroyBoolExpr(e)
+    return DestroyBoolExpr(e)
+  end
+
   function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
     TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
   end
