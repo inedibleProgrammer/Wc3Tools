@@ -1,27 +1,11 @@
-function map.Players_Create(wc3api, commands)
+function map.Players_Create(wc3api, commands, colors)
   local players = {}
   players.wc3api = wc3api
   players.commands = commands
+  players.colors = colors
+
   players.list = {}
   players.ALL_PLAYERS = {}
-
-  for i=0, wc3api.GetBJMaxPlayers() do
-    local player = {}
-    player.ref = wc3api.Player(i)
-    player.id = wc3api.GetPlayerId(player.ref)
-    player.name = wc3api.GetPlayerName(player.ref)
-    player.race = wc3api.GetPlayerRace(player.ref)
-    player.team = wc3api.GetPlayerTeam(player.ref)
-    player.playercolor = wc3api.GetPlayerColor(player.ref)
-    player.mapcontrol = wc3api.GetPlayerController(player.ref)
-    player.playerslotstate = wc3api.GetPlayerSlotState(player.ref)
-
-    table.insert(players.ALL_PLAYERS, player.ref)
-
-    table.insert(players.list, player)
-  end
-
-  local displayPlayerCmd = {}
 
   function players.GetPlayerByName(name)
     for _,player in pairs(players.list) do
@@ -40,6 +24,38 @@ function map.Players_Create(wc3api, commands)
     end
     return nil
   end
+
+  local function PlayerLeavingHandler()
+    local p = wc3api.GetTriggerPlayer()
+    local pname = wc3api.GetPlayerName(p)
+    local player = players.GetPlayerByName(pname)
+
+    -- print(gp.coloredName .. " has left the game")
+    local coloredPName = colors.GetColoredString(pname, colors.GetColor_N(player.id + 1).text)
+    wc3api.BJDebugMsg(coloredPName .. " has left the game.")
+  end
+
+  players.playerLeavingTrigger = wc3api.CreateTrigger()
+  wc3api.TriggerAddAction(players.playerLeavingTrigger, PlayerLeavingHandler)
+  for i=0, wc3api.GetBJMaxPlayers() do
+    local player = {}
+    player.ref = wc3api.Player(i)
+    player.id = wc3api.GetPlayerId(player.ref)
+    player.name = wc3api.GetPlayerName(player.ref)
+    player.race = wc3api.GetPlayerRace(player.ref)
+    player.team = wc3api.GetPlayerTeam(player.ref)
+    player.playercolor = wc3api.GetPlayerColor(player.ref)
+    player.mapcontrol = wc3api.GetPlayerController(player.ref)
+    player.playerslotstate = wc3api.GetPlayerSlotState(player.ref)
+
+    table.insert(players.ALL_PLAYERS, player.ref)
+
+    wc3api.TriggerRegisterPlayerEvent(players.playerLeavingTrigger, player.ref, wc3api.constants.EVENT_PLAYER_LEAVE)
+
+    table.insert(players.list, player)
+  end
+
+
 
   return players
 end
@@ -63,6 +79,10 @@ function map.Players_Tests(testFramework)
   end
 
   function wc3api.GetEventPlayerChatString()
+    return ""
+  end
+
+  function wc3api.TriggerRegisterPlayerEvent()
     return ""
   end
 

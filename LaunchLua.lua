@@ -10,10 +10,10 @@ function map.UnitTests()
 end
 
 function map.LaunchLua()
-  print("Map Start")
+  -- print("Map Start")
   -- map.UnitTests()
-  map.Game_Start()
-  print("Map End")
+  xpcall(map.Game_Start, print)
+  -- print("Map End")
 end
 
 map.UnitTests()

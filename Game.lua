@@ -1,16 +1,21 @@
 function map.Game_Initialize()
   local wc3api = map.RealWc3Api_Create()
+  local colors = map.Colors_Create()
   local commands = map.Commands_Create(wc3api)
   local clock = map.Clock_Create()
-  local players = map.Players_Create(wc3api, commands)
+  local players = map.Players_Create(wc3api, commands, colors)
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
   local unitManager = map.UnitManager_Create(wc3api, logging, commands)
   local editor = map.Editor_Create()
-  local colors = map.Colors_Create()
 
   local worldEdit = players.GetPlayerByName("WorldEdit")
   logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
+
+  local gameStatusLog = {}
+  gameStatusLog.type = logging.types.INFO
+  gameStatusLog.message = "Game Start"
+  logging.Write(gameStatusLog)
 
   local function testLogging()
     -- local masterLich = players.GetPlayerByName("MasterLich#11192")
@@ -76,7 +81,8 @@ function map.Game_Initialize()
   testUnitManager()
 
 
-
+  gameStatusLog.message = "Game End"
+  logging.Write(gameStatusLog)
 
 end
 

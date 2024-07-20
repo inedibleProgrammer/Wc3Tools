@@ -8,6 +8,11 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.NO_EXACT_MATCH = false
 
   realWc3Api.constants.bj_FORCE_ALL_PLAYERS = nil
+  realWc3Api.constants.EVENT_PLAYER_LEAVE = EVENT_PLAYER_LEAVE
+
+  function realWc3Api.BJDebugMsg(msg)
+    return BJDebugMsg(msg)
+  end
 
   function realWc3Api.CreateTrigger()
     return CreateTrigger()
@@ -34,7 +39,11 @@ function map.RealWc3Api_Create()
   end
 
   function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
-    TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+    return TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+  end
+
+  function realWc3Api.TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
+    return TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
   end
 
   function realWc3Api.Player(playerNum)
@@ -50,11 +59,11 @@ function map.RealWc3Api_Create()
   end
 
   function realWc3Api.DisplayTimedTextToPlayer(toPlayer, x, y, duration, message)
-    DisplayTimedTextToPlayer(toPlayer, x, y, duration, message)
+    return DisplayTimedTextToPlayer(toPlayer, x, y, duration, message)
   end
 
   function realWc3Api.DisplayTextToPlayer(toPlayer, x, y, message)
-    DisplayTextToPlayer(toPlayer, x, y, message)
+    return DisplayTextToPlayer(toPlayer, x, y, message)
   end
 
   function realWc3Api.GetPlayers()

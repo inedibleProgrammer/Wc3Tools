@@ -65,6 +65,7 @@ function map.GameClock_Tests(testFramework)
   function wc3api.GetPlayerController() end
   function wc3api.GetPlayerSlotState() end
   function wc3api.TriggerRegisterPlayerChatEvent() end
+  function wc3api.TriggerRegisterPlayerEvent() end
 
   function tsc.Setup() end
   function tsc.Teardown() end
@@ -76,7 +77,8 @@ function map.GameClock_Tests(testFramework)
   function tsc.Tests.CreateClock()
     local clock = map.Clock_Create()
     local commands = map.Commands_Create(wc3api)
-    local players = map.Players_Create(wc3api, commands)
+    local colors = map.Colors_Create()
+    local players = map.Players_Create(wc3api, commands, colors)
     local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
 
     assert(true)
