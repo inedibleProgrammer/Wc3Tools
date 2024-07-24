@@ -7,6 +7,7 @@ Build.SourceFiles = {
   "Commands.lua",
   "Colors.lua",
   "TestFramework.lua",
+  "DebugTools.lua",
   "Game.lua",
   "RealWc3Api.lua",
   "Editor.lua",

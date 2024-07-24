@@ -4,11 +4,29 @@ function map.RealWc3Api_Create()
   local realWc3Api = {}
 
   realWc3Api.constants = {}
+  realWc3Api.constants.NO_FILTER = nil
   realWc3Api.constants.EXACT_MATCH = true
   realWc3Api.constants.NO_EXACT_MATCH = false
 
   realWc3Api.constants.bj_FORCE_ALL_PLAYERS = nil
   realWc3Api.constants.EVENT_PLAYER_LEAVE = EVENT_PLAYER_LEAVE
+
+  realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_START = EVENT_PLAYER_UNIT_CONSTRUCT_START
+  realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL = EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_FINISH = EVENT_PLAYER_UNIT_CONSTRUCT_FINISH
+
+  realWc3Api.constants.UNIT_RF_HP = UNIT_RF_HP
+  realWc3Api.constants.UNIT_RF_HIT_POINTS_REGENERATION_RATE = UNIT_RF_HIT_POINTS_REGENERATION_RATE
+  realWc3Api.constants.UNIT_RF_MANA = UNIT_RF_MANA
+  realWc3Api.constants.UNIT_RF_MANA_REGENERATION = UNIT_RF_MANA_REGENERATION
+
+  realWc3Api.constants.UNIT_STATE_LIFE = UNIT_STATE_LIFE
+  realWc3Api.constants.UNIT_STATE_MAX_LIFE = UNIT_STATE_MAX_LIFE
+  realWc3Api.constants.UNIT_STATE_MANA = UNIT_STATE_MANA
+  realWc3Api.constants.UNIT_STATE_MAX_MANA = UNIT_STATE_MAX_MANA
+
+  realWc3Api.constants.PLAYER_STATE_RESOURCE_GOLD = PLAYER_STATE_RESOURCE_GOLD
+  realWc3Api.constants.PLAYER_STATE_RESOURCE_LUMBER = PLAYER_STATE_RESOURCE_LUMBER
 
   function realWc3Api.BJDebugMsg(msg)
     return BJDebugMsg(msg)
@@ -16,6 +34,10 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.CreateTrigger()
     return CreateTrigger()
+  end
+
+  function realWc3Api.TriggerSleepAction(timeout)
+    return TriggerSleepAction(timeout)
   end
 
   function realWc3Api.Condition(func)
@@ -44,6 +66,14 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
     return TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
+  end
+
+  function realWc3Api.TriggerRegisterPlayerUnitEvent(whichTrigger, whichPlayer, whichPlayerUnitEvent, filter)
+    return TriggerRegisterPlayerUnitEvent(whichTrigger, whichPlayer, whichPlayerUnitEvent, filter)
+  end
+
+  function realWc3Api.GetEventPlayerChatString()
+    return GetEventPlayerChatString()
   end
 
   function realWc3Api.Player(playerNum)
@@ -102,6 +132,14 @@ function map.RealWc3Api_Create()
     return GetPlayerSlotState(whichPlayer)
   end
 
+  function realWc3Api.GetPlayerState(whichPlayer, whichPlayerState)
+    return GetPlayerState(whichPlayer, whichPlayerState)
+  end
+
+  function realWc3Api.SetPlayerState(whichPlayer, whichPlayerState, value)
+    return SetPlayerState(whichPlayer, whichPlayerState, value)
+  end
+
   function realWc3Api.GetTriggerPlayer()
     return GetTriggerPlayer()
   end
@@ -114,6 +152,10 @@ function map.RealWc3Api_Create()
     return GetTriggerUnit()
   end
 
+  function realWc3Api.BlzSetUnitName(whichUnit, name)
+    return BlzSetUnitName(whichUnit, name)
+  end
+
   function realWc3Api.GetUnitName()
     return GetUnitName()
   end
@@ -124,6 +166,42 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetUnitMoveSpeed(whichUnit)
     return GetUnitMoveSpeed(whichUnit)
+  end
+
+  function realWc3Api.BlzGetUnitBooleanField(whichUnit, whichField)
+    return BlzGetUnitBooleanField(whichUnit, whichField)
+  end
+
+  function realWc3Api.BlzGetUnitIntegerField(whichUnit, whichField)
+    return BlzGetUnitIntegerField(whichUnit, whichField)
+  end
+
+  function realWc3Api.BlzGetUnitRealField(whichUnit, whichField)
+    return BlzGetUnitRealField(whichUnit, whichField)
+  end
+
+  function realWc3Api.BlzGetUnitStringField(whichUnit, whichField)
+    return BlzGetUnitStringField(whichUnit, whichField)
+  end
+
+  function realWc3Api.BlzSetUnitBooleanField(whichUnit, whichField, value)
+    return BlzSetUnitBooleanField(whichUnit, whichField, value)
+  end
+
+  function realWc3Api.BlzSetUnitIntegerField(whichUnit, whichField, value)
+    return BlzSetUnitIntegerField(whichUnit, whichField, value)
+  end
+
+  function realWc3Api.BlzSetUnitRealField(whichUnit, whichField, value)
+    return BlzSetUnitRealField(whichUnit, whichField, value)
+  end
+
+  function realWc3Api.BlzSetUnitStringField(whichUnit, whichField, value)
+    return BlzSetUnitStringField(whichUnit, whichField, value)
+  end
+
+  function realWc3Api.SetUnitState(whichUnit, whichUnitState, newVal)
+    return SetUnitState(whichUnit, whichUnitState, newVal)
   end
 
   function realWc3Api.SetUnitPosition(whichUnit, newX, newY)
@@ -150,6 +228,30 @@ function map.RealWc3Api_Create()
     return CreateUnit(id, unitid, x, y, face)
   end
 
+  function realWc3Api.UnitAddAbility(whichUnit, abilityId)
+    return UnitAddAbility(whichUnit, abilityId)
+  end
+
+  function realWc3Api.UnitRemoveAbility(whichUnit, abilityId)
+    return UnitRemoveAbility(whichUnit, abilityId)
+  end
+
+  function realWc3Api.BlzGetUnitMaxMana(whichUnit)
+    return BlzGetUnitMaxMana(whichUnit)
+  end
+
+  function realWc3Api.BlzSetUnitMaxMana(whichUnit, mana)
+    return BlzSetUnitMaxMana(whichUnit, mana)
+  end
+
+  function realWc3Api.BlzSetUnitMaxHP(whichUnit, hp)
+    return BlzSetUnitMaxHP(whichUnit, hp)
+  end
+
+  function realWc3Api.BlzGetUnitMaxHP(whichUnit)
+    return BlzGetUnitMaxHP(whichUnit)
+  end
+
   function realWc3Api.GetHeroProperName(whichHero)
     return GetHeroProperName(whichHero)
   end
@@ -164,6 +266,22 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetUnitTypeId(whichUnit)
     return GetUnitTypeId(whichUnit)
+  end
+
+  function realWc3Api.GetConstructingStructure()
+    return GetConstructingStructure()
+  end
+
+  function realWc3Api.GetCancelledStructure()
+    return GetCancelledStructure()
+  end
+
+  function realWc3Api.GetConstructedStructure()
+    return GetConstructedStructure()
+  end
+
+  function realWc3Api.UnitSetConstructionProgress(whichUnit, constructionPercentage)
+    return UnitSetConstructionProgress(whichUnit, constructionPercentage)
   end
 
   function realWc3Api.CreateGroup()
@@ -208,6 +326,26 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GroupImmediateOrder(whichGroup, order)
     return GroupImmediateOrder(whichGroup, order)
+  end
+
+  function realWc3Api.IsUnitInRange(whichUnit, otherUnit, distance)
+    return IsUnitInRange(whichUnit, otherUnit, distance)
+  end
+
+  function realWc3Api.IsUnitInRangeXY(whichUnit, x, y, distance)
+    return IsUnitInRangeXY(whichUnit, x, y, distance)
+  end
+
+  function realWc3Api.GetUnitX(whichUnit)
+    return GetUnitX(whichUnit)
+  end
+
+  function realWc3Api.GetUnitY(whichUnit)
+    return GetUnitY(whichUnit)
+  end
+
+  function realWc3Api.GetUnitFacing(whichUnit)
+    return GetUnitFacing(whichUnit)
   end
 
   function realWc3Api.GroupImmediateOrderById(whichGroup, order)

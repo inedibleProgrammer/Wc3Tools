@@ -1,8 +1,5 @@
 function map.Players_Create(wc3api, commands, colors)
   local players = {}
-  players.wc3api = wc3api
-  players.commands = commands
-  players.colors = colors
 
   players.list = {}
   players.ALL_PLAYERS = {}
@@ -25,23 +22,24 @@ function map.Players_Create(wc3api, commands, colors)
     return nil
   end
 
-  local function PlayerLeavingHandler()
+  local function PlayerLeavingAction()
     local p = wc3api.GetTriggerPlayer()
     local pname = wc3api.GetPlayerName(p)
     local player = players.GetPlayerByName(pname)
 
     -- print(gp.coloredName .. " has left the game")
-    local coloredPName = colors.GetColoredString(pname, colors.GetColor_N(player.id + 1).text)
-    wc3api.BJDebugMsg(coloredPName .. " has left the game.")
+    -- local coloredPName = colors.GetColoredString(pname, colors.GetColor_N(player.id + 1).text)
+    wc3api.BJDebugMsg(player.coloredname .. " has left the game.")
   end
 
   players.playerLeavingTrigger = wc3api.CreateTrigger()
-  wc3api.TriggerAddAction(players.playerLeavingTrigger, PlayerLeavingHandler)
+  wc3api.TriggerAddAction(players.playerLeavingTrigger, PlayerLeavingAction)
   for i=0, wc3api.GetBJMaxPlayers() do
     local player = {}
     player.ref = wc3api.Player(i)
     player.id = wc3api.GetPlayerId(player.ref)
     player.name = wc3api.GetPlayerName(player.ref)
+    player.coloredname = colors.GetColoredString(player.name, colors.GetColor_N(player.id + 1).text)
     player.race = wc3api.GetPlayerRace(player.ref)
     player.team = wc3api.GetPlayerTeam(player.ref)
     player.playercolor = wc3api.GetPlayerColor(player.ref)
