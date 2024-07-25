@@ -12,7 +12,7 @@ function map.Commands_Create(wc3api)
     wc3api.TriggerAddAction(command.trigger, command.Handler)
 
     for _,user in pairs(command.users) do
-      wc3api.TriggerRegisterPlayerChatEvent(command.trigger, user, command.activator, wc3api.NO_EXACT_MATCH)
+      wc3api.TriggerRegisterPlayerChatEvent(command.trigger, user, command.activator, wc3api.constants.NO_EXACT_MATCH)
     end
 
     table.insert(commands.list, command)

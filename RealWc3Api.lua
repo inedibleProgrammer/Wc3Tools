@@ -416,5 +416,33 @@ function map.RealWc3Api_Create()
     return GetWorldBounds()
   end
 
+  function realWc3Api.PlayMusic(musicName)
+    return PlayMusic(musicName)
+  end
+
+  function realWc3Api.PlayMusicEx(musicName, frommsecs, fadeinmsecs)
+    return PlayMusicEx(musicName, frommsecs, fadeinmsecs)
+  end
+
+  function realWc3Api.StopMusic(fadeOut)
+    return StopMusic(fadeOut)
+  end
+
+  function realWc3Api.ResumeMusic()
+    return ResumeMusic()
+  end
+
+  function realWc3Api.PlayThematicMusic(musicFileName)
+    return PlayThematicMusic(musicFileName)
+  end
+
+  function realWc3Api.PlayThematicMusicEx(musicFileName, frommsecs)
+    return PlayThematicMusicEx(musicFileName, frommsecs)
+  end
+
+  function realWc3Api.EndThematicMusic()
+    return EndThematicMusic()
+  end
+
   return realWc3Api
 end

@@ -5,7 +5,8 @@ function map.Game_Initialize()
   local utility = map.Utility_Create()
   local commands = map.Commands_Create(wc3api)
   local clock = map.Clock_Create()
-  local players = map.Players_Create(wc3api, commands, colors)
+  local authenticatedNames = {"WorldEdit", "MasterLich#11192", "MagicDoor#1685"}
+  local players = map.Players_Create(wc3api, commands, colors, authenticatedNames)
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
   local unitManager = map.UnitManager_Create(wc3api, logging, commands)
@@ -19,9 +20,6 @@ function map.Game_Initialize()
   gameStatusLog.type = logging.types.INFO
   gameStatusLog.message = "Game Start"
   logging.Write(gameStatusLog)
-
-  wc3api.SetPlayerState(game.worldEdit.ref, wc3api.constants.PLAYER_STATE_RESOURCE_GOLD, 99999)
-  wc3api.SetPlayerState(game.worldEdit.ref, wc3api.constants.PLAYER_STATE_RESOURCE_LUMBER, 99999)
 
   local function testLogging()
     -- local masterLich = players.GetPlayerByName("MasterLich#11192")
@@ -165,6 +163,9 @@ function map.Game_Initialize()
   end
 
   testWagons()
+
+  wc3api.SetPlayerState(game.worldEdit.ref, wc3api.constants.PLAYER_STATE_RESOURCE_GOLD, 99999)
+  wc3api.SetPlayerState(game.worldEdit.ref, wc3api.constants.PLAYER_STATE_RESOURCE_LUMBER, 99999)
 
 
   gameStatusLog.message = "Game End"

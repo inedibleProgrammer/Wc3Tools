@@ -1,8 +1,9 @@
-function map.Players_Create(wc3api, commands, colors)
+function map.Players_Create(wc3api, commands, colors, authenticatedNames)
   local players = {}
 
   players.list = {}
   players.ALL_PLAYERS = {}
+  players.AUTHENTICATED_PLAYERS = {}
 
   function players.GetPlayerByName(name)
     for _,player in pairs(players.list) do
@@ -53,6 +54,17 @@ function map.Players_Create(wc3api, commands, colors)
     table.insert(players.list, player)
   end
 
+  local function TryAddPlayerName(playerName, toList)
+    local player = players.GetPlayerByName(playerName)
+    if(player ~= nil) then
+      table.insert(toList, player.ref)
+    end
+  end
+
+  for _,name in pairs(authenticatedNames) do
+    TryAddPlayerName(name, players.AUTHENTICATED_PLAYERS)
+  end
+
 
 
   return players
@@ -65,33 +77,54 @@ function map.Players_Tests(testFramework)
   testFramework.Suites.PlayersSuite.Tests = {}
   local tsc = testFramework.Suites.PlayersSuite
   local wc3api = {}
+  local commands = {}
+  local colors = {}
+  local authenticatedNames = { "authenticatedName1", "authenticatedName2" }
+
   wc3api.constants = map.RealWc3Api_Create().constants
 
-  function wc3api.CreateTrigger()
-    return {}
-  end
+  function wc3api.CreateTrigger() return {} end
 
   function wc3api.TriggerAddAction(trigger, handler)
     assert(type(trigger) ~= "nil")
     assert(type(handler) == "function")
   end
 
-  function wc3api.GetEventPlayerChatString()
-    return ""
-  end
-
-  function wc3api.TriggerRegisterPlayerEvent()
-    return ""
-  end
-
-  function wc3api.Player()
-  end
+  function wc3api.GetEventPlayerChatString() return "" end
+  function wc3api.TriggerRegisterPlayerEvent() return "" end
+  function wc3api.Player() return {dummy = "dummy"} end
+  function wc3api.GetBJMaxPlayers() return 26 end
+  function wc3api.GetPlayerId(player) return 0 end
+  function wc3api.GetPlayerName(player) return "name" end
+  function colors.GetColor_N(p1) return {} end
+  function colors.GetColoredString(p1) return "coloredstring" end
+  function wc3api.GetPlayerRace(player) return "race" end
+  function wc3api.GetPlayerTeam(player) return "team" end
+  function wc3api.GetPlayerColor(player) return "color" end
+  function wc3api.GetPlayerController(player) return "controller" end
+  function wc3api.GetPlayerSlotState(player) return "slotstate" end
 
   function tsc.Setup() end
   function tsc.Teardown() end
 
   function tsc.Tests.DummyTest()
     assert(true)
+  end
+
+  function tsc.Tests.AddAuthenticatedPlayers()
+    -- function map.Players_Create(wc3api, commands, colors, authenticatedNames)
+    local firstTime = true
+    function wc3api.GetPlayerName(player)
+      if firstTime then
+        firstTime = false
+        return "authenticatedName1"
+      end
+      return "noname"
+    end
+    local players = map.Players_Create(wc3api, commands, colors, authenticatedNames)
+
+    assert(#players.AUTHENTICATED_PLAYERS > 0, "AUTHENTICATED_PLAYERS EMPTY")
+    assert(#players.AUTHENTICATED_PLAYERS == 1)
   end
 
 end
