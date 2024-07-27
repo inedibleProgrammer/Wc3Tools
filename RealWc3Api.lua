@@ -8,12 +8,43 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.EXACT_MATCH = true
   realWc3Api.constants.NO_EXACT_MATCH = false
 
+  realWc3Api.constants.WEAPON_INDEX_GROUND = 0
+  realWc3Api.constants.WEAPON_INDEX_AIR = 1
+
   realWc3Api.constants.bj_FORCE_ALL_PLAYERS = nil
   realWc3Api.constants.EVENT_PLAYER_LEAVE = EVENT_PLAYER_LEAVE
 
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_START = EVENT_PLAYER_UNIT_CONSTRUCT_START
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL = EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_FINISH = EVENT_PLAYER_UNIT_CONSTRUCT_FINISH
+
+  realWc3Api.constants.UNIT_TYPE_HERO = UNIT_TYPE_HERO
+  realWc3Api.constants.UNIT_TYPE_DEAD = UNIT_TYPE_DEAD
+  realWc3Api.constants.UNIT_TYPE_STRUCTURE = UNIT_TYPE_STRUCTURE
+  realWc3Api.constants.UNIT_TYPE_FLYING = UNIT_TYPE_FLYING
+  realWc3Api.constants.UNIT_TYPE_GROUND = UNIT_TYPE_GROUND
+  realWc3Api.constants.UNIT_TYPE_ATTACKS_FLYING = UNIT_TYPE_ATTACKS_FLYING
+  realWc3Api.constants.UNIT_TYPE_ATTACKS_GROUND = UNIT_TYPE_ATTACKS_GROUND
+  realWc3Api.constants.UNIT_TYPE_MELEE_ATTACKER = UNIT_TYPE_MELEE_ATTACKER
+  realWc3Api.constants.UNIT_TYPE_RANGED_ATTACKER = UNIT_TYPE_RANGED_ATTACKER
+  realWc3Api.constants.UNIT_TYPE_GIANT = UNIT_TYPE_GIANT
+  realWc3Api.constants.UNIT_TYPE_SUMMONED = UNIT_TYPE_SUMMONED
+  realWc3Api.constants.UNIT_TYPE_STUNNED = UNIT_TYPE_STUNNED
+  realWc3Api.constants.UNIT_TYPE_PLAGUED = UNIT_TYPE_PLAGUED
+  realWc3Api.constants.UNIT_TYPE_SNARED = UNIT_TYPE_SNARED
+  realWc3Api.constants.UNIT_TYPE_UNDEAD = UNIT_TYPE_UNDEAD
+  realWc3Api.constants.UNIT_TYPE_MECHANICAL = UNIT_TYPE_MECHANICAL
+  realWc3Api.constants.UNIT_TYPE_PEON = UNIT_TYPE_PEON
+  realWc3Api.constants.UNIT_TYPE_SAPPER = UNIT_TYPE_SAPPER
+  realWc3Api.constants.UNIT_TYPE_TOWNHALL = UNIT_TYPE_TOWNHALL
+  realWc3Api.constants.UNIT_TYPE_ANCIENT = UNIT_TYPE_ANCIENT
+  realWc3Api.constants.UNIT_TYPE_TAUREN = UNIT_TYPE_TAUREN
+  realWc3Api.constants.UNIT_TYPE_POISONED = UNIT_TYPE_POISONED
+  realWc3Api.constants.UNIT_TYPE_POLYMORPHED = UNIT_TYPE_POLYMORPHED
+  realWc3Api.constants.UNIT_TYPE_SLEEPING = UNIT_TYPE_SLEEPING
+  realWc3Api.constants.UNIT_TYPE_RESISTANT = UNIT_TYPE_RESISTANT
+  realWc3Api.constants.UNIT_TYPE_ETHEREAL = UNIT_TYPE_ETHEREAL
+  realWc3Api.constants.UNIT_TYPE_MAGIC_IMMUNE = UNIT_TYPE_MAGIC_IMMUNE
 
   realWc3Api.constants.UNIT_RF_HP = UNIT_RF_HP
   realWc3Api.constants.UNIT_RF_HIT_POINTS_REGENERATION_RATE = UNIT_RF_HIT_POINTS_REGENERATION_RATE
@@ -263,6 +294,14 @@ function map.RealWc3Api_Create()
     return BlzGetUnitStringField(whichUnit, whichField)
   end
 
+  function realWc3Api.SetUnitState(whichUnit, whichUnitState, newVal)
+    return SetUnitState(whichUnit, whichUnitState, newVal)
+  end
+
+  function realWc3Api.GetUnitState(whichUnit, whichUnitState)
+    return GetUnitState(whichUnit, whichUnitState)
+  end
+
   function realWc3Api.BlzSetUnitBooleanField(whichUnit, whichField, value)
     return BlzSetUnitBooleanField(whichUnit, whichField, value)
   end
@@ -283,8 +322,192 @@ function map.RealWc3Api_Create()
     return SetUnitState(whichUnit, whichUnitState, newVal)
   end
 
+  function realWc3Api.BlzGetUnitBaseDamage(whichUnit, weaponIndex)
+    return BlzGetUnitBaseDamage(whichUnit, weaponIndex)
+  end
+
+  function realWc3Api.BlzGetUnitArmor(whichUnit)
+    return BlzGetUnitArmor(whichUnit)
+  end
+
+  function realWc3Api.BlzSetUnitArmor(whichUnit, armorAmount)
+    return BlzSetUnitArmor(whichUnit, armorAmount)
+  end
+
+  function realWc3Api.BlzUnitHideAbility(whichUnit, abilId, flag)
+    return BlzUnitHideAbility(whichUnit, abilId, flag)
+  end
+
+  function realWc3Api.BlzUnitDisableAbility(whichUnit, abilId, flag, hideUI)
+    return BlzUnitDisableAbility(whichUnit, abilId, flag, hideUI)
+  end
+
+  function realWc3Api.BlzUnitCancelTimedLife(whichUnit)
+    return BlzUnitCancelTimedLife(whichUnit)
+  end
+
+  function realWc3Api.BlzIsUnitSelectable(whichUnit)
+    return BlzIsUnitSelectable(whichUnit)
+  end
+
+  function realWc3Api.BlzIsUnitInvulnerable(whichUnit)
+    return BlzIsUnitInvulnerable(whichUnit)
+  end
+
+  function realWc3Api.BlzUnitInterruptAttack(whichUnit)
+    return BlzUnitInterruptAttack(whichUnit)
+  end
+
+  function realWc3Api.BlzGetUnitCollisionSize(whichUnit)
+    return BlzGetUnitCollisionSize(whichUnit)
+  end
+
+  function realWc3Api.BlzGetAbilityManaCost(abilId, level)
+    return BlzGetAbilityManaCost(abilId, level)
+  end
+
+  function realWc3Api.BlzGetAbilityCooldown(abilId, level)
+    return BlzGetAbilityCooldown(abilId, level)
+  end
+
+  function realWc3Api.BlzSetUnitAbilityCooldown(whichUnit, abilId, level, cooldown)
+    return BlzSetUnitAbilityCooldown(whichUnit, abilId, level, cooldown)
+  end
+
+  function realWc3Api.BlzGetUnitAbilityCooldown(whichUnit, abilId, level)
+    return BlzGetUnitAbilityCooldown(whichUnit, abilId, level)
+  end
+
+  function realWc3Api.BlzGetUnitAbilityCooldownRemaining(whichUnit, abilId)
+    return BlzGetUnitAbilityCooldownRemaining(whichUnit, abilId)
+  end
+
+  function realWc3Api.BlzEndUnitAbilityCooldown(whichUnit, abilCode)
+    return BlzEndUnitAbilityCooldown(whichUnit, abilCode)
+  end
+
+  function realWc3Api.BlzStartUnitAbilityCooldown(whichUnit, abilCode, cooldown)
+    return BlzStartUnitAbilityCooldown(whichUnit, abilCode, cooldown)
+  end
+
+  function realWc3Api.BlzGetUnitAbilityManaCost(whichUnit, abilId, level)
+    return BlzGetUnitAbilityManaCost(whichUnit, abilId, level)
+  end
+
+  function realWc3Api.BlzSetUnitAbilityManaCost(whichUnit, abilId, level, manaCost)
+    return BlzSetUnitAbilityManaCost(whichUnit, abilId, level, manaCost)
+  end
+
+  function realWc3Api.BlzSetUnitBaseDamage(whichUnit, baseDamage, weaponIndex)
+    return BlzSetUnitBaseDamage(whichUnit, baseDamage, weaponIndex)
+  end
+
   function realWc3Api.SetUnitPosition(whichUnit, newX, newY)
     return SetUnitPosition(whichUnit, newX, newY)
+  end
+
+  function realWc3Api.SetUnitScale(whichUnit, scaleX, scaleY, scaleZ)
+    return SetUnitScale(whichUnit, scaleX, scaleY, scaleZ)
+  end
+
+  function realWc3Api.SetUnitVertexColor(whichUnit, red, green, blue, alpha)
+    return SetUnitVertexColor(whichUnit, red, green, blue, alpha)
+  end
+
+  function realWc3Api.QueueUnitAnimation(whichUnit, whichAnimation)
+    return QueueUnitAnimation(whichUnit, whichAnimation)
+  end
+
+  function realWc3Api.SetUnitAnimationByIndex(whichUnit, whichAnimation)
+    return SetUnitAnimationByIndex(whichUnit, whichAnimation)
+  end
+
+  function realWc3Api.SetUnitAnimationWithRarity(whichUnit, whichAnimation, rarity)
+    return SetUnitAnimationWithRarity(whichUnit, whichAnimation, rarity)
+  end
+
+  function realWc3Api.AddUnitAnimationProperties(whichUnit, animProperties, add)
+    return AddUnitAnimationProperties(whichUnit, animProperties, add)
+  end
+
+  function realWc3Api.SetUnitLookAt(whichUnit, whichBone, lookAtTarget, offsetX, offsetY, offsetZ)
+    return SetUnitLookAt(whichUnit, whichBone, lookAtTarget, offsetX, offsetY, offsetZ)
+  end
+
+  function realWc3Api.SetUnitRescuable(whichUnit, byWhichPlayer, flag)
+    return SetUnitRescuable(whichUnit, byWhichPlayer, flag)
+  end
+
+  function realWc3Api.SetHeroStr(whichHero, newStr, permanent)
+    return SetHeroStr(whichHero, newStr, permanent)
+  end
+
+  function realWc3Api.SetHeroAgi(whichHero, newAgi, permanent)
+    return SetHeroAgi(whichHero, newAgi, permanent)
+  end
+
+  function realWc3Api.SetHeroInt(whichHero, newInt, permanent)
+    return SetHeroInt(whichHero, newInt, permanent)
+  end
+
+  function realWc3Api.GetHeroStr(whichHero, includeBonuses)
+    return GetHeroStr(whichHero, includeBonuses)
+  end
+
+  function realWc3Api.GetHeroAgi(whichHero, includeBonuses)
+    return GetHeroAgi(whichHero, includeBonuses)
+  end
+
+  function realWc3Api.GetHeroInt(whichHero, includeBonuses)
+    return GetHeroInt(whichHero, includeBonuses)
+  end
+
+  function realWc3Api.UnitStripHeroLevel(whichHero, howManyLevels)
+    return UnitStripHeroLevel(whichHero, howManyLevels)
+  end
+
+  function realWc3Api.GetHeroXP(whichHero)
+    return GetHeroXP(whichHero)
+  end
+
+  function realWc3Api.SetHeroXP(whichHero, newXpVal, showEyeCandy)
+    return SetHeroXP(whichHero, newXpVal, showEyeCandy)
+  end
+
+  function realWc3Api.GetHeroSkillPoints(whichHero)
+    return GetHeroSkillPoints(whichHero)
+  end
+
+  function realWc3Api.UnitModifySkillPoints(whichHero, skillPointDelta)
+    return UnitModifySkillPoints(whichHero, skillPointDelta)
+  end
+
+  function realWc3Api.AddHeroXP(whichHero, xpToAdd, showEyeCandy)
+    return AddHeroXP(whichHero, xpToAdd, showEyeCandy)
+  end
+
+  function realWc3Api.SetHeroLevel(whichHero, level, showEyeCandy)
+    return SetHeroLevel(whichHero, level, showEyeCandy)
+  end
+
+  function realWc3Api.GetHeroLevel(whichHero)
+    return GetHeroLevel(whichHero)
+  end
+
+  function realWc3Api.GetUnitLevel(whichUnit)
+    return GetUnitLevel(whichUnit)
+  end
+
+  function realWc3Api.SuspendHeroXP(whichHero, flag)
+    return SuspendHeroXP(whichHero, flag)
+  end
+
+  function realWc3Api.IsSuspendedXP(whichHero)
+    return IsSuspendedXP(whichHero)
+  end
+
+  function realWc3Api.SelectHeroSkill(whichHero, abilcode)
+    return SelectHeroSkill(whichHero, abilcode)
   end
 
   function realWc3Api.KillUnit(whichUnit)
