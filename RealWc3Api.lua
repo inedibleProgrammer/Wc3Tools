@@ -55,6 +55,10 @@ function map.RealWc3Api_Create()
     return CreateTrigger()
   end
 
+  function realWc3Api.DestroyTrigger(whichTrigger)
+    return DestroyTrigger(whichTrigger)
+  end
+
   function realWc3Api.TriggerSleepAction(timeout)
     return TriggerSleepAction(timeout)
   end
@@ -77,6 +81,54 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.DestroyBoolExpr(e)
     return DestroyBoolExpr(e)
+  end
+
+  function realWc3Api.TriggerRegisterUnitInRange(whichTrigger, whichUnit, range, filter)
+    return TriggerRegisterUnitInRange(whichTrigger, whichUnit, range, filter)
+  end
+
+  function realWc3Api.TriggerRemoveCondition(whichTrigger, whichCondition)
+    return TriggerRemoveCondition(whichTrigger, whichCondition)
+  end
+
+  function realWc3Api.TriggerClearConditions(whichTrigger)
+    return TriggerClearConditions(whichTrigger)
+  end
+
+  function realWc3Api.TriggerRemoveAction(whichTrigger, whichAction)
+    return TriggerRemoveAction(whichTrigger, whichAction)
+  end
+
+  function realWc3Api.TriggerClearActions(whichTrigger)
+    return TriggerClearActions(whichTrigger)
+  end
+
+  function realWc3Api.TriggerSleepAction(timeout)
+    return TriggerSleepAction(timeout)
+  end
+
+  function realWc3Api.TriggerWaitForSound(s, offset)
+    return TriggerWaitForSound(s, offset)
+  end
+
+  function realWc3Api.TriggerExecute(whichTrigger)
+    return TriggerExecute(whichTrigger)
+  end
+
+  function realWc3Api.TriggerEvaluate(whichTrigger)
+    return TriggerEvaluate(whichTrigger)
+  end
+
+  function realWc3Api.TriggerExecuteWait(whichTrigger)
+    return TriggerExecuteWait(whichTrigger)
+  end
+
+  function realWc3Api.TriggerSyncStart()
+    return TriggerSyncStart()
+  end
+
+  function realWc3Api.TriggerSyncReady()
+    return TriggerSyncReady()
   end
 
   function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
@@ -494,6 +546,19 @@ function map.RealWc3Api_Create()
   function realWc3Api.SetCameraFieldForPlayer(whichPlayer, whichField, value, duration)
     return SetCameraFieldForPlayer(whichPlayer, whichField, value, duration)
   end
+
+  function realWc3Api.MeleeStartingVisibility()
+    return MeleeStartingVisibility()
+  end
+
+  function realWc3Api.MeleeStartingHeroLimit()
+    return MeleeStartingHeroLimit()
+  end
+
+  function realWc3Api.MeleeGrantHeroItems()
+    return MeleeGrantHeroItems()
+  end
+  
 
   return realWc3Api
 end

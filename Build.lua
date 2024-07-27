@@ -1,7 +1,7 @@
 Build = {}
 Build.Combined = "Combined.lua"
 
-MAP_VERSION = "Alpha"
+MAP_VERSION = "0.0.0"
 
 Build.SourceFiles = {
   "Commands.lua",
@@ -30,7 +30,7 @@ function createMapFile()
 
   local gitString = "map.commit = " .. "\"" .. gitCommit .. "\"\n"
 
-  map_file_contents = mapFileContents .. mapVersion .. gitString
+  mapFileContents = mapFileContents .. mapVersion .. gitString
   return mapFileContents
 end
 

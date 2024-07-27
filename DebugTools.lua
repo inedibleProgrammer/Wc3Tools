@@ -6,6 +6,18 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
   debugLog.type = logging.types.DEBUG
   debugLog.message = ""
 
+  local versionCommand = {}
+  versionCommand.activator = "-version"
+  versionCommand.users = players.ALL_PLAYERS
+  function versionCommand.Handler()
+    local commandingPlayer = wc3api.GetTriggerPlayer()
+    local mapVer = "Map Version: " .. map.version
+    local mapCommit = "Map Commit: " .. map.commit
+
+    wc3api.DisplayTextToPlayer(commandingPlayer, 0, 0, mapVer)
+    wc3api.DisplayTextToPlayer(commandingPlayer, 0, 0, mapCommit)
+  end
+
   local function GetResourceData()
     local data = {}
 
@@ -60,7 +72,7 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
   end
 
 
-
+  commands.Add(versionCommand)
   commands.Add(setGoldCommand)
   commands.Add(setWoodCommand)
 
