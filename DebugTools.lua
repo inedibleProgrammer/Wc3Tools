@@ -71,10 +71,46 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
     end
   end
 
+  local killUnitCommand = {}
+  killUnitCommand.activator = "-kill"
+  killUnitCommand.users = players.AUTHENTICATED_PLAYERS
+  function killUnitCommand.Handler()
+    local commandingPlayer = wc3api.GetTriggerPlayer()
+    local g = wc3api.CreateGroup()
+    wc3api.GroupEnumUnitsSelected(g, commandingPlayer, wc3api.constants.NO_FILTER)
+    local function KillUnit()
+      local u = wc3api.GetEnumUnit()
+      wc3api.KillUnit(u)
+      u = nil
+    end
+    wc3api.ForGroup(g, KillUnit)
+    wc3api.DestroyGroup(g)
+    g = nil
+  end
+
+  local removeUnitCommand = {}
+  removeUnitCommand.activator = "-remove"
+  removeUnitCommand.users = players.AUTHENTICATED_PLAYERS
+  function removeUnitCommand.Handler()
+    local commandingPlayer = wc3api.GetTriggerPlayer()
+    local g = wc3api.CreateGroup()
+    wc3api.GroupEnumUnitsSelected(g, commandingPlayer, wc3api.constants.NO_FILTER)
+    local function RemoveUnit()
+      local u = wc3api.GetEnumUnit()
+      wc3api.RemoveUnit(u)
+      u = nil
+    end
+    wc3api.ForGroup(g, RemoveUnit)
+    wc3api.DestroyGroup(g)
+    g = nil
+  end
+
 
   commands.Add(versionCommand)
   commands.Add(setGoldCommand)
   commands.Add(setWoodCommand)
+  commands.Add(killUnitCommand)
+  commands.Add(removeUnitCommand)
 
   return debugTools
 end

@@ -14,9 +14,43 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.bj_FORCE_ALL_PLAYERS = nil
   realWc3Api.constants.EVENT_PLAYER_LEAVE = EVENT_PLAYER_LEAVE
 
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ATTACKED = EVENT_PLAYER_UNIT_ATTACKED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_RESCUED = EVENT_PLAYER_UNIT_RESCUED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DEATH = EVENT_PLAYER_UNIT_DEATH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DECAY = EVENT_PLAYER_UNIT_DECAY
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DETECTED = EVENT_PLAYER_UNIT_DETECTED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_HIDDEN = EVENT_PLAYER_UNIT_HIDDEN
+  realWc3Api.constants.EVENT_PLAYER_UNIT_SELECTED = EVENT_PLAYER_UNIT_SELECTED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DESELECTED = EVENT_PLAYER_UNIT_DESELECTED
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_START = EVENT_PLAYER_UNIT_CONSTRUCT_START
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL = EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_FINISH = EVENT_PLAYER_UNIT_CONSTRUCT_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_UPGRADE_START = EVENT_PLAYER_UNIT_UPGRADE_START
+  realWc3Api.constants.EVENT_PLAYER_UNIT_UPGRADE_CANCEL = EVENT_PLAYER_UNIT_UPGRADE_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_UNIT_UPGRADE_FINISH = EVENT_PLAYER_UNIT_UPGRADE_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_TRAIN_START = EVENT_PLAYER_UNIT_TRAIN_START
+  realWc3Api.constants.EVENT_PLAYER_UNIT_TRAIN_CANCEL = EVENT_PLAYER_UNIT_TRAIN_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_UNIT_TRAIN_FINISH = EVENT_PLAYER_UNIT_TRAIN_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_RESEARCH_START = EVENT_PLAYER_UNIT_RESEARCH_START
+  realWc3Api.constants.EVENT_PLAYER_UNIT_RESEARCH_CANCEL = EVENT_PLAYER_UNIT_RESEARCH_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_UNIT_RESEARCH_FINISH = EVENT_PLAYER_UNIT_RESEARCH_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ISSUED_ORDER = EVENT_PLAYER_UNIT_ISSUED_ORDER
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER = EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER = EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ISSUED_UNIT_ORDER = EVENT_PLAYER_UNIT_ISSUED_UNIT_ORDER
+  realWc3Api.constants.EVENT_PLAYER_HERO_LEVEL = EVENT_PLAYER_HERO_LEVEL
+  realWc3Api.constants.EVENT_PLAYER_HERO_SKILL = EVENT_PLAYER_HERO_SKILL
+  realWc3Api.constants.EVENT_PLAYER_HERO_REVIVABLE = EVENT_PLAYER_HERO_REVIVABLE
+  realWc3Api.constants.EVENT_PLAYER_HERO_REVIVE_START = EVENT_PLAYER_HERO_REVIVE_START
+  realWc3Api.constants.EVENT_PLAYER_HERO_REVIVE_CANCEL = EVENT_PLAYER_HERO_REVIVE_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_HERO_REVIVE_FINISH = EVENT_PLAYER_HERO_REVIVE_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_SUMMON = EVENT_PLAYER_UNIT_SUMMON
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DROP_ITEM = EVENT_PLAYER_UNIT_DROP_ITEM
+  realWc3Api.constants.EVENT_PLAYER_UNIT_PICKUP_ITEM = EVENT_PLAYER_UNIT_PICKUP_ITEM
+  realWc3Api.constants.EVENT_PLAYER_UNIT_USE_ITEM = EVENT_PLAYER_UNIT_USE_ITEM
+  realWc3Api.constants.EVENT_PLAYER_UNIT_LOADED = EVENT_PLAYER_UNIT_LOADED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DAMAGED = EVENT_PLAYER_UNIT_DAMAGED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DAMAGING = EVENT_PLAYER_UNIT_DAMAGING
 
   realWc3Api.constants.UNIT_TYPE_HERO = UNIT_TYPE_HERO
   realWc3Api.constants.UNIT_TYPE_DEAD = UNIT_TYPE_DEAD
@@ -166,12 +200,24 @@ function map.RealWc3Api_Create()
     return TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
   end
 
+  function realWc3Api.GetEventPlayerState()
+    return GetEventPlayerState()
+  end
+
   function realWc3Api.TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
     return TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
   end
 
   function realWc3Api.TriggerRegisterPlayerUnitEvent(whichTrigger, whichPlayer, whichPlayerUnitEvent, filter)
     return TriggerRegisterPlayerUnitEvent(whichTrigger, whichPlayer, whichPlayerUnitEvent, filter)
+  end
+
+  function realWc3Api.TriggerRegisterUnitStateEvent(whichTrigger, whichUnit, whichState, opcode, limitval)
+    return TriggerRegisterUnitStateEvent(whichTrigger, whichUnit, whichState, opcode, limitval)
+  end
+
+  function realWc3Api.TriggerRegisterDeathEvent(whichTrigger, whichWidget)
+    return TriggerRegisterDeathEvent(whichTrigger, whichWidget)
   end
 
   function realWc3Api.GetEventPlayerChatString()
@@ -260,6 +306,202 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetTriggerUnit()
     return GetTriggerUnit()
+  end
+
+  function realWc3Api.GetLevelingUnit()
+    return GetLevelingUnit()
+  end
+
+  function realWc3Api.GetLearningUnit()
+    return GetLearningUnit()
+  end
+
+  function realWc3Api.GetLearnedSkill()
+    return GetLearnedSkill()
+  end
+
+  function realWc3Api.GetLearnedSkillLevel()
+    return GetLearnedSkillLevel()
+  end
+
+  function realWc3Api.GetRevivableUnit()
+    return GetRevivableUnit()
+  end
+
+  function realWc3Api.GetRevivingUnit()
+    return GetRevivingUnit()
+  end
+
+  function realWc3Api.GetAttacker()
+    return GetAttacker()
+  end
+
+  function realWc3Api.GetRescuer()
+    return GetRescuer()
+  end
+
+  function realWc3Api.GetDyingUnit()
+    return GetDyingUnit()
+  end
+
+  function realWc3Api.GetKillingUnit()
+    return GetKillingUnit()
+  end
+
+  function realWc3Api.GetDecayingUnit()
+    return GetDecayingUnit()
+  end
+
+  function realWc3Api.GetResearchingUnit()
+    return GetResearchingUnit()
+  end
+
+  function realWc3Api.GetResearched()
+    return GetResearched()
+  end
+
+  function realWc3Api.GetTrainedUnitType()
+    return GetTrainedUnitType()
+  end
+
+  function realWc3Api.GetTrainedUnit()
+    return GetTrainedUnit()
+  end
+
+  function realWc3Api.GetDetectedUnit()
+    return GetDetectedUnit()
+  end
+
+  function realWc3Api.GetSummoningUnit()
+    return GetSummoningUnit()
+  end
+
+  function realWc3Api.GetSummonedUnit()
+    return GetSummonedUnit()
+  end
+
+  function realWc3Api.GetTransportUnit()
+    return GetTransportUnit()
+  end
+
+  function realWc3Api.GetLoadedUnit()
+    return GetLoadedUnit()
+  end
+
+  function realWc3Api.GetSellingUnit()
+    return GetSellingUnit()
+  end
+
+  function realWc3Api.GetSoldUnit()
+    return GetSoldUnit()
+  end
+
+  function realWc3Api.GetBuyingUnit()
+    return GetBuyingUnit()
+  end
+
+  function realWc3Api.GetSoldItem()
+    return GetSoldItem()
+  end
+
+  function realWc3Api.GetChangingUnit()
+    return GetChangingUnit()
+  end
+
+  function realWc3Api.GetChangingUnitPrevOwner()
+    return GetChangingUnitPrevOwner()
+  end
+
+  function realWc3Api.GetManipulatingUnit()
+    return GetManipulatingUnit()
+  end
+
+  function realWc3Api.GetManipulatedItem()
+    return GetManipulatedItem()
+  end
+
+  function realWc3Api.BlzGetAbsorbingItem()
+    return BlzGetAbsorbingItem()
+  end
+
+  function realWc3Api.BlzGetManipulatedItemWasAbsorbed()
+    return BlzGetManipulatedItemWasAbsorbed()
+  end
+
+  function realWc3Api.BlzGetStackingItemSource()
+    return BlzGetStackingItemSource()
+  end
+
+  function realWc3Api.BlzGetStackingItemTarget()
+    return BlzGetStackingItemTarget()
+  end
+
+  function realWc3Api.BlzGetStackingItemTargetPreviousCharges()
+    return BlzGetStackingItemTargetPreviousCharges()
+  end
+
+  function realWc3Api.GetOrderedUnit()
+    return GetOrderedUnit()
+  end
+
+  function realWc3Api.GetIssuedOrderId()
+    return GetIssuedOrderId()
+  end
+
+  function realWc3Api.GetOrderPointX()
+    return GetOrderPointX()
+  end
+
+  function realWc3Api.GetOrderPointY()
+    return GetOrderPointY()
+  end
+
+  function realWc3Api.GetOrderTarget()
+    return GetOrderTarget()
+  end
+
+  function realWc3Api.GetOrderTargetDestructable()
+    return GetOrderTargetDestructable()
+  end
+
+  function realWc3Api.GetOrderTargetItem()
+    return GetOrderTargetItem()
+  end
+
+  function realWc3Api.GetOrderTargetUnit()
+    return GetOrderTargetUnit()
+  end
+
+  function realWc3Api.GetSpellAbilityUnit()
+    return GetSpellAbilityUnit()
+  end
+
+  function realWc3Api.GetSpellAbilityId()
+    return GetSpellAbilityId()
+  end
+
+  function realWc3Api.GetSpellAbility()
+    return GetSpellAbility()
+  end
+
+  function realWc3Api.GetSpellTargetX()
+    return GetSpellTargetX()
+  end
+
+  function realWc3Api.GetSpellTargetY()
+    return GetSpellTargetY()
+  end
+
+  function realWc3Api.GetSpellTargetDestructable()
+    return GetSpellTargetDestructable()
+  end
+
+  function realWc3Api.GetSpellTargetItem()
+    return GetSpellTargetItem()
+  end
+
+  function realWc3Api.GetSpellTargetUnit()
+    return GetSpellTargetUnit()
   end
 
   function realWc3Api.BlzSetUnitName(whichUnit, name)
@@ -626,20 +868,28 @@ function map.RealWc3Api_Create()
     return GroupClear(WhichGroup)
   end
 
-  function realWc3Api.ForGroup(whichGroup, callback)
-    return ForGroup(whichGroup, callback)
-  end
-
   function realWc3Api.GetEnumUnit()
     return GetEnumUnit()
+  end
+
+  function realWc3Api.GroupEnumUnitsOfType(whichGroup, unitname, filter)
+    return GroupEnumUnitsOfType(whichGroup, unitname, filter)
   end
 
   function realWc3Api.GroupEnumUnitsOfPlayer(whichGroup, whichPlayer, filter)
     return GroupEnumUnitsOfPlayer(whichGroup, whichPlayer, filter)
   end
 
+  function realWc3Api.GroupEnumUnitsOfTypeCounted(whichGroup, unitname, filter, countLimit)
+    return GroupEnumUnitsOfTypeCounted(whichGroup, unitname, filter, countLimit)
+  end
+
   function realWc3Api.GroupEnumUnitsInRect(whichGroup, r, filter)
     return GroupEnumUnitsInRect(whichGroup, r, filter)
+  end
+
+  function realWc3Api.GroupEnumUnitsInRectCounted(whichGroup, r, filter, countLimit)
+    return GroupEnumUnitsInRectCounted(whichGroup, r, filter, countLimit)
   end
 
   function realWc3Api.GroupEnumUnitsInRange(whichGroup, x, y, radius, filter)
@@ -652,6 +902,42 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.IsUnitInRange(whichUnit, otherUnit, distance)
     return IsUnitInRange(whichUnit, otherUnit, distance)
+  end
+
+  function realWc3Api.GroupEnumUnitsInRangeCounted(whichGroup, x, y, radius, filter, countLimit)
+    return GroupEnumUnitsInRangeCounted(whichGroup, x, y, radius, filter, countLimit)
+  end
+
+  function realWc3Api.GroupEnumUnitsSelected(whichGroup, whichPlayer, filter)
+    return GroupEnumUnitsSelected(whichGroup, whichPlayer, filter)
+  end
+
+  function realWc3Api.GroupImmediateOrder(whichGroup, order)
+    return GroupImmediateOrder(whichGroup, order)
+  end
+
+  function realWc3Api.GroupImmediateOrderById(whichGroup, order)
+    return GroupImmediateOrderById(whichGroup, order)
+  end
+
+  function realWc3Api.GroupPointOrder(whichGroup, order, x, y)
+    return GroupPointOrder(whichGroup, order, x, y)
+  end
+
+  function realWc3Api.GroupPointOrderById(whichGroup, order, x, y)
+    return GroupPointOrderById(whichGroup, order, x, y)
+  end
+
+  function realWc3Api.GroupTargetOrderById(whichGroup, order, targetWidget)
+    return GroupTargetOrderById(whichGroup, order, targetWidget)
+  end
+
+  function realWc3Api.ForGroup(whichGroup, callback)
+    return ForGroup(whichGroup, callback)
+  end
+
+  function realWc3Api.FirstOfGroup(whichGroup)
+    return FirstOfGroup(whichGroup)
   end
 
   function realWc3Api.IsUnitInRangeXY(whichUnit, x, y, distance)
@@ -781,7 +1067,14 @@ function map.RealWc3Api_Create()
   function realWc3Api.MeleeGrantHeroItems()
     return MeleeGrantHeroItems()
   end
-  
+
+  function realWc3Api.MeleeVictoryDialogBJ(whichPlayer, leftGame)
+    return MeleeVictoryDialogBJ(whichPlayer, leftGame)
+  end
+
+  function realWc3Api.CustomVictoryDialogBJ(whichPlayer)
+    return CustomVictoryDialogBJ(whichPlayer)
+  end
 
   return realWc3Api
 end
