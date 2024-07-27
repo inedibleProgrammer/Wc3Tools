@@ -88,6 +88,7 @@ function map.Logging_Tests(testFramework)
     assert(true)
   end
 
+  --luacheck: push ignore
   function tsc.Tests.DisplayMessagesForSpecificPlayers()
     local gameClock = {}
     gameClock.clock = {}
@@ -120,5 +121,6 @@ function map.Logging_Tests(testFramework)
     assert(logging.count == 1)
     assert(testCalled == 1)
   end
+  --luacheck: pop
 
 end

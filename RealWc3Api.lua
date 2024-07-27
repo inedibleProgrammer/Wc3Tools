@@ -1,4 +1,4 @@
---luacheck: ignore
+--luacheck: push ignore
 
 function map.RealWc3Api_Create()
   local realWc3Api = {}
@@ -27,6 +27,25 @@ function map.RealWc3Api_Create()
 
   realWc3Api.constants.PLAYER_STATE_RESOURCE_GOLD = PLAYER_STATE_RESOURCE_GOLD
   realWc3Api.constants.PLAYER_STATE_RESOURCE_LUMBER = PLAYER_STATE_RESOURCE_LUMBER
+
+  realWc3Api.constants.PLAYER_SLOT_STATE_EMPTY = PLAYER_SLOT_STATE_EMPTY
+  realWc3Api.constants.PLAYER_SLOT_STATE_PLAYING = PLAYER_SLOT_STATE_PLAYING
+  realWc3Api.constants.PLAYER_SLOT_STATE_LEFT = PLAYER_SLOT_STATE_LEFT
+
+  realWc3Api.constants.MAP_CONTROL_USER = MAP_CONTROL_USER
+  realWc3Api.constants.MAP_CONTROL_COMPUTER = MAP_CONTROL_COMPU
+  realWc3Api.constants.MAP_CONTROL_RESCUABLE = MAP_CONTROL_RESCU
+  realWc3Api.constants.MAP_CONTROL_NEUTRAL = MAP_CONTROL_NEUTR
+  realWc3Api.constants.MAP_CONTROL_CREEP = MAP_CONTROL_CREEP
+  realWc3Api.constants.MAP_CONTROL_NONE = MAP_CONTROL_NONE
+
+  realWc3Api.constants.ALLIANCE_SHARED_XP = ALLIANCE_SHARED_XP
+  realWc3Api.constants.ALLIANCE_SHARED_SPELLS = ALLIANCE_SHARED_SPELLS
+  realWc3Api.constants.ALLIANCE_SHARED_VISION = ALLIANCE_SHARED_VISION
+  realWc3Api.constants.ALLIANCE_SHARED_CONTROL = ALLIANCE_SHARED_CONTROL
+  realWc3Api.constants.ALLIANCE_SHARED_ADVANCED_CONTROL = ALLIANCE_SHARED_ADVANCED_CONTROL
+
+  realWc3Api.constants.CAMERA_FIELD_TARGET_DISTANCE = CAMERA_FIELD_TARGET_DISTANCE
 
   function realWc3Api.BJDebugMsg(msg)
     return BJDebugMsg(msg)
@@ -118,6 +137,14 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetPlayerTeam(whichPlayer)
     return GetPlayerTeam()
+  end
+
+  function realWc3Api.GetPlayerAlliance(sourcePlayer, otherPlayer, whichAllianceSetting)
+    return GetPlayerAlliance(sourcePlayer, otherPlayer, whichAllianceSetting)
+  end
+
+  function realWc3Api.SetPlayerAlliance(sourcePlayer, otherPlayer, whichAllianceSetting, value)
+    return SetPlayerAlliance(sourcePlayer, otherPlayer, whichAllianceSetting, value)
   end
 
   function realWc3Api.GetPlayerColor(whichPlayer)
@@ -228,12 +255,32 @@ function map.RealWc3Api_Create()
     return CreateUnit(id, unitid, x, y, face)
   end
 
+  function realWc3Api.GetUnitAbilityLevel(whichUnit, abilcode)
+    return GetUnitAbilityLevel(whichUnit, abilcode)
+  end
+
+  function realWc3Api.DecUnitAbilityLevel(whichUnit, abilcode)
+    return DecUnitAbilityLevel(whichUnit, abilcode)
+  end
+
+  function realWc3Api.IncUnitAbilityLevel(whichUnit, abilcode)
+    return IncUnitAbilityLevel(whichUnit, abilcode)
+  end
+
+  function realWc3Api.SetUnitAbilityLevel(whichUnit, abilcode, level)
+    return SetUnitAbilityLevel(whichUnit, abilcode, level)
+  end
+
   function realWc3Api.UnitAddAbility(whichUnit, abilityId)
     return UnitAddAbility(whichUnit, abilityId)
   end
 
   function realWc3Api.UnitRemoveAbility(whichUnit, abilityId)
     return UnitRemoveAbility(whichUnit, abilityId)
+  end
+
+  function realWc3Api.UnitMakeAbilityPermanent(whichUnit, permanent, abilityId)
+    return UnitMakeAbilityPermanent(whichUnit, permanent, abilityId)
   end
 
   function realWc3Api.BlzGetUnitMaxMana(whichUnit)
@@ -444,5 +491,11 @@ function map.RealWc3Api_Create()
     return EndThematicMusic()
   end
 
+  function realWc3Api.SetCameraFieldForPlayer(whichPlayer, whichField, value, duration)
+    return SetCameraFieldForPlayer(whichPlayer, whichField, value, duration)
+  end
+
   return realWc3Api
 end
+--luacheck: pop
+

@@ -9,14 +9,14 @@ Build.SourceFiles = {
   "TestFramework.lua",
   "DebugTools.lua",
   "Game.lua",
-  "RealWc3Api.lua",
-  "Editor.lua",
   "Utility.lua",
   "GameClock.lua",
   "Clock.lua",
   "Players.lua",
   "Logging.lua",
   "UnitManager.lua",
+  "Editor.lua",
+  "RealWc3Api.lua",
   "LaunchLua.lua", -- Must be last
 }
 

@@ -28,8 +28,8 @@ function map.Utility_Tests(testFramework)
 
   function tsu.Tests.SplitTest()
     local utility = map.Utility_Create()
-    dummyString = "This is a test 113."
-    splitString = utility.Split(dummyString)
+    local dummyString = "This is a test 113."
+    local splitString = utility.Split(dummyString)
 
     assert(#splitString == 5)
     assert(table.remove(splitString) == "113.")

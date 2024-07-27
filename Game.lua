@@ -6,7 +6,7 @@ function map.Game_Initialize()
   local commands = map.Commands_Create(wc3api)
   local clock = map.Clock_Create()
   local authenticatedNames = {"WorldEdit", "MasterLich#11192", "MagicDoor#1685"}
-  local players = map.Players_Create(wc3api, commands, colors, authenticatedNames)
+  local players = map.Players_Create(wc3api, commands, colors, authenticatedNames, utility)
   local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
   local unitManager = map.UnitManager_Create(wc3api, logging, commands)

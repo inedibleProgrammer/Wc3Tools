@@ -72,3 +72,16 @@ function map.Colors_Create()
   return colors
 end
 
+function map.Colors_Tests(testFramework)
+  testFramework.Suites.ColorsSuite = {}
+  testFramework.Suites.ColorsSuite.Tests = {}
+  local tsc = testFramework.Suites.ColorsSuite
+
+
+  function tsc.Setup() end
+  function tsc.Teardown() end
+
+  function tsc.Tests.DummyTest()
+    assert(true)
+  end
+end

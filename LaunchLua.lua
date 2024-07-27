@@ -6,7 +6,9 @@ function map.UnitTests()
   map.GameClock_Tests(testFramework)
   map.Players_Tests(testFramework)
   map.Logging_Tests(testFramework)
-  xpcall(testFramework.TestRunner, print)
+  map.Colors_Tests(testFramework)
+  -- xpcall(testFramework.TestRunner, print)
+  testFramework.TestRunner()
 end
 
 function map.LaunchLua()
