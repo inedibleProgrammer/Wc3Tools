@@ -105,6 +105,10 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
     g = nil
   end
 
+  local visibleCommand = {}
+  visibleCommand.activator = "-visible"
+  visibleCommand.users = players.AUTHENTICATED_PLAYERS
+
 
   commands.Add(versionCommand)
   commands.Add(setGoldCommand)

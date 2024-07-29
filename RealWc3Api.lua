@@ -1076,6 +1076,54 @@ function map.RealWc3Api_Create()
     return CustomVictoryDialogBJ(whichPlayer)
   end
 
+  function realWc3Api.SetFogStateRect(forWhichPlayer, whichState, where, useSharedVision)
+    return SetFogStateRect(forWhichPlayer, whichState, where, useSharedVision)
+  end
+
+  function realWc3Api.SetFogStateRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision)
+    return SetFogStateRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision)
+  end
+
+  function realWc3Api.FogMaskEnable(enable)
+    return FogMaskEnable(enable)
+  end
+
+  function realWc3Api.IsFogMaskEnabled()
+    return IsFogMaskEnabled()
+  end
+
+  function realWc3Api.FogEnable(enable)
+    return FogEnable(enable)
+  end
+
+  function realWc3Api.IsFogEnabled()
+    return IsFogEnabled()
+  end
+
+  function realWc3Api.CreateFogModifierRect(forWhichPlayer, whichState, where, useSharedVision, afterUnits)
+    return CreateFogModifierRect(forWhichPlayer, whichState, where, useSharedVision, afterUnits)
+  end
+
+  function realWc3Api.CreateFogModifierRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision, afterUnits)
+    return CreateFogModifierRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision, afterUnits)
+  end
+
+  function realWc3Api.CreateFogModifierRadiusLoc(forWhichPlayer, whichState, center, radius, useSharedVision, afterUnits)
+    return CreateFogModifierRadiusLoc(forWhichPlayer, whichState, center, radius, useSharedVision, afterUnits)
+  end
+
+  function realWc3Api.DestroyFogModifier(whichFogModifier)
+    return DestroyFogModifier(whichFogModifier)
+  end
+
+  function realWc3Api.FogModifierStart(whichFogModifier)
+    return FogModifierStart(whichFogModifier)
+  end
+
+  function realWc3Api.FogModifierStop(whichFogModifier)
+    return FogModifierStop(whichFogModifier)
+  end
+
   return realWc3Api
 end
 --luacheck: pop
