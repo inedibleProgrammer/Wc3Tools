@@ -108,6 +108,9 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
   local visibleCommand = {}
   visibleCommand.activator = "-visible"
   visibleCommand.users = players.AUTHENTICATED_PLAYERS
+  function visibleCommand.Visible()
+    
+  end
 
 
   commands.Add(versionCommand)

@@ -8,6 +8,9 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.EXACT_MATCH = true
   realWc3Api.constants.NO_EXACT_MATCH = false
 
+  realWc3Api.constants.IS_PERIODIC = true
+  realWc3Api.constants.NOT_PERIODIC = false
+
   realWc3Api.constants.WEAPON_INDEX_GROUND = 0
   realWc3Api.constants.WEAPON_INDEX_AIR = 1
 
