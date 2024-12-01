@@ -199,6 +199,19 @@ function map.RealWc3Api_Create()
     return TriggerSyncReady()
   end
 
+
+  function realWc3Api.GetPlayerNeutralPassive()
+    return GetPlayerNeutralPassive()
+  end
+
+  function realWc3Api.GetPlayerNeutralAggressive()
+    return GetPlayerNeutralAggressive()
+  end
+
+  function realWc3Api.GetOwningPlayer(whichUnit)
+    return GetOwningPlayer(whichUnit)
+  end
+
   function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
     return TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
   end
@@ -511,8 +524,8 @@ function map.RealWc3Api_Create()
     return BlzSetUnitName(whichUnit, name)
   end
 
-  function realWc3Api.GetUnitName()
-    return GetUnitName()
+  function realWc3Api.GetUnitName(whichUnit)
+    return GetUnitName(whichUnit)
   end
 
   function realWc3Api.SetUnitMoveSpeed(whichUnit, newSpeed)
