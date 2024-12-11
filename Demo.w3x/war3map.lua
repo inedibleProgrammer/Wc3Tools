@@ -1,19 +1,33 @@
-gg_rct_testcop = nil
-gg_rct_startRect = nil
 gg_snd_NightElfDefeat = ""
+gg_trg_replaceunit = nil
 gg_trg_resources = nil
+gg_trg_mapinit = nil
 gg_trg_music = nil
 gg_trg_playerunits = nil
 gg_trg_quest = nil
 gg_trg_testcop = nil
 gg_trg_PeriodicPrint = nil
 gg_trg_LaunchLua = nil
-gg_trg_mapinit = nil
+gg_rct_TestRegion1 = nil
+gg_rct_TestRegion2 = nil
+gg_rct_TestRegion3 = nil
+gg_trg_Untitled_Trigger_001 = nil
+gg_rct_TestRegion4 = nil
 function InitGlobals()
 end
 
 function InitSounds()
 gg_snd_NightElfDefeat = "NightElfDefeat"
+end
+
+function CreateBuildingsForPlayer0()
+local p = Player(0)
+local u
+local unitID
+local t
+local life
+
+u = BlzCreateUnitWithSkin(p, FourCC("htow"), -960.0, 2560.0, 270.000, FourCC("htow"))
 end
 
 function CreateUnitsForPlayer0()
@@ -23,8 +37,12 @@ local unitID
 local t
 local life
 
-u = BlzCreateUnitWithSkin(p, FourCC("Hpal"), 1724.8, -1939.8, 13.887, FourCC("Hpal"))
-u = BlzCreateUnitWithSkin(p, FourCC("h000"), 293.8, -1558.5, 129.313, FourCC("h000"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -3005.4, 2653.2, 113.646, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2884.4, 2653.2, 325.216, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2733.6, 2674.2, 312.604, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2214.0, 2614.5, 72.314, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2353.4, 2619.3, 244.981, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2396.9, 2373.0, 97.144, FourCC("hkni"))
 end
 
 function CreateUnitsForPlayer1()
@@ -34,21 +52,15 @@ local unitID
 local t
 local life
 
-u = BlzCreateUnitWithSkin(p, FourCC("hpea"), 1948.8, -1524.0, 178.061, FourCC("hpea"))
-end
-
-function CreateNeutralPassiveBuildings()
-local p = Player(PLAYER_NEUTRAL_PASSIVE)
-local u
-local unitID
-local t
-local life
-
-u = BlzCreateUnitWithSkin(p, FourCC("ncop"), 1984.0, -1792.0, 270.000, FourCC("ncop"))
-u = BlzCreateUnitWithSkin(p, FourCC("nico"), 1536.0, -1536.0, 270.000, FourCC("nico"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -3026.0, 2416.4, 62.690, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2891.8, 2416.4, 284.544, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2740.5, 2406.4, 4.559, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2275.9, 2438.1, 166.327, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2153.5, 2485.2, 121.062, FourCC("hkni"))
 end
 
 function CreatePlayerBuildings()
+CreateBuildingsForPlayer0()
 end
 
 function CreatePlayerUnits()
@@ -57,7 +69,6 @@ CreateUnitsForPlayer1()
 end
 
 function CreateAllUnits()
-CreateNeutralPassiveBuildings()
 CreatePlayerBuildings()
 CreatePlayerUnits()
 end
@@ -65,245 +76,15 @@ end
 function CreateRegions()
 local we
 
-gg_rct_testcop = Rect(1888.0, -1888.0, 2080.0, -1696.0)
-gg_rct_startRect = Rect(-2496.0, -2880.0, -1440.0, -1792.0)
+gg_rct_TestRegion1 = Rect(-3136.0, 2272.0, -2624.0, 2784.0)
+gg_rct_TestRegion2 = Rect(-2528.0, 2272.0, -2016.0, 2784.0)
+gg_rct_TestRegion3 = Rect(-1888.0, 2272.0, -1376.0, 2784.0)
+gg_rct_TestRegion4 = Rect(-1216.0, 2272.0, -704.0, 2784.0)
 end
 
 map = {}
-map.version = "Alpha"
-map.commit = "29055fa8253274a2eea7b5b843af53222f5c47e9"
-function map.Editor_Create()
-  local editor = {}
-
-  editor.startRect = gg_rct_startRect
-
-  return editor
-end
-
-function map.HollowArena_Initialize()
-  local game = {}
-  local wc3api = map.RealWc3Api_Create()
-  local colors = map.Colors_Create()
-  local utility = map.Utility_Create()
-  local commands = map.Commands_Create(wc3api)
-  local clock = map.Clock_Create()
-  local authenticatedNames = {"WorldEdit", "MasterLich#11192", "MagicDoor#1685"}
-  local players = map.Players_Create(wc3api, commands, colors, authenticatedNames, utility)
-  local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
-  local logging = map.Logging_Create(wc3api, gameClock, commands, players)
-  local unitManager = map.UnitManager_Create(wc3api, logging, commands)
-  local editor = map.Editor_Create()
-  local debugTools = map.DebugTools_Create(wc3api, logging, players, commands, utility, colors)
-
-  -- game.worldEdit = players.GetPlayerByName("WorldEdit")
-  -- logging.SetPlayerOptionByID(game.worldEdit.id, logging.types.ALL)
-
-  for _,player in pairs(players.list) do
-    if(player.name == "WorldEdit" or player.name == "MasterLich#11192") then
-      logging.SetPlayerOptionByID(player.id, logging.types.ALL)
-    end
-  end
-
-  local gameStatusLog = {}
-  gameStatusLog.type = logging.types.INFO
-  gameStatusLog.message = "Game Start"
-  logging.Write(gameStatusLog)
-
-  wc3api.MeleeStartingVisibility()
-  wc3api.MeleeStartingHeroLimit()
-  wc3api.MeleeGrantHeroItems()
-
-  local startingResources = map.StartingResources_Create(wc3api, players)
-  local wagons = map.Wagons_Create(wc3api, players, commands, logging, editor)
-end
-
-function map.Wagons_Create(wc3api, players, commands, logging, editor)
-  local wagons = {}
-  wagons.list = {}
-
-  local startRectInfo = {}
-  startRectInfo.centerx = wc3api.GetRectCenterX(editor.startRect)
-  startRectInfo.centery = wc3api.GetRectCenterY(editor.startRect)
-
-  function wagons.WagonBuildingAction()
-    local function WagonBuildingAction2()
-      -- GetTriggerUnit() returns the building instead of the builder BUG
-      -- https://www.hiveworkshop.com/threads/how-to-get-building-unit.274883/
-      local theBuilding = wc3api.GetConstructingStructure()
-      local thePlayer = wc3api.GetTriggerPlayer()
-      local playerName = wc3api.GetPlayerName(thePlayer)
-
-
-
-      for _,wagonData in pairs(wagons.list) do
-        if(wagonData.built == true) then return end
-        if(thePlayer == wagonData.playerref) then
-          if(wc3api.IsUnitInRange(wagonData.unit, theBuilding, 120)) then
-            local baseID = wc3api.GetUnitTypeId(theBuilding)
-            local basex = wc3api.GetUnitX(theBuilding)
-            local basey = wc3api.GetUnitY(theBuilding)
-            local baseface = wc3api.GetUnitFacing(theBuilding)
-            wc3api.RemoveUnit(theBuilding)
-            wc3api.RemoveUnit(wagonData.unit)
-            wc3api.CreateUnit(wagonData.playerref, baseID, basex, basey, baseface)
-            wagonData.built = true
-
-            local wagonLog = {}
-            wagonLog.type = logging.types.INFO
-            wagonLog.message = playerName .. " builds town hall"
-            logging.Write(wagonLog)
-          end
-        end
-      end
-    end
-    xpcall(WagonBuildingAction2, print)
-  end
-
-  local finishBuildingTrigger = wc3api.CreateTrigger()
-  wc3api.TriggerAddAction(finishBuildingTrigger, wagons.WagonBuildingAction)
-
-  local function MakeWagon(player)
-    local wagonData = {}
-    wagonData.built = false
-    wagonData.playerref = player.ref
-
-    wc3api.TriggerRegisterPlayerUnitEvent(finishBuildingTrigger, player.ref, wc3api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_START, wc3api.constants.NO_FILTER)
-
-    wagonData.unit = wc3api.CreateUnit(player.ref,
-                                       wc3api.FourCC("h000"),
-                                       startRectInfo.centerx,
-                                       startRectInfo.centery,
-                                       0.00)
-
-    wc3api.SetUnitMoveSpeed(wagonData.unit, 3000)
-    wc3api.UnitAddAbility(wagonData.unit, wc3api.FourCC("AEbl")) -- blink
-    wc3api.SetUnitAbilityLevel(wagonData.unit, wc3api.FourCC("AEbl"), 3)
-    wc3api.BlzSetUnitMaxMana(wagonData.unit, 500)
-    wc3api.BlzSetUnitRealField(wagonData.unit, wc3api.constants.UNIT_RF_MANA, 300)
-    wc3api.BlzSetUnitRealField(wagonData.unit, wc3api.constants.UNIT_RF_MANA_REGENERATION, 5)
-    wc3api.BlzSetUnitName(wagonData.unit, player.name)
-    table.insert(wagons.list, wagonData)
-  end
-
-  for _, player in pairs(players.list) do
-    if(player.mapcontrol == wc3api.constants.MAP_CONTROL_USER and player.playerslotstate == wc3api.constants.PLAYER_SLOT_STATE_PLAYING) or (player.id == 1) then
-
-
-
-      MakeWagon(player)
-    end
-  end
-
-
-
-
-  return wagons
-end
-
-
-
-function map.Wagons_Tests(testFramework)
-  testFramework.Suites.WagonsSuite = {}
-  testFramework.Suites.WagonsSuite.Tests = {}
-  local tsc = testFramework.Suites.WagonsSuite
-
-  local wc3api = {}
-  wc3api.constants = {}
-  -- wc3api.constants = map.RealWc3Api_Create().constants
-  function wc3api.GetRectCenterX() end
-  function wc3api.GetRectCenterY() end
-  function wc3api.CreateTrigger() end
-  function wc3api.TriggerAddAction() end
-  function wc3api.TriggerRegisterPlayerUnitEvent() end
-  function wc3api.FourCC() end
-  function wc3api.CreateUnit() end
-  function wc3api.UnitAddAbility() end
-  function wc3api.SetUnitAbilityLevel() end
-  function wc3api.BlzSetUnitMaxMana() end
-  function wc3api.BlzSetUnitRealField() end
-  function wc3api.BlzSetUnitName() end
-  function wc3api.GetConstructingStructure() end
-  function wc3api.GetTriggerPlayer() return "p1ref" end
-  function wc3api.IsUnitInRange() return true end
-  function wc3api.GetUnitTypeId() end
-  function wc3api.GetUnitX() end
-  function wc3api.GetUnitY() end
-  function wc3api.GetUnitFacing() end
-  function wc3api.RemoveUnit() end
-  function wc3api.SetUnitMoveSpeed() end
-  function wc3api.SetPlayerState() end
-  function wc3api.GetPlayerName() return "name" end
-
-  local players = {}
-  players.list = {}
-  local p1 = {}
-  p1.ref = "p1ref"
-  local p2 = {}
-  p2.ref = "p2ref"
-  table.insert(players.list, p1)
-  table.insert(players.list, p2)
-
-  local commands = {}
-
-  local logging = {}
-  logging.types = {}
-  function logging.Write() end
-
-  local editor = {}
-
-
-  function tsc.Setup() end
-  function tsc.Teardown() end
-
-  function tsc.Tests.WagonsCreated()
-    -- p1.playerslotstate = wc3api.constants.PLAYER_SLOT_STATE_PLAYING
-    -- p2.playerslotstate = wc3api.constants.PLAYER_SLOT_STATE_PLAYING
-    assert(p1.ref == "p1ref")
-    wc3api.constants.MAP_CONTROL_USER = "user"
-    wc3api.constants.PLAYER_SLOT_STATE_PLAYING = "playing"
-
-    p1.playerslotstate = "playing"
-    p2.playerslotstate = "playing"
-    p1.mapcontrol = "user"
-    p2.mapcontrol = "user"
-    local wagons = map.Wagons_Create(wc3api, players, commands, logging, editor)
-
-    local testWagon
-    local otherWagon
-    for _,wagonData in pairs(wagons.list) do
-      if(wagonData.playerref == "p1ref") then
-        testWagon = wagonData
-      end
-      if(wagonData.playerref == "p2ref") then
-        otherWagon = wagonData
-      end
-    end
-
-    wagons.WagonBuildingAction()
-
-    assert(testWagon.built == true)
-    assert(otherWagon.built == false)
-  end
-end
-function map.StartingResources_Create(wc3api, players)
-  local startingResources = {}
-
-  local function GiveResourcesToAllPlayers()
-    local function GiveResourcesToAllPlayers2()
-      for _,player in pairs(players.list) do
-        wc3api.SetPlayerState(player.ref, wc3api.constants.PLAYER_STATE_RESOURCE_GOLD, 2000)
-        wc3api.SetPlayerState(player.ref, wc3api.constants.PLAYER_STATE_RESOURCE_LUMBER, 2000)
-      end
-    end
-    xpcall(GiveResourcesToAllPlayers2, print)
-  end
-
-  local startingResourcesTrigger = wc3api.CreateTrigger()
-  wc3api.TriggerAddAction(startingResourcesTrigger, GiveResourcesToAllPlayers)
-
-
-  return startingResources
-end
+map.version = "0.0.0"
+map.commit = "6f0bcb51d18cee76c5d5f1dfb3f33d6e488c726b"
 function map.Commands_Create(wc3api)
   local commands = {}
   commands.list = {}
@@ -383,6 +164,93 @@ function map.Commands_Tests(testFramework)
 end
 
 
+function map.Colors_Create()
+  local colors = {}
+  colors.ColorList = {}
+
+  function colors.AddColor(text, number, hexCode)
+    local color = {}
+    color.text = text
+    color.number = number
+    color.hexCode = hexCode
+
+    table.insert(colors.ColorList, color)
+  end
+
+  -- This function returns a color object from text
+  function colors.GetColor_T(t)
+    for _,v in ipairs(colors.ColorList) do
+      if t == v.text then
+        return v
+      end
+    end
+  end
+
+  function colors.GetColor_N(n)
+    for _,v in ipairs(colors.ColorList) do
+      if n == v.number then
+        return v
+      end
+    end
+  end
+
+  function colors.GetColorCode(text)
+    for _,v in ipairs(colors.ColorList) do
+      if text == v.text then
+        return v.hexCode
+      end
+    end
+  end
+
+  function colors.GetColoredString(normalString, colorName)
+    local coloredString = "|c" .. colors.GetColorCode(colorName) .. normalString  .. "|r"
+    return coloredString
+  end
+
+  colors.AddColor("red", 1, "00FF0303")
+  colors.AddColor("blue", 2, "000042FF")
+  colors.AddColor("teal", 3, "001CE6B9")
+  colors.AddColor("purple", 4, "00540081")
+  colors.AddColor("yellow", 5, "00FFFC00")
+  colors.AddColor("orange", 6, "00FE8A0E")
+  colors.AddColor("green", 7, "0020C000")
+  colors.AddColor("pink", 8, "00E55BB0")
+  colors.AddColor("gray", 9, "00959697")
+  colors.AddColor("light_blue", 10, "007EBFF1")
+  colors.AddColor("dark_green", 11, "00106246")
+  colors.AddColor("brown", 12, "004E2A04")
+  colors.AddColor("maroon", 13, "009B0000")
+  colors.AddColor("navy", 14, "000000C3")
+  colors.AddColor("turquoise", 15, "0000EAFF")
+  colors.AddColor("violet", 16, "00BE00FE")
+  colors.AddColor("wheat", 17, "00EBCD87")
+  colors.AddColor("peach", 18, "00F8A48B")
+  colors.AddColor("mint", 19, "00BFFF80")
+  colors.AddColor("lavender", 20, "00DCB9EB")
+  colors.AddColor("coal", 21, "00282828")
+  colors.AddColor("snow", 22, "00EBF0FF")
+  colors.AddColor("emerald", 23, "0000781E")
+  colors.AddColor("peanut", 24, "00A46F33")
+  colors.AddColor("some_weird_green", 25, "0022744F")
+  colors.AddColor("gold", 26, "00FFD700")
+  colors.AddColor("bright_blue", 27, "0019CAF6")
+
+  return colors
+end
+
+function map.Colors_Tests(testFramework)
+  testFramework.Suites.ColorsSuite = {}
+  testFramework.Suites.ColorsSuite.Tests = {}
+  local tsc = testFramework.Suites.ColorsSuite
+
+
+  function tsc.Setup() end
+  function tsc.Teardown() end
+
+  function tsc.Tests.DummyTest()
+    assert(true)
+  end
+end
 function map.TestFramework_Create()
   local testFramework = {}
   testFramework.Suites = {}
@@ -398,6 +266,260 @@ function map.TestFramework_Create()
   end
 
   return testFramework
+end
+
+function map.DebugTools_Create(wc3api, logging, players, commands, utility, colors)
+  local debugTools = {}
+
+  local authenticatedUsers = {}
+  local debugLog = {}
+  debugLog.type = logging.types.DEBUG
+  debugLog.message = ""
+
+  function debugTools.Display(message)
+    -- wc3api.DisplayTextToPlayer(players., 0, 0, message) -- Player 0
+    wc3api.BJDebugMsg(message)
+  end
+
+  local versionCommand = {}
+  versionCommand.activator = "-version"
+  versionCommand.users = players.ALL_PLAYERS
+  function versionCommand.Handler()
+    local commandingPlayer = wc3api.GetTriggerPlayer()
+    local mapVer = "Map Version: " .. map.version
+    local mapCommit = "Map Commit: " .. map.commit
+
+    wc3api.DisplayTextToPlayer(commandingPlayer, 0, 0, mapVer)
+    wc3api.DisplayTextToPlayer(commandingPlayer, 0, 0, mapCommit)
+  end
+
+  local function GetResourceData()
+    local data = {}
+
+    local cmdString = wc3api.GetEventPlayerChatString()
+    local splitString = utility.Split(cmdString)
+
+    data.commandingPlayer = players.GetPlayerByName(wc3api.GetPlayerName(wc3api.GetTriggerPlayer()))
+
+    data.amount = tonumber(table.remove(splitString))
+    if(data.amount < 0) then
+      data = nil
+    end
+
+    local playerID = tonumber(table.remove(splitString))
+    if(playerID < 0 or playerID > wc3api.GetBJMaxPlayers()) then
+      data = nil
+    end
+
+    if(data ~= nil) then
+      data.receivingPlayer = players.GetPlayerByID(playerID)
+    end
+
+    return data
+  end
+
+  -- Usage: "-gold 0 10000"
+  local setGoldCommand = {}
+  setGoldCommand.activator = "-gold"
+  setGoldCommand.users = players.AUTHENTICATED_PLAYERS
+  function setGoldCommand.Handler()
+    local data = GetResourceData()
+
+    if(data ~= nil) then
+      wc3api.SetPlayerState(data.receivingPlayer.ref, wc3api.constants.PLAYER_STATE_RESOURCE_GOLD, data.amount)
+      debugLog.message = data.commandingPlayer.coloredname .. " set player " .. data.receivingPlayer.coloredname .. " gold to amount " .. data.amount
+      logging.Write(debugLog)
+    end
+  end
+
+  -- Usage: "-wood 0 10000"
+  local setWoodCommand = {}
+  setWoodCommand.activator = "-wood"
+  setWoodCommand.users = players.AUTHENTICATED_PLAYERS
+  function setWoodCommand.Handler()
+    local data = GetResourceData()
+
+    if(data ~= nil) then
+      wc3api.SetPlayerState(data.receivingPlayer.ref, wc3api.constants.PLAYER_STATE_RESOURCE_LUMBER, data.amount)
+      debugLog.message = data.commandingPlayer.coloredname .. " set player " .. data.receivingPlayer.coloredname .. " wood to amount " .. data.amount
+      logging.Write(debugLog)
+    end
+  end
+
+  local killUnitCommand = {}
+  killUnitCommand.activator = "-kill"
+  killUnitCommand.users = players.AUTHENTICATED_PLAYERS
+  function killUnitCommand.Handler()
+    local commandingPlayer = wc3api.GetTriggerPlayer()
+    local g = wc3api.CreateGroup()
+    wc3api.GroupEnumUnitsSelected(g, commandingPlayer, wc3api.constants.NO_FILTER)
+    local function KillUnit()
+      local u = wc3api.GetEnumUnit()
+      wc3api.KillUnit(u)
+      u = nil
+    end
+    wc3api.ForGroup(g, KillUnit)
+    wc3api.DestroyGroup(g)
+    g = nil
+  end
+
+  local removeUnitCommand = {}
+  removeUnitCommand.activator = "-remove"
+  removeUnitCommand.users = players.AUTHENTICATED_PLAYERS
+  function removeUnitCommand.Handler()
+    local commandingPlayer = wc3api.GetTriggerPlayer()
+    local g = wc3api.CreateGroup()
+    wc3api.GroupEnumUnitsSelected(g, commandingPlayer, wc3api.constants.NO_FILTER)
+    local function RemoveUnit()
+      local u = wc3api.GetEnumUnit()
+      wc3api.RemoveUnit(u)
+      u = nil
+    end
+    wc3api.ForGroup(g, RemoveUnit)
+    wc3api.DestroyGroup(g)
+    g = nil
+  end
+
+  local visibleCommand = {}
+  visibleCommand.activator = "-visible"
+  visibleCommand.users = players.AUTHENTICATED_PLAYERS
+  function visibleCommand.Visible()
+    
+  end
+
+
+  commands.Add(versionCommand)
+  commands.Add(setGoldCommand)
+  commands.Add(setWoodCommand)
+  commands.Add(killUnitCommand)
+  commands.Add(removeUnitCommand)
+
+  return debugTools
+end
+function map.Game_Initialize()
+  local initFinished = false
+  local game = {}
+  local wc3api = map.RealWc3Api_Create()
+  local colors = map.Colors_Create()
+  local utility = map.Utility_Create()
+  local commands = map.Commands_Create(wc3api)
+  local clock = map.Clock_Create()
+  local authenticatedNames = {"WorldEdit", "MasterLich#11192", "MagicDoor#1685"}
+  local players = map.Players_Create(wc3api, commands, colors, authenticatedNames, utility)
+  local gameClock = map.GameClock_Create(wc3api, clock, commands, players)
+  local logging = map.Logging_Create(wc3api, gameClock, commands, players)
+  local unitManager = map.UnitManager_Create(wc3api, logging, commands)
+  local editor = map.Editor_Create()
+  local debugTools = map.DebugTools_Create(wc3api, logging, players, commands, utility, colors)
+
+  initFinished = true
+  assert(initFinished, "Init did not finish.")
+
+  function TestGeneral()
+    
+    return true
+  end
+  assert(TestGeneral(), "General tests did not finish.")
+
+  local function TestPlayers()
+    local function TestPlayers1()
+      -- debugTools.Display(wc3api.Player(0)) -- Error: expected string but got player
+
+      local container = {}
+      container[wc3api.Player(0)] = 7
+      assert(container[wc3api.Player(0)] == 7)
+    end
+    TestPlayers1()
+
+    return true
+  end
+  assert(TestPlayers(), "Player tests did not finish.")
+
+  function TestTriggers()
+    local function TestTriggers1()
+      local testTrigger = wc3api.CreateTrigger()
+      -- debugTools.Display(type(testTrigger))
+      -- debugTools.Display(testTrigger)
+      -- Note: Every time you run this you get a different output 
+      -- print(testTrigger) -- Output: "trigger: 000002BF1A1D7480"
+
+      -- Not sure what "userdata" means
+      assert(type(testTrigger) == "userdata")
+
+      wc3api.DestroyTrigger(testTrigger)
+      -- debugTools.Display(type(testTrigger))
+      assert(type(testTrigger) == "userdata")
+    end
+    TestTriggers1()
+
+    return true
+  end
+  assert(TestTriggers(), "Trigger tests did not finish.")
+
+  function TestRegions()
+    -- Editor prepares region to have 3 red knights and 3 blue knights
+    local function TestRegions1()
+      local unitCount = unitManager.CountUnitsInRegion(editor.TestRegion1)
+      assert(unitCount == 6, "TestRegion1: Unit count not 6")
+
+      local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion1)
+      assert(biggestPlayer == wc3api.GetPlayerNeutralPassive(), "TestRegions1: Red and blue have same size")
+    end
+    TestRegions1()
+
+    -- Editor prepares region to have 3 red Knights and 2 blue knights
+    local function TestRegions2()
+      local playerUnits = unitManager.CountUnitsPerPlayerInRegion(editor.TestRegion2)
+
+      assert(playerUnits[wc3api.Player(0)] == 3, "TestRegions2: Red not 3 units")
+      assert(playerUnits[wc3api.Player(1)] == 2, "TestRegions2: Blue not 3 units")
+
+      local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion2)
+      assert(biggestPlayer == wc3api.Player(0), "TestRegions2: Red must be larger")
+      -- local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion2)
+      -- assert(biggestPlayer == wc3api.Player(0), "TestRegion2: Biggest player not red")
+    end
+    TestRegions2()
+
+    local function TestRegions3()
+      local unit1 = wc3api.CreateUnit(wc3api.Player(0),
+                                     wc3api.FourCC("hkni"),
+                                     wc3api.GetRectCenterX(editor.TestRegion3),
+                                     wc3api.GetRectCenterY(editor.TestRegion3),
+                                     0)
+      local unit2 = wc3api.CreateUnit(wc3api.Player(1),
+                                     wc3api.FourCC("hkni"),
+                                     wc3api.GetRectCenterX(editor.TestRegion3),
+                                     wc3api.GetRectCenterY(editor.TestRegion3),
+                                     0)
+
+      local playerUnits = {}
+      playerUnits[wc3api.GetOwningPlayer(unit1)] = 1
+      -- debugTools.Display(playerUnits[wc3api.GetOwningPlayer(unit1)])
+      assert(playerUnits[wc3api.GetOwningPlayer(unit1)] == 1, "playerUnits not 1")
+      -- local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion2)
+      -- assert(biggestPlayer == wc3api.Player(0), "TestRegion2: Biggest player not red")
+    end
+    TestRegions3()
+
+    -- Editor prepares region to have 1 town hall for red
+    local function TestRegions4()
+      local playerUnits = unitManager.CountUnitsPerPlayerInRegion(editor.TestRegion4)
+      assert(playerUnits[wc3api.Player(0)] == 1, "TestRegions4: Red does not have 1 unit")
+    end
+    TestRegions4()
+
+    return true
+  end
+  assert(TestRegions(), "Region tests did not finish.")
+
+
+end
+
+
+
+function map.Game_Start()
+  xpcall(map.Game_Initialize, print)
 end
 
 function map.Utility_Create()
@@ -455,7 +577,7 @@ function map.GameClock_Create(wc3api, clock, commands, players)
     -- DisplayTextToForce(GetPlayersAll(), "ClockTick start")
     -- DisplayTextToForce(GetPlayersAll(), gameClock.clock.seconds)
     gameClock.clock.Tick()
-    collectgarbage("collect")
+    -- collectgarbage("collect")
     -- print("ClockTick end")
   end
 
@@ -1028,79 +1150,66 @@ function map.Logging_Tests(testFramework)
   --luacheck: pop
 
 end
-function map.DebugTools_Create(wc3api, logging, players, commands, utility, colors)
-  local debugTools = {}
-
-  local authenticatedUsers = {}
-  local debugLog = {}
-  debugLog.type = logging.types.DEBUG
-  debugLog.message = ""
-
-  local function GetResourceData()
-    local data = {}
-
-    local cmdString = wc3api.GetEventPlayerChatString()
-    local splitString = utility.Split(cmdString)
-
-    data.commandingPlayer = players.GetPlayerByName(wc3api.GetPlayerName(wc3api.GetTriggerPlayer()))
-
-    data.amount = tonumber(table.remove(splitString))
-    if(data.amount < 0) then
-      data = nil
-    end
-
-    local playerID = tonumber(table.remove(splitString))
-    if(playerID < 0 or playerID > wc3api.GetBJMaxPlayers()) then
-      data = nil
-    end
-
-    if(data ~= nil) then
-      data.receivingPlayer = players.GetPlayerByID(playerID)
-    end
-
-    return data
-  end
-
-  -- Usage: "-gold 0 10000"
-  local setGoldCommand = {}
-  setGoldCommand.activator = "-gold"
-  setGoldCommand.users = players.AUTHENTICATED_PLAYERS
-  function setGoldCommand.Handler()
-    local data = GetResourceData()
-
-    if(data ~= nil) then
-      wc3api.SetPlayerState(data.receivingPlayer.ref, wc3api.constants.PLAYER_STATE_RESOURCE_GOLD, data.amount)
-      debugLog.message = data.commandingPlayer.coloredname .. " set player " .. data.receivingPlayer.coloredname .. " gold to amount " .. data.amount
-      logging.Write(debugLog)
-    end
-  end
-
-  -- Usage: "-wood 0 10000"
-  local setWoodCommand = {}
-  setWoodCommand.activator = "-wood"
-  setWoodCommand.users = players.AUTHENTICATED_PLAYERS
-  function setWoodCommand.Handler()
-    local data = GetResourceData()
-
-    if(data ~= nil) then
-      wc3api.SetPlayerState(data.receivingPlayer.ref, wc3api.constants.PLAYER_STATE_RESOURCE_LUMBER, data.amount)
-      debugLog.message = data.commandingPlayer.coloredname .. " set player " .. data.receivingPlayer.coloredname .. " wood to amount " .. data.amount
-      logging.Write(debugLog)
-    end
-  end
-
-
-
-  commands.Add(setGoldCommand)
-  commands.Add(setWoodCommand)
-
-  return debugTools
-end
 function map.UnitManager_Create(wc3api, logging, commands)
   local unitManager = {}
   unitManager.wc3api = wc3api
   unitManager.logging = logging
   unitManager.commands = commands
+
+  function unitManager.CountUnitsInRegion(region)
+    local unitCount = 0
+    local function CountUnits()
+      local u = wc3api.GetTriggerUnit()
+      unitCount = unitCount + 1
+    end
+    local g = wc3api.CreateGroup()
+    wc3api.GroupEnumUnitsInRect(g, region, wc3api.constants.NO_FILTER)
+    wc3api.ForGroup(g, CountUnits)
+    wc3api.DestroyGroup(g)
+    g = nil
+    return unitCount
+  end
+
+  function unitManager.CountUnitsPerPlayerInRegion(region)
+    local playerUnits = {}
+
+    local function CountUnitsOfPlayer()
+      local unit = wc3api.GetEnumUnit()
+      local owningPlayer = wc3api.GetOwningPlayer(unit)
+      if(playerUnits[owningPlayer] == nil) then
+        playerUnits[owningPlayer] = 1
+      else
+        playerUnits[owningPlayer] = playerUnits[owningPlayer] + 1
+      end
+    end
+
+    local g = wc3api.CreateGroup()
+    wc3api.GroupEnumUnitsInRect(g, region, wc3api.constants.NO_FILTER)
+    wc3api.ForGroup(g, CountUnitsOfPlayer)
+
+    wc3api.DestroyGroup(g)
+    g = nil
+    return playerUnits
+  end
+
+
+  function unitManager.GetPlayerWithMostUnitsInRegion(region)
+    local biggestPlayer = wc3api.GetPlayerNeutralPassive()
+    local biggestCount = 0
+    local playerUnits = unitManager.CountUnitsPerPlayerInRegion(region)
+
+    for player,count in pairs(playerUnits) do
+      if biggestCount == count then
+        biggestPlayer = wc3api.GetPlayerNeutralPassive()
+      end
+      if count > biggestCount then
+        biggestPlayer = player
+        biggestCount = count
+      end
+    end
+
+    return biggestPlayer
+  end
 
 
   function unitManager.ScanAllUnitsOwnedByPlayer(player)
@@ -1132,93 +1241,20 @@ function map.UnitManager_Create(wc3api, logging, commands)
 
   return unitManager
 end
-function map.Colors_Create()
-  local colors = {}
-  colors.ColorList = {}
+--luacheck: push ignore
 
-  function colors.AddColor(text, number, hexCode)
-    local color = {}
-    color.text = text
-    color.number = number
-    color.hexCode = hexCode
+function map.Editor_Create()
+  local editor = {}
 
-    table.insert(colors.ColorList, color)
-  end
+  editor.TestRegion1 = gg_rct_TestRegion1
+  editor.TestRegion2 = gg_rct_TestRegion2
+  editor.TestRegion3 = gg_rct_TestRegion3
+  editor.TestRegion4 = gg_rct_TestRegion4
 
-  -- This function returns a color object from text
-  function colors.GetColor_T(t)
-    for _,v in ipairs(colors.ColorList) do
-      if t == v.text then
-        return v
-      end
-    end
-  end
-
-  function colors.GetColor_N(n)
-    for _,v in ipairs(colors.ColorList) do
-      if n == v.number then
-        return v
-      end
-    end
-  end
-
-  function colors.GetColorCode(text)
-    for _,v in ipairs(colors.ColorList) do
-      if text == v.text then
-        return v.hexCode
-      end
-    end
-  end
-
-  function colors.GetColoredString(normalString, colorName)
-    local coloredString = "|c" .. colors.GetColorCode(colorName) .. normalString  .. "|r"
-    return coloredString
-  end
-
-  colors.AddColor("red", 1, "00FF0303")
-  colors.AddColor("blue", 2, "000042FF")
-  colors.AddColor("teal", 3, "001CE6B9")
-  colors.AddColor("purple", 4, "00540081")
-  colors.AddColor("yellow", 5, "00FFFC00")
-  colors.AddColor("orange", 6, "00FE8A0E")
-  colors.AddColor("green", 7, "0020C000")
-  colors.AddColor("pink", 8, "00E55BB0")
-  colors.AddColor("gray", 9, "00959697")
-  colors.AddColor("light_blue", 10, "007EBFF1")
-  colors.AddColor("dark_green", 11, "00106246")
-  colors.AddColor("brown", 12, "004E2A04")
-  colors.AddColor("maroon", 13, "009B0000")
-  colors.AddColor("navy", 14, "000000C3")
-  colors.AddColor("turquoise", 15, "0000EAFF")
-  colors.AddColor("violet", 16, "00BE00FE")
-  colors.AddColor("wheat", 17, "00EBCD87")
-  colors.AddColor("peach", 18, "00F8A48B")
-  colors.AddColor("mint", 19, "00BFFF80")
-  colors.AddColor("lavender", 20, "00DCB9EB")
-  colors.AddColor("coal", 21, "00282828")
-  colors.AddColor("snow", 22, "00EBF0FF")
-  colors.AddColor("emerald", 23, "0000781E")
-  colors.AddColor("peanut", 24, "00A46F33")
-  colors.AddColor("some_weird_green", 25, "0022744F")
-  colors.AddColor("gold", 26, "00FFD700")
-  colors.AddColor("bright_blue", 27, "0019CAF6")
-
-  return colors
+  return editor
 end
 
-function map.Colors_Tests(testFramework)
-  testFramework.Suites.ColorsSuite = {}
-  testFramework.Suites.ColorsSuite.Tests = {}
-  local tsc = testFramework.Suites.ColorsSuite
-
-
-  function tsc.Setup() end
-  function tsc.Teardown() end
-
-  function tsc.Tests.DummyTest()
-    assert(true)
-  end
-end
+--luacheck: pop
 --luacheck: push ignore
 
 function map.RealWc3Api_Create()
@@ -1229,12 +1265,80 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.EXACT_MATCH = true
   realWc3Api.constants.NO_EXACT_MATCH = false
 
+  realWc3Api.constants.IS_PERIODIC = true
+  realWc3Api.constants.NOT_PERIODIC = false
+
+  realWc3Api.constants.WEAPON_INDEX_GROUND = 0
+  realWc3Api.constants.WEAPON_INDEX_AIR = 1
+
   realWc3Api.constants.bj_FORCE_ALL_PLAYERS = nil
   realWc3Api.constants.EVENT_PLAYER_LEAVE = EVENT_PLAYER_LEAVE
 
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ATTACKED = EVENT_PLAYER_UNIT_ATTACKED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_RESCUED = EVENT_PLAYER_UNIT_RESCUED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DEATH = EVENT_PLAYER_UNIT_DEATH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DECAY = EVENT_PLAYER_UNIT_DECAY
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DETECTED = EVENT_PLAYER_UNIT_DETECTED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_HIDDEN = EVENT_PLAYER_UNIT_HIDDEN
+  realWc3Api.constants.EVENT_PLAYER_UNIT_SELECTED = EVENT_PLAYER_UNIT_SELECTED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DESELECTED = EVENT_PLAYER_UNIT_DESELECTED
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_START = EVENT_PLAYER_UNIT_CONSTRUCT_START
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL = EVENT_PLAYER_UNIT_CONSTRUCT_CANCEL
   realWc3Api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_FINISH = EVENT_PLAYER_UNIT_CONSTRUCT_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_UPGRADE_START = EVENT_PLAYER_UNIT_UPGRADE_START
+  realWc3Api.constants.EVENT_PLAYER_UNIT_UPGRADE_CANCEL = EVENT_PLAYER_UNIT_UPGRADE_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_UNIT_UPGRADE_FINISH = EVENT_PLAYER_UNIT_UPGRADE_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_TRAIN_START = EVENT_PLAYER_UNIT_TRAIN_START
+  realWc3Api.constants.EVENT_PLAYER_UNIT_TRAIN_CANCEL = EVENT_PLAYER_UNIT_TRAIN_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_UNIT_TRAIN_FINISH = EVENT_PLAYER_UNIT_TRAIN_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_RESEARCH_START = EVENT_PLAYER_UNIT_RESEARCH_START
+  realWc3Api.constants.EVENT_PLAYER_UNIT_RESEARCH_CANCEL = EVENT_PLAYER_UNIT_RESEARCH_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_UNIT_RESEARCH_FINISH = EVENT_PLAYER_UNIT_RESEARCH_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ISSUED_ORDER = EVENT_PLAYER_UNIT_ISSUED_ORDER
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER = EVENT_PLAYER_UNIT_ISSUED_POINT_ORDER
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER = EVENT_PLAYER_UNIT_ISSUED_TARGET_ORDER
+  realWc3Api.constants.EVENT_PLAYER_UNIT_ISSUED_UNIT_ORDER = EVENT_PLAYER_UNIT_ISSUED_UNIT_ORDER
+  realWc3Api.constants.EVENT_PLAYER_HERO_LEVEL = EVENT_PLAYER_HERO_LEVEL
+  realWc3Api.constants.EVENT_PLAYER_HERO_SKILL = EVENT_PLAYER_HERO_SKILL
+  realWc3Api.constants.EVENT_PLAYER_HERO_REVIVABLE = EVENT_PLAYER_HERO_REVIVABLE
+  realWc3Api.constants.EVENT_PLAYER_HERO_REVIVE_START = EVENT_PLAYER_HERO_REVIVE_START
+  realWc3Api.constants.EVENT_PLAYER_HERO_REVIVE_CANCEL = EVENT_PLAYER_HERO_REVIVE_CANCEL
+  realWc3Api.constants.EVENT_PLAYER_HERO_REVIVE_FINISH = EVENT_PLAYER_HERO_REVIVE_FINISH
+  realWc3Api.constants.EVENT_PLAYER_UNIT_SUMMON = EVENT_PLAYER_UNIT_SUMMON
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DROP_ITEM = EVENT_PLAYER_UNIT_DROP_ITEM
+  realWc3Api.constants.EVENT_PLAYER_UNIT_PICKUP_ITEM = EVENT_PLAYER_UNIT_PICKUP_ITEM
+  realWc3Api.constants.EVENT_PLAYER_UNIT_USE_ITEM = EVENT_PLAYER_UNIT_USE_ITEM
+  realWc3Api.constants.EVENT_PLAYER_UNIT_LOADED = EVENT_PLAYER_UNIT_LOADED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DAMAGED = EVENT_PLAYER_UNIT_DAMAGED
+  realWc3Api.constants.EVENT_PLAYER_UNIT_DAMAGING = EVENT_PLAYER_UNIT_DAMAGING
+
+  realWc3Api.constants.UNIT_TYPE_HERO = UNIT_TYPE_HERO
+  realWc3Api.constants.UNIT_TYPE_DEAD = UNIT_TYPE_DEAD
+  realWc3Api.constants.UNIT_TYPE_STRUCTURE = UNIT_TYPE_STRUCTURE
+  realWc3Api.constants.UNIT_TYPE_FLYING = UNIT_TYPE_FLYING
+  realWc3Api.constants.UNIT_TYPE_GROUND = UNIT_TYPE_GROUND
+  realWc3Api.constants.UNIT_TYPE_ATTACKS_FLYING = UNIT_TYPE_ATTACKS_FLYING
+  realWc3Api.constants.UNIT_TYPE_ATTACKS_GROUND = UNIT_TYPE_ATTACKS_GROUND
+  realWc3Api.constants.UNIT_TYPE_MELEE_ATTACKER = UNIT_TYPE_MELEE_ATTACKER
+  realWc3Api.constants.UNIT_TYPE_RANGED_ATTACKER = UNIT_TYPE_RANGED_ATTACKER
+  realWc3Api.constants.UNIT_TYPE_GIANT = UNIT_TYPE_GIANT
+  realWc3Api.constants.UNIT_TYPE_SUMMONED = UNIT_TYPE_SUMMONED
+  realWc3Api.constants.UNIT_TYPE_STUNNED = UNIT_TYPE_STUNNED
+  realWc3Api.constants.UNIT_TYPE_PLAGUED = UNIT_TYPE_PLAGUED
+  realWc3Api.constants.UNIT_TYPE_SNARED = UNIT_TYPE_SNARED
+  realWc3Api.constants.UNIT_TYPE_UNDEAD = UNIT_TYPE_UNDEAD
+  realWc3Api.constants.UNIT_TYPE_MECHANICAL = UNIT_TYPE_MECHANICAL
+  realWc3Api.constants.UNIT_TYPE_PEON = UNIT_TYPE_PEON
+  realWc3Api.constants.UNIT_TYPE_SAPPER = UNIT_TYPE_SAPPER
+  realWc3Api.constants.UNIT_TYPE_TOWNHALL = UNIT_TYPE_TOWNHALL
+  realWc3Api.constants.UNIT_TYPE_ANCIENT = UNIT_TYPE_ANCIENT
+  realWc3Api.constants.UNIT_TYPE_TAUREN = UNIT_TYPE_TAUREN
+  realWc3Api.constants.UNIT_TYPE_POISONED = UNIT_TYPE_POISONED
+  realWc3Api.constants.UNIT_TYPE_POLYMORPHED = UNIT_TYPE_POLYMORPHED
+  realWc3Api.constants.UNIT_TYPE_SLEEPING = UNIT_TYPE_SLEEPING
+  realWc3Api.constants.UNIT_TYPE_RESISTANT = UNIT_TYPE_RESISTANT
+  realWc3Api.constants.UNIT_TYPE_ETHEREAL = UNIT_TYPE_ETHEREAL
+  realWc3Api.constants.UNIT_TYPE_MAGIC_IMMUNE = UNIT_TYPE_MAGIC_IMMUNE
 
   realWc3Api.constants.UNIT_RF_HP = UNIT_RF_HP
   realWc3Api.constants.UNIT_RF_HIT_POINTS_REGENERATION_RATE = UNIT_RF_HIT_POINTS_REGENERATION_RATE
@@ -1276,6 +1380,10 @@ function map.RealWc3Api_Create()
     return CreateTrigger()
   end
 
+  function realWc3Api.DestroyTrigger(whichTrigger)
+    return DestroyTrigger(whichTrigger)
+  end
+
   function realWc3Api.TriggerSleepAction(timeout)
     return TriggerSleepAction(timeout)
   end
@@ -1300,8 +1408,73 @@ function map.RealWc3Api_Create()
     return DestroyBoolExpr(e)
   end
 
+  function realWc3Api.TriggerRegisterUnitInRange(whichTrigger, whichUnit, range, filter)
+    return TriggerRegisterUnitInRange(whichTrigger, whichUnit, range, filter)
+  end
+
+  function realWc3Api.TriggerRemoveCondition(whichTrigger, whichCondition)
+    return TriggerRemoveCondition(whichTrigger, whichCondition)
+  end
+
+  function realWc3Api.TriggerClearConditions(whichTrigger)
+    return TriggerClearConditions(whichTrigger)
+  end
+
+  function realWc3Api.TriggerRemoveAction(whichTrigger, whichAction)
+    return TriggerRemoveAction(whichTrigger, whichAction)
+  end
+
+  function realWc3Api.TriggerClearActions(whichTrigger)
+    return TriggerClearActions(whichTrigger)
+  end
+
+  function realWc3Api.TriggerSleepAction(timeout)
+    return TriggerSleepAction(timeout)
+  end
+
+  function realWc3Api.TriggerWaitForSound(s, offset)
+    return TriggerWaitForSound(s, offset)
+  end
+
+  function realWc3Api.TriggerExecute(whichTrigger)
+    return TriggerExecute(whichTrigger)
+  end
+
+  function realWc3Api.TriggerEvaluate(whichTrigger)
+    return TriggerEvaluate(whichTrigger)
+  end
+
+  function realWc3Api.TriggerExecuteWait(whichTrigger)
+    return TriggerExecuteWait(whichTrigger)
+  end
+
+  function realWc3Api.TriggerSyncStart()
+    return TriggerSyncStart()
+  end
+
+  function realWc3Api.TriggerSyncReady()
+    return TriggerSyncReady()
+  end
+
+
+  function realWc3Api.GetPlayerNeutralPassive()
+    return GetPlayerNeutralPassive()
+  end
+
+  function realWc3Api.GetPlayerNeutralAggressive()
+    return GetPlayerNeutralAggressive()
+  end
+
+  function realWc3Api.GetOwningPlayer(whichUnit)
+    return GetOwningPlayer(whichUnit)
+  end
+
   function realWc3Api.TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
     return TriggerRegisterPlayerChatEvent(whichTrigger, whichPlayer, chatMessageToDetect, exactMatchOnly)
+  end
+
+  function realWc3Api.GetEventPlayerState()
+    return GetEventPlayerState()
   end
 
   function realWc3Api.TriggerRegisterPlayerEvent(whichTrigger, whichPlayer, whichPlayerEvent)
@@ -1310,6 +1483,14 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.TriggerRegisterPlayerUnitEvent(whichTrigger, whichPlayer, whichPlayerUnitEvent, filter)
     return TriggerRegisterPlayerUnitEvent(whichTrigger, whichPlayer, whichPlayerUnitEvent, filter)
+  end
+
+  function realWc3Api.TriggerRegisterUnitStateEvent(whichTrigger, whichUnit, whichState, opcode, limitval)
+    return TriggerRegisterUnitStateEvent(whichTrigger, whichUnit, whichState, opcode, limitval)
+  end
+
+  function realWc3Api.TriggerRegisterDeathEvent(whichTrigger, whichWidget)
+    return TriggerRegisterDeathEvent(whichTrigger, whichWidget)
   end
 
   function realWc3Api.GetEventPlayerChatString()
@@ -1400,12 +1581,208 @@ function map.RealWc3Api_Create()
     return GetTriggerUnit()
   end
 
+  function realWc3Api.GetLevelingUnit()
+    return GetLevelingUnit()
+  end
+
+  function realWc3Api.GetLearningUnit()
+    return GetLearningUnit()
+  end
+
+  function realWc3Api.GetLearnedSkill()
+    return GetLearnedSkill()
+  end
+
+  function realWc3Api.GetLearnedSkillLevel()
+    return GetLearnedSkillLevel()
+  end
+
+  function realWc3Api.GetRevivableUnit()
+    return GetRevivableUnit()
+  end
+
+  function realWc3Api.GetRevivingUnit()
+    return GetRevivingUnit()
+  end
+
+  function realWc3Api.GetAttacker()
+    return GetAttacker()
+  end
+
+  function realWc3Api.GetRescuer()
+    return GetRescuer()
+  end
+
+  function realWc3Api.GetDyingUnit()
+    return GetDyingUnit()
+  end
+
+  function realWc3Api.GetKillingUnit()
+    return GetKillingUnit()
+  end
+
+  function realWc3Api.GetDecayingUnit()
+    return GetDecayingUnit()
+  end
+
+  function realWc3Api.GetResearchingUnit()
+    return GetResearchingUnit()
+  end
+
+  function realWc3Api.GetResearched()
+    return GetResearched()
+  end
+
+  function realWc3Api.GetTrainedUnitType()
+    return GetTrainedUnitType()
+  end
+
+  function realWc3Api.GetTrainedUnit()
+    return GetTrainedUnit()
+  end
+
+  function realWc3Api.GetDetectedUnit()
+    return GetDetectedUnit()
+  end
+
+  function realWc3Api.GetSummoningUnit()
+    return GetSummoningUnit()
+  end
+
+  function realWc3Api.GetSummonedUnit()
+    return GetSummonedUnit()
+  end
+
+  function realWc3Api.GetTransportUnit()
+    return GetTransportUnit()
+  end
+
+  function realWc3Api.GetLoadedUnit()
+    return GetLoadedUnit()
+  end
+
+  function realWc3Api.GetSellingUnit()
+    return GetSellingUnit()
+  end
+
+  function realWc3Api.GetSoldUnit()
+    return GetSoldUnit()
+  end
+
+  function realWc3Api.GetBuyingUnit()
+    return GetBuyingUnit()
+  end
+
+  function realWc3Api.GetSoldItem()
+    return GetSoldItem()
+  end
+
+  function realWc3Api.GetChangingUnit()
+    return GetChangingUnit()
+  end
+
+  function realWc3Api.GetChangingUnitPrevOwner()
+    return GetChangingUnitPrevOwner()
+  end
+
+  function realWc3Api.GetManipulatingUnit()
+    return GetManipulatingUnit()
+  end
+
+  function realWc3Api.GetManipulatedItem()
+    return GetManipulatedItem()
+  end
+
+  function realWc3Api.BlzGetAbsorbingItem()
+    return BlzGetAbsorbingItem()
+  end
+
+  function realWc3Api.BlzGetManipulatedItemWasAbsorbed()
+    return BlzGetManipulatedItemWasAbsorbed()
+  end
+
+  function realWc3Api.BlzGetStackingItemSource()
+    return BlzGetStackingItemSource()
+  end
+
+  function realWc3Api.BlzGetStackingItemTarget()
+    return BlzGetStackingItemTarget()
+  end
+
+  function realWc3Api.BlzGetStackingItemTargetPreviousCharges()
+    return BlzGetStackingItemTargetPreviousCharges()
+  end
+
+  function realWc3Api.GetOrderedUnit()
+    return GetOrderedUnit()
+  end
+
+  function realWc3Api.GetIssuedOrderId()
+    return GetIssuedOrderId()
+  end
+
+  function realWc3Api.GetOrderPointX()
+    return GetOrderPointX()
+  end
+
+  function realWc3Api.GetOrderPointY()
+    return GetOrderPointY()
+  end
+
+  function realWc3Api.GetOrderTarget()
+    return GetOrderTarget()
+  end
+
+  function realWc3Api.GetOrderTargetDestructable()
+    return GetOrderTargetDestructable()
+  end
+
+  function realWc3Api.GetOrderTargetItem()
+    return GetOrderTargetItem()
+  end
+
+  function realWc3Api.GetOrderTargetUnit()
+    return GetOrderTargetUnit()
+  end
+
+  function realWc3Api.GetSpellAbilityUnit()
+    return GetSpellAbilityUnit()
+  end
+
+  function realWc3Api.GetSpellAbilityId()
+    return GetSpellAbilityId()
+  end
+
+  function realWc3Api.GetSpellAbility()
+    return GetSpellAbility()
+  end
+
+  function realWc3Api.GetSpellTargetX()
+    return GetSpellTargetX()
+  end
+
+  function realWc3Api.GetSpellTargetY()
+    return GetSpellTargetY()
+  end
+
+  function realWc3Api.GetSpellTargetDestructable()
+    return GetSpellTargetDestructable()
+  end
+
+  function realWc3Api.GetSpellTargetItem()
+    return GetSpellTargetItem()
+  end
+
+  function realWc3Api.GetSpellTargetUnit()
+    return GetSpellTargetUnit()
+  end
+
   function realWc3Api.BlzSetUnitName(whichUnit, name)
     return BlzSetUnitName(whichUnit, name)
   end
 
-  function realWc3Api.GetUnitName()
-    return GetUnitName()
+  function realWc3Api.GetUnitName(whichUnit)
+    return GetUnitName(whichUnit)
   end
 
   function realWc3Api.SetUnitMoveSpeed(whichUnit, newSpeed)
@@ -1432,6 +1809,14 @@ function map.RealWc3Api_Create()
     return BlzGetUnitStringField(whichUnit, whichField)
   end
 
+  function realWc3Api.SetUnitState(whichUnit, whichUnitState, newVal)
+    return SetUnitState(whichUnit, whichUnitState, newVal)
+  end
+
+  function realWc3Api.GetUnitState(whichUnit, whichUnitState)
+    return GetUnitState(whichUnit, whichUnitState)
+  end
+
   function realWc3Api.BlzSetUnitBooleanField(whichUnit, whichField, value)
     return BlzSetUnitBooleanField(whichUnit, whichField, value)
   end
@@ -1452,8 +1837,192 @@ function map.RealWc3Api_Create()
     return SetUnitState(whichUnit, whichUnitState, newVal)
   end
 
+  function realWc3Api.BlzGetUnitBaseDamage(whichUnit, weaponIndex)
+    return BlzGetUnitBaseDamage(whichUnit, weaponIndex)
+  end
+
+  function realWc3Api.BlzGetUnitArmor(whichUnit)
+    return BlzGetUnitArmor(whichUnit)
+  end
+
+  function realWc3Api.BlzSetUnitArmor(whichUnit, armorAmount)
+    return BlzSetUnitArmor(whichUnit, armorAmount)
+  end
+
+  function realWc3Api.BlzUnitHideAbility(whichUnit, abilId, flag)
+    return BlzUnitHideAbility(whichUnit, abilId, flag)
+  end
+
+  function realWc3Api.BlzUnitDisableAbility(whichUnit, abilId, flag, hideUI)
+    return BlzUnitDisableAbility(whichUnit, abilId, flag, hideUI)
+  end
+
+  function realWc3Api.BlzUnitCancelTimedLife(whichUnit)
+    return BlzUnitCancelTimedLife(whichUnit)
+  end
+
+  function realWc3Api.BlzIsUnitSelectable(whichUnit)
+    return BlzIsUnitSelectable(whichUnit)
+  end
+
+  function realWc3Api.BlzIsUnitInvulnerable(whichUnit)
+    return BlzIsUnitInvulnerable(whichUnit)
+  end
+
+  function realWc3Api.BlzUnitInterruptAttack(whichUnit)
+    return BlzUnitInterruptAttack(whichUnit)
+  end
+
+  function realWc3Api.BlzGetUnitCollisionSize(whichUnit)
+    return BlzGetUnitCollisionSize(whichUnit)
+  end
+
+  function realWc3Api.BlzGetAbilityManaCost(abilId, level)
+    return BlzGetAbilityManaCost(abilId, level)
+  end
+
+  function realWc3Api.BlzGetAbilityCooldown(abilId, level)
+    return BlzGetAbilityCooldown(abilId, level)
+  end
+
+  function realWc3Api.BlzSetUnitAbilityCooldown(whichUnit, abilId, level, cooldown)
+    return BlzSetUnitAbilityCooldown(whichUnit, abilId, level, cooldown)
+  end
+
+  function realWc3Api.BlzGetUnitAbilityCooldown(whichUnit, abilId, level)
+    return BlzGetUnitAbilityCooldown(whichUnit, abilId, level)
+  end
+
+  function realWc3Api.BlzGetUnitAbilityCooldownRemaining(whichUnit, abilId)
+    return BlzGetUnitAbilityCooldownRemaining(whichUnit, abilId)
+  end
+
+  function realWc3Api.BlzEndUnitAbilityCooldown(whichUnit, abilCode)
+    return BlzEndUnitAbilityCooldown(whichUnit, abilCode)
+  end
+
+  function realWc3Api.BlzStartUnitAbilityCooldown(whichUnit, abilCode, cooldown)
+    return BlzStartUnitAbilityCooldown(whichUnit, abilCode, cooldown)
+  end
+
+  function realWc3Api.BlzGetUnitAbilityManaCost(whichUnit, abilId, level)
+    return BlzGetUnitAbilityManaCost(whichUnit, abilId, level)
+  end
+
+  function realWc3Api.BlzSetUnitAbilityManaCost(whichUnit, abilId, level, manaCost)
+    return BlzSetUnitAbilityManaCost(whichUnit, abilId, level, manaCost)
+  end
+
+  function realWc3Api.BlzSetUnitBaseDamage(whichUnit, baseDamage, weaponIndex)
+    return BlzSetUnitBaseDamage(whichUnit, baseDamage, weaponIndex)
+  end
+
   function realWc3Api.SetUnitPosition(whichUnit, newX, newY)
     return SetUnitPosition(whichUnit, newX, newY)
+  end
+
+  function realWc3Api.SetUnitScale(whichUnit, scaleX, scaleY, scaleZ)
+    return SetUnitScale(whichUnit, scaleX, scaleY, scaleZ)
+  end
+
+  function realWc3Api.SetUnitVertexColor(whichUnit, red, green, blue, alpha)
+    return SetUnitVertexColor(whichUnit, red, green, blue, alpha)
+  end
+
+  function realWc3Api.QueueUnitAnimation(whichUnit, whichAnimation)
+    return QueueUnitAnimation(whichUnit, whichAnimation)
+  end
+
+  function realWc3Api.SetUnitAnimationByIndex(whichUnit, whichAnimation)
+    return SetUnitAnimationByIndex(whichUnit, whichAnimation)
+  end
+
+  function realWc3Api.SetUnitAnimationWithRarity(whichUnit, whichAnimation, rarity)
+    return SetUnitAnimationWithRarity(whichUnit, whichAnimation, rarity)
+  end
+
+  function realWc3Api.AddUnitAnimationProperties(whichUnit, animProperties, add)
+    return AddUnitAnimationProperties(whichUnit, animProperties, add)
+  end
+
+  function realWc3Api.SetUnitLookAt(whichUnit, whichBone, lookAtTarget, offsetX, offsetY, offsetZ)
+    return SetUnitLookAt(whichUnit, whichBone, lookAtTarget, offsetX, offsetY, offsetZ)
+  end
+
+  function realWc3Api.SetUnitRescuable(whichUnit, byWhichPlayer, flag)
+    return SetUnitRescuable(whichUnit, byWhichPlayer, flag)
+  end
+
+  function realWc3Api.SetHeroStr(whichHero, newStr, permanent)
+    return SetHeroStr(whichHero, newStr, permanent)
+  end
+
+  function realWc3Api.SetHeroAgi(whichHero, newAgi, permanent)
+    return SetHeroAgi(whichHero, newAgi, permanent)
+  end
+
+  function realWc3Api.SetHeroInt(whichHero, newInt, permanent)
+    return SetHeroInt(whichHero, newInt, permanent)
+  end
+
+  function realWc3Api.GetHeroStr(whichHero, includeBonuses)
+    return GetHeroStr(whichHero, includeBonuses)
+  end
+
+  function realWc3Api.GetHeroAgi(whichHero, includeBonuses)
+    return GetHeroAgi(whichHero, includeBonuses)
+  end
+
+  function realWc3Api.GetHeroInt(whichHero, includeBonuses)
+    return GetHeroInt(whichHero, includeBonuses)
+  end
+
+  function realWc3Api.UnitStripHeroLevel(whichHero, howManyLevels)
+    return UnitStripHeroLevel(whichHero, howManyLevels)
+  end
+
+  function realWc3Api.GetHeroXP(whichHero)
+    return GetHeroXP(whichHero)
+  end
+
+  function realWc3Api.SetHeroXP(whichHero, newXpVal, showEyeCandy)
+    return SetHeroXP(whichHero, newXpVal, showEyeCandy)
+  end
+
+  function realWc3Api.GetHeroSkillPoints(whichHero)
+    return GetHeroSkillPoints(whichHero)
+  end
+
+  function realWc3Api.UnitModifySkillPoints(whichHero, skillPointDelta)
+    return UnitModifySkillPoints(whichHero, skillPointDelta)
+  end
+
+  function realWc3Api.AddHeroXP(whichHero, xpToAdd, showEyeCandy)
+    return AddHeroXP(whichHero, xpToAdd, showEyeCandy)
+  end
+
+  function realWc3Api.SetHeroLevel(whichHero, level, showEyeCandy)
+    return SetHeroLevel(whichHero, level, showEyeCandy)
+  end
+
+  function realWc3Api.GetHeroLevel(whichHero)
+    return GetHeroLevel(whichHero)
+  end
+
+  function realWc3Api.GetUnitLevel(whichUnit)
+    return GetUnitLevel(whichUnit)
+  end
+
+  function realWc3Api.SuspendHeroXP(whichHero, flag)
+    return SuspendHeroXP(whichHero, flag)
+  end
+
+  function realWc3Api.IsSuspendedXP(whichHero)
+    return IsSuspendedXP(whichHero)
+  end
+
+  function realWc3Api.SelectHeroSkill(whichHero, abilcode)
+    return SelectHeroSkill(whichHero, abilcode)
   end
 
   function realWc3Api.KillUnit(whichUnit)
@@ -1572,20 +2141,28 @@ function map.RealWc3Api_Create()
     return GroupClear(WhichGroup)
   end
 
-  function realWc3Api.ForGroup(whichGroup, callback)
-    return ForGroup(whichGroup, callback)
-  end
-
   function realWc3Api.GetEnumUnit()
     return GetEnumUnit()
+  end
+
+  function realWc3Api.GroupEnumUnitsOfType(whichGroup, unitname, filter)
+    return GroupEnumUnitsOfType(whichGroup, unitname, filter)
   end
 
   function realWc3Api.GroupEnumUnitsOfPlayer(whichGroup, whichPlayer, filter)
     return GroupEnumUnitsOfPlayer(whichGroup, whichPlayer, filter)
   end
 
+  function realWc3Api.GroupEnumUnitsOfTypeCounted(whichGroup, unitname, filter, countLimit)
+    return GroupEnumUnitsOfTypeCounted(whichGroup, unitname, filter, countLimit)
+  end
+
   function realWc3Api.GroupEnumUnitsInRect(whichGroup, r, filter)
     return GroupEnumUnitsInRect(whichGroup, r, filter)
+  end
+
+  function realWc3Api.GroupEnumUnitsInRectCounted(whichGroup, r, filter, countLimit)
+    return GroupEnumUnitsInRectCounted(whichGroup, r, filter, countLimit)
   end
 
   function realWc3Api.GroupEnumUnitsInRange(whichGroup, x, y, radius, filter)
@@ -1598,6 +2175,42 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.IsUnitInRange(whichUnit, otherUnit, distance)
     return IsUnitInRange(whichUnit, otherUnit, distance)
+  end
+
+  function realWc3Api.GroupEnumUnitsInRangeCounted(whichGroup, x, y, radius, filter, countLimit)
+    return GroupEnumUnitsInRangeCounted(whichGroup, x, y, radius, filter, countLimit)
+  end
+
+  function realWc3Api.GroupEnumUnitsSelected(whichGroup, whichPlayer, filter)
+    return GroupEnumUnitsSelected(whichGroup, whichPlayer, filter)
+  end
+
+  function realWc3Api.GroupImmediateOrder(whichGroup, order)
+    return GroupImmediateOrder(whichGroup, order)
+  end
+
+  function realWc3Api.GroupImmediateOrderById(whichGroup, order)
+    return GroupImmediateOrderById(whichGroup, order)
+  end
+
+  function realWc3Api.GroupPointOrder(whichGroup, order, x, y)
+    return GroupPointOrder(whichGroup, order, x, y)
+  end
+
+  function realWc3Api.GroupPointOrderById(whichGroup, order, x, y)
+    return GroupPointOrderById(whichGroup, order, x, y)
+  end
+
+  function realWc3Api.GroupTargetOrderById(whichGroup, order, targetWidget)
+    return GroupTargetOrderById(whichGroup, order, targetWidget)
+  end
+
+  function realWc3Api.ForGroup(whichGroup, callback)
+    return ForGroup(whichGroup, callback)
+  end
+
+  function realWc3Api.FirstOfGroup(whichGroup)
+    return FirstOfGroup(whichGroup)
   end
 
   function realWc3Api.IsUnitInRangeXY(whichUnit, x, y, distance)
@@ -1728,47 +2341,89 @@ function map.RealWc3Api_Create()
     return MeleeGrantHeroItems()
   end
 
+  function realWc3Api.MeleeVictoryDialogBJ(whichPlayer, leftGame)
+    return MeleeVictoryDialogBJ(whichPlayer, leftGame)
+  end
+
+  function realWc3Api.CustomVictoryDialogBJ(whichPlayer)
+    return CustomVictoryDialogBJ(whichPlayer)
+  end
+
+  function realWc3Api.SetFogStateRect(forWhichPlayer, whichState, where, useSharedVision)
+    return SetFogStateRect(forWhichPlayer, whichState, where, useSharedVision)
+  end
+
+  function realWc3Api.SetFogStateRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision)
+    return SetFogStateRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision)
+  end
+
+  function realWc3Api.FogMaskEnable(enable)
+    return FogMaskEnable(enable)
+  end
+
+  function realWc3Api.IsFogMaskEnabled()
+    return IsFogMaskEnabled()
+  end
+
+  function realWc3Api.FogEnable(enable)
+    return FogEnable(enable)
+  end
+
+  function realWc3Api.IsFogEnabled()
+    return IsFogEnabled()
+  end
+
+  function realWc3Api.CreateFogModifierRect(forWhichPlayer, whichState, where, useSharedVision, afterUnits)
+    return CreateFogModifierRect(forWhichPlayer, whichState, where, useSharedVision, afterUnits)
+  end
+
+  function realWc3Api.CreateFogModifierRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision, afterUnits)
+    return CreateFogModifierRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision, afterUnits)
+  end
+
+  function realWc3Api.CreateFogModifierRadiusLoc(forWhichPlayer, whichState, center, radius, useSharedVision, afterUnits)
+    return CreateFogModifierRadiusLoc(forWhichPlayer, whichState, center, radius, useSharedVision, afterUnits)
+  end
+
+  function realWc3Api.DestroyFogModifier(whichFogModifier)
+    return DestroyFogModifier(whichFogModifier)
+  end
+
+  function realWc3Api.FogModifierStart(whichFogModifier)
+    return FogModifierStart(whichFogModifier)
+  end
+
+  function realWc3Api.FogModifierStop(whichFogModifier)
+    return FogModifierStop(whichFogModifier)
+  end
+
   return realWc3Api
 end
 --luacheck: pop
 
--- Hollow Arena
-
 function map.UnitTests()
   local testFramework = map.TestFramework_Create()
-  map.Wagons_Tests(testFramework)
-  xpcall(testFramework.TestRunner, print)
+  map.Commands_Tests(testFramework)
+  map.Utility_Tests(testFramework)
+  map.Clock_Tests(testFramework)
+  map.GameClock_Tests(testFramework)
+  map.Players_Tests(testFramework)
+  map.Logging_Tests(testFramework)
+  map.Colors_Tests(testFramework)
+  -- xpcall(testFramework.TestRunner, print)
+  testFramework.TestRunner()
 end
 
 function map.LaunchLua()
   -- print("Map Start")
   -- map.UnitTests()
-  -- map.Game_Start()
-  xpcall(map.HollowArena_Initialize, print)
+  xpcall(map.Game_Start, print)
   -- print("Map End")
 end
 
 map.UnitTests()
 
 
-
-function Trig_mapinit_Actions()
-DoNothing()
-end
-
-function InitTrig_mapinit()
-gg_trg_mapinit = CreateTrigger()
-TriggerAddAction(gg_trg_mapinit, Trig_mapinit_Actions)
-end
-
-function Trig_music_Actions()
-SetMapMusicIndexedBJ(gg_snd_NightElfDefeat, 0)
-end
-
-function InitTrig_music()
-gg_trg_music = CreateTrigger()
-TriggerAddAction(gg_trg_music, Trig_music_Actions)
-end
 
 function Trig_LaunchLua_Actions()
     map.LaunchLua()
@@ -1780,14 +2435,10 @@ TriggerAddAction(gg_trg_LaunchLua, Trig_LaunchLua_Actions)
 end
 
 function InitCustomTriggers()
-InitTrig_mapinit()
-InitTrig_music()
 InitTrig_LaunchLua()
 end
 
 function RunInitializationTriggers()
-ConditionalTriggerExecute(gg_trg_mapinit)
-ConditionalTriggerExecute(gg_trg_music)
 ConditionalTriggerExecute(gg_trg_LaunchLua)
 end
 
@@ -1843,7 +2494,7 @@ SetPlayers(2)
 SetTeams(2)
 SetGamePlacement(MAP_PLACEMENT_TEAMS_TOGETHER)
 DefineStartLocation(0, 1984.0, -2368.0)
-DefineStartLocation(1, -1600.0, 1792.0)
+DefineStartLocation(1, -2112.0, -2304.0)
 InitCustomPlayerSlots()
 InitCustomTeams()
 InitAllyPriorities()

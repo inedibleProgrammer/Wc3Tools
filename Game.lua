@@ -1,4 +1,5 @@
 function map.Game_Initialize()
+  local initFinished = false
   local game = {}
   local wc3api = map.RealWc3Api_Create()
   local colors = map.Colors_Create()
@@ -13,163 +14,108 @@ function map.Game_Initialize()
   local editor = map.Editor_Create()
   local debugTools = map.DebugTools_Create(wc3api, logging, players, commands, utility, colors)
 
-  game.worldEdit = players.GetPlayerByName("WorldEdit")
-  logging.SetPlayerOptionByID(game.worldEdit.id, logging.types.ALL)
+  initFinished = true
+  assert(initFinished, "Init did not finish.")
 
-  local gameStatusLog = {}
-  gameStatusLog.type = logging.types.INFO
-  gameStatusLog.message = "Game Start"
-  logging.Write(gameStatusLog)
-
-  local function testLogging()
-    -- local masterLich = players.GetPlayerByName("MasterLich#11192")
-    -- local worldEdit = players.GetPlayerByName("WorldEdit")
-
-    -- logging.SetPlayerOptionByID(masterLich.id, logging.types.ALL)
-    -- logging.SetPlayerOptionByID(worldEdit.id, logging.types.ALL)
-
-    local function DumDum()
-      local function DumDum2()
-        local dumLog = {}
-        dumLog.message = "This is a dummy"
-        dumLog.type = logging.types.DEBUG
-        logging.Write(dumLog)
-      end
-      xpcall(DumDum2, print)
-    end
-
-    local dummyTrigger = wc3api.CreateTrigger()
-    wc3api.TriggerRegisterTimerEvent(dummyTrigger, 1.00, true)
-    wc3api.TriggerAddAction(dummyTrigger, DumDum)
+  function TestGeneral()
+    
+    return true
   end
+  assert(TestGeneral(), "General tests did not finish.")
 
-  -- testLogging()
+  local function TestPlayers()
+    local function TestPlayers1()
+      -- debugTools.Display(wc3api.Player(0)) -- Error: expected string but got player
 
-  local function testPlayers()
-    for _,player in pairs(players.list) do
-      print(player.id)
+      local container = {}
+      container[wc3api.Player(0)] = 7
+      assert(container[wc3api.Player(0)] == 7)
     end
+    TestPlayers1()
+
+    return true
   end
+  assert(TestPlayers(), "Player tests did not finish.")
 
-  -- testPlayers()
+  function TestTriggers()
+    local function TestTriggers1()
+      local testTrigger = wc3api.CreateTrigger()
+      -- debugTools.Display(type(testTrigger))
+      -- debugTools.Display(testTrigger)
+      -- Note: Every time you run this you get a different output 
+      -- print(testTrigger) -- Output: "trigger: 000002BF1A1D7480"
 
-  local function testWalkOnCircle()
-    local function testWalkOnCircle2()
-      local testWalkOnCircleLog = {}
-      -- local triggerUnitName = wc3api.GetUnitName(wc3api.GetTriggerUnit())
-      -- local triggerUnitName = wc3api.GetObjectName(wc3api.GetUnitTypeId(wc3api.GetTriggerUnit()))
-      local unit = wc3api.GetTriggerUnit()
-      local unitid = wc3api.GetUnitTypeId(unit)
-      local unitname = wc3api.GetObjectName(unitid)
-      -- testWalkOnCircleLog.message = "Unit " .. unitname .. " walked on testcop"
-      -- testWalkOnCircleLog.message = "" .. type(editor.testcop)
-      testWalkOnCircleLog.message = colors.GetColoredString(type(editor.testcop), "blue")
-      testWalkOnCircleLog.type = logging.types.DEBUG
-      logging.Write(testWalkOnCircleLog)
+      -- Not sure what "userdata" means
+      assert(type(testTrigger) == "userdata")
+
+      wc3api.DestroyTrigger(testTrigger)
+      -- debugTools.Display(type(testTrigger))
+      assert(type(testTrigger) == "userdata")
     end
-    xpcall(testWalkOnCircle2, print)
+    TestTriggers1()
+
+    return true
   end
+  assert(TestTriggers(), "Trigger tests did not finish.")
 
-  local unitWalksOnCircleTrigger = wc3api.CreateTrigger()
-  wc3api.TriggerRegisterEnterRectSimple(unitWalksOnCircleTrigger, editor.testcop)
-  wc3api.TriggerAddAction(unitWalksOnCircleTrigger, testWalkOnCircle)
+  function TestRegions()
+    -- Editor prepares region to have 3 red knights and 3 blue knights
+    local function TestRegions1()
+      local unitCount = unitManager.CountUnitsInRegion(editor.TestRegion1)
+      assert(unitCount == 6, "TestRegion1: Unit count not 6")
 
-
-  local function testUnitManager()
-    local function testUnitManager2()
-      unitManager.ScanAllUnitsOwnedByPlayer(players.GetPlayerByName("WorldEdit"))
+      local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion1)
+      assert(biggestPlayer == wc3api.GetPlayerNeutralPassive(), "TestRegions1: Red and blue have same size")
     end
-    xpcall(testUnitManager2, print)
-  end
+    TestRegions1()
 
-  -- testUnitManager()
+    -- Editor prepares region to have 3 red Knights and 2 blue knights
+    local function TestRegions2()
+      local playerUnits = unitManager.CountUnitsPerPlayerInRegion(editor.TestRegion2)
 
-  local startRectInfo = {}
-  startRectInfo.centerx = wc3api.GetRectCenterX(editor.startRect)
-  startRectInfo.centery = wc3api.GetRectCenterY(editor.startRect)
+      assert(playerUnits[wc3api.Player(0)] == 3, "TestRegions2: Red not 3 units")
+      assert(playerUnits[wc3api.Player(1)] == 2, "TestRegions2: Blue not 3 units")
 
-  game.wagonUnit = wc3api.CreateUnit(game.worldEdit.ref,
-                                      wc3api.FourCC("h000"),
-                                      startRectInfo.centerx,
-                                      startRectInfo.centery,
-                                      0.00)
-
-  local function testWagons()
-    local function testWagons2()
-
-
-      local wagonSpeedLog = {}
-      wagonSpeedLog.type = logging.types.DEBUG
-      wagonSpeedLog.message = "movespeed before: " .. wc3api.GetUnitMoveSpeed(game.wagonUnit)
-      logging.Write(wagonSpeedLog)
-      wc3api.SetUnitMoveSpeed(game.wagonUnit, 3000)
-      wagonSpeedLog.message = "movespeed after: " .. wc3api.GetUnitMoveSpeed(game.wagonUnit)
-      logging.Write(wagonSpeedLog)
-
-      -- Wagon goes from 180 speed to 400 (max)
-
-      wc3api.UnitAddAbility(game.wagonUnit, wc3api.FourCC("AEbl")) -- blink
-      wc3api.BlzSetUnitMaxMana(game.wagonUnit, 500)
-      wc3api.BlzSetUnitRealField(game.wagonUnit, wc3api.constants.UNIT_RF_MANA, 300)
-      wc3api.BlzSetUnitRealField(game.wagonUnit, wc3api.constants.UNIT_RF_MANA_REGENERATION, 5)
-      wc3api.BlzSetUnitName(game.wagonUnit, "Wagon Builder")
-
-      local function WagonBuildingAction()
-        local function WagonBuildingAction2()
-          local theUnit = wc3api.GetTriggerUnit() -- This returns the building itself (Blizzard Bug)
-          -- https://www.hiveworkshop.com/threads/how-to-get-building-unit.274883/
-          -- local theUnitName = wc3api.GetUnitName(theUnit) -- Doesn't work?
-          local theBuilding = wc3api.GetConstructingStructure()
-
-
-          local wagonBuildLog = {}
-          wagonBuildLog.type = logging.types.INFO
-
-          -- print("Here")
-          -- print(theUnitName) -- Why doesn't this work? because of SetUnitName?
-
-          if(wc3api.IsUnitInRange(game.wagonUnit, theBuilding, 120)) then
-            -- wc3api.TriggerSleepAction(0.1)
-            -- wc3api.UnitSetConstructionProgress(theBuilding, 200.0) -- Doesn't work...?
-            -- https://www.hiveworkshop.com/threads/unitsetcontructionprogress-wont-finish-construction.222521/
-            local baseID = wc3api.GetUnitTypeId(theUnit)
-            local basex = wc3api.GetUnitX(theUnit)
-            local basey = wc3api.GetUnitY(theUnit)
-            local baseface = wc3api.GetUnitFacing(theUnit)
-            wc3api.RemoveUnit(theUnit)
-            wc3api.RemoveUnit(game.wagonUnit)
-            wc3api.CreateUnit(game.worldEdit.ref, baseID, basex, basey, baseface)
-
-
-            wagonBuildLog.message = "Wagon built something"
-            logging.Write(wagonBuildLog)
-          else
-            print("bleh")
-            wc3api.KillUnit(theUnit)
-
-
-
-          end
-        end
-        xpcall(WagonBuildingAction2, print)
-      end
-
-      local finishBuildingTrigger = wc3api.CreateTrigger()
-      --TODO: Destroy the trigger after building finished
-      wc3api.TriggerRegisterPlayerUnitEvent(finishBuildingTrigger, game.worldEdit.ref, wc3api.constants.EVENT_PLAYER_UNIT_CONSTRUCT_START, wc3api.constants.NO_FILTER)
-      wc3api.TriggerAddAction(finishBuildingTrigger, WagonBuildingAction)
+      local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion2)
+      assert(biggestPlayer == wc3api.Player(0), "TestRegions2: Red must be larger")
+      -- local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion2)
+      -- assert(biggestPlayer == wc3api.Player(0), "TestRegion2: Biggest player not red")
     end
-    xpcall(testWagons2, print)
+    TestRegions2()
+
+    local function TestRegions3()
+      local unit1 = wc3api.CreateUnit(wc3api.Player(0),
+                                     wc3api.FourCC("hkni"),
+                                     wc3api.GetRectCenterX(editor.TestRegion3),
+                                     wc3api.GetRectCenterY(editor.TestRegion3),
+                                     0)
+      local unit2 = wc3api.CreateUnit(wc3api.Player(1),
+                                     wc3api.FourCC("hkni"),
+                                     wc3api.GetRectCenterX(editor.TestRegion3),
+                                     wc3api.GetRectCenterY(editor.TestRegion3),
+                                     0)
+
+      local playerUnits = {}
+      playerUnits[wc3api.GetOwningPlayer(unit1)] = 1
+      -- debugTools.Display(playerUnits[wc3api.GetOwningPlayer(unit1)])
+      assert(playerUnits[wc3api.GetOwningPlayer(unit1)] == 1, "playerUnits not 1")
+      -- local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion2)
+      -- assert(biggestPlayer == wc3api.Player(0), "TestRegion2: Biggest player not red")
+    end
+    TestRegions3()
+
+    -- Editor prepares region to have 1 town hall for red
+    local function TestRegions4()
+      local playerUnits = unitManager.CountUnitsPerPlayerInRegion(editor.TestRegion4)
+      assert(playerUnits[wc3api.Player(0)] == 1, "TestRegions4: Red does not have 1 unit")
+    end
+    TestRegions4()
+
+    return true
   end
-
-  testWagons()
-
-  wc3api.SetPlayerState(game.worldEdit.ref, wc3api.constants.PLAYER_STATE_RESOURCE_GOLD, 99999)
-  wc3api.SetPlayerState(game.worldEdit.ref, wc3api.constants.PLAYER_STATE_RESOURCE_LUMBER, 99999)
+  assert(TestRegions(), "Region tests did not finish.")
 
 
-  gameStatusLog.message = "Game End"
-  logging.Write(gameStatusLog)
 end
 
 

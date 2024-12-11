@@ -6,6 +6,11 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
   debugLog.type = logging.types.DEBUG
   debugLog.message = ""
 
+  function debugTools.Display(message)
+    -- wc3api.DisplayTextToPlayer(players., 0, 0, message) -- Player 0
+    wc3api.BJDebugMsg(message)
+  end
+
   local versionCommand = {}
   versionCommand.activator = "-version"
   versionCommand.users = players.ALL_PLAYERS
