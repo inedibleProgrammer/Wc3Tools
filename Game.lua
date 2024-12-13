@@ -101,6 +101,9 @@ function map.Game_Initialize()
       assert(playerUnits[wc3api.GetOwningPlayer(unit1)] == 1, "playerUnits not 1")
       -- local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion2)
       -- assert(biggestPlayer == wc3api.Player(0), "TestRegion2: Biggest player not red")
+
+      unitManager.ConvertUnitToOtherPlayer(unit1, wc3api.Player(1))
+      assert(wc3api.GetOwningPlayer(unit1) == wc3api.Player(1), "TestRegions3: Unit does not belong to Player(1)")
     end
     TestRegions3()
 
@@ -108,6 +111,12 @@ function map.Game_Initialize()
     local function TestRegions4()
       local playerUnits = unitManager.CountUnitsPerPlayerInRegion(editor.TestRegion4)
       assert(playerUnits[wc3api.Player(0)] == 1, "TestRegions4: Red does not have 1 unit")
+
+      local unitCount = unitManager.CountUnitsInRegion(editor.TestRegion4)
+      assert(unitCount == 1, "TestRegions4: Unit count not 1")
+
+      local theUnit = unitManager.GetSingleUnitInRegionOrNil(editor.TestRegion4)
+      assert(wc3api.IsUnitInRangeXY(theUnit, wc3api.GetRectCenterX(editor.TestRegion4), wc3api.GetRectCenterY(editor.TestRegion4), 10), "TestRegions4: Unit out of range")
     end
     TestRegions4()
 
@@ -115,7 +124,7 @@ function map.Game_Initialize()
   end
   assert(TestRegions(), "Region tests did not finish.")
 
-
+  debugTools.Display("Tests finished")
 end
 
 

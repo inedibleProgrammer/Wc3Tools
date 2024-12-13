@@ -8,6 +8,9 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.EXACT_MATCH = true
   realWc3Api.constants.NO_EXACT_MATCH = false
 
+  realWc3Api.constants.CHANGE_COLOR = true
+  realWc3Api.constants.NO_CHANGE_COLOR = false
+
   realWc3Api.constants.IS_PERIODIC = true
   realWc3Api.constants.NOT_PERIODIC = false
 
@@ -522,6 +525,10 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.BlzSetUnitName(whichUnit, name)
     return BlzSetUnitName(whichUnit, name)
+  end
+
+  function realWc3Api.SetUnitOwner(whichUnit, whichPlayer, changeColor)
+    return SetUnitOwner(whichUnit, whichPlayer, changeColor)
   end
 
   function realWc3Api.GetUnitName(whichUnit)

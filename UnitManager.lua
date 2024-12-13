@@ -7,7 +7,7 @@ function map.UnitManager_Create(wc3api, logging, commands)
   function unitManager.CountUnitsInRegion(region)
     local unitCount = 0
     local function CountUnits()
-      local u = wc3api.GetTriggerUnit()
+      local u = wc3api.GetTriggerUnit() -- Why does this work? Do I need to replace with GetEnumUnit?
       unitCount = unitCount + 1
     end
     local g = wc3api.CreateGroup()
@@ -22,7 +22,7 @@ function map.UnitManager_Create(wc3api, logging, commands)
     local playerUnits = {}
 
     local function CountUnitsOfPlayer()
-      local unit = wc3api.GetEnumUnit()
+      local unit = wc3api.GetEnumUnit() -- Why didn't GetTriggerUnit work?
       local owningPlayer = wc3api.GetOwningPlayer(unit)
       if(playerUnits[owningPlayer] == nil) then
         playerUnits[owningPlayer] = 1
@@ -59,6 +59,25 @@ function map.UnitManager_Create(wc3api, logging, commands)
     return biggestPlayer
   end
 
+  function unitManager.GetSingleUnitInRegionOrNil(region)
+    local unitCount = 0
+    local theUnit = nil
+    local function CountUnits()
+      theUnit = wc3api.GetEnumUnit()
+      unitCount = unitCount + 1
+    end
+    local g = wc3api.CreateGroup()
+    wc3api.GroupEnumUnitsInRect(g, region, wc3api.constants.NO_FILTER)
+    wc3api.ForGroup(g, CountUnits)
+    wc3api.DestroyGroup(g)
+    g = nil
+
+    if(unitCount ~= 1) then
+      theUnit = nil
+    end
+    return theUnit
+  end
+
 
   function unitManager.ScanAllUnitsOwnedByPlayer(player)
     local group g = wc3api.CreateGroup()
@@ -85,6 +104,10 @@ function map.UnitManager_Create(wc3api, logging, commands)
     end
 
     wc3api.ForGroup(g, testGroups)
+  end
+
+  function unitManager.ConvertUnitToOtherPlayer(unit, otherPlayer)
+    wc3api.SetUnitOwner(unit, otherPlayer, wc3api.constants.CHANGE_COLOR)
   end
 
   return unitManager

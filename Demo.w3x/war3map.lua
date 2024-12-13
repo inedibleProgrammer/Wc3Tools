@@ -1,4 +1,9 @@
+gg_rct_TestRegion1 = nil
+gg_rct_TestRegion2 = nil
+gg_rct_TestRegion3 = nil
+gg_rct_TestRegion4 = nil
 gg_snd_NightElfDefeat = ""
+gg_trg_Untitled_Trigger_001 = nil
 gg_trg_replaceunit = nil
 gg_trg_resources = nil
 gg_trg_mapinit = nil
@@ -8,11 +13,8 @@ gg_trg_quest = nil
 gg_trg_testcop = nil
 gg_trg_PeriodicPrint = nil
 gg_trg_LaunchLua = nil
-gg_rct_TestRegion1 = nil
-gg_rct_TestRegion2 = nil
-gg_rct_TestRegion3 = nil
-gg_trg_Untitled_Trigger_001 = nil
-gg_rct_TestRegion4 = nil
+gg_trg_ConvertUnitToBlue = nil
+gg_unit_hfoo_0014 = nil
 function InitGlobals()
 end
 
@@ -43,6 +45,7 @@ u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2733.6, 2674.2, 312.604, FourCC("h
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2214.0, 2614.5, 72.314, FourCC("hkni"))
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2353.4, 2619.3, 244.981, FourCC("hkni"))
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2396.9, 2373.0, 97.144, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -1273.9, -2969.7, 98.726, FourCC("hfoo"))
 end
 
 function CreateUnitsForPlayer1()
@@ -84,7 +87,7 @@ end
 
 map = {}
 map.version = "0.0.0"
-map.commit = "6f0bcb51d18cee76c5d5f1dfb3f33d6e488c726b"
+map.commit = "7f10a0ba0d201e37b5a4350937cf103c2a68f316"
 function map.Commands_Create(wc3api)
   local commands = {}
   commands.list = {}
@@ -499,6 +502,9 @@ function map.Game_Initialize()
       assert(playerUnits[wc3api.GetOwningPlayer(unit1)] == 1, "playerUnits not 1")
       -- local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion2)
       -- assert(biggestPlayer == wc3api.Player(0), "TestRegion2: Biggest player not red")
+
+      unitManager.ConvertUnitToOtherPlayer(unit1, wc3api.Player(1))
+      assert(wc3api.GetOwningPlayer(unit1) == wc3api.Player(1), "TestRegions3: Unit does not belong to Player(1)")
     end
     TestRegions3()
 
@@ -506,6 +512,12 @@ function map.Game_Initialize()
     local function TestRegions4()
       local playerUnits = unitManager.CountUnitsPerPlayerInRegion(editor.TestRegion4)
       assert(playerUnits[wc3api.Player(0)] == 1, "TestRegions4: Red does not have 1 unit")
+
+      local unitCount = unitManager.CountUnitsInRegion(editor.TestRegion4)
+      assert(unitCount == 1, "TestRegions4: Unit count not 1")
+
+      local theUnit = unitManager.GetSingleUnitInRegionOrNil(editor.TestRegion4)
+      assert(wc3api.IsUnitInRangeXY(theUnit, wc3api.GetRectCenterX(editor.TestRegion4), wc3api.GetRectCenterY(editor.TestRegion4), 10), "TestRegions4: Unit out of range")
     end
     TestRegions4()
 
@@ -513,7 +525,7 @@ function map.Game_Initialize()
   end
   assert(TestRegions(), "Region tests did not finish.")
 
-
+  debugTools.Display("Tests finished")
 end
 
 
@@ -1159,7 +1171,7 @@ function map.UnitManager_Create(wc3api, logging, commands)
   function unitManager.CountUnitsInRegion(region)
     local unitCount = 0
     local function CountUnits()
-      local u = wc3api.GetTriggerUnit()
+      local u = wc3api.GetTriggerUnit() -- Why does this work? Do I need to replace with GetEnumUnit?
       unitCount = unitCount + 1
     end
     local g = wc3api.CreateGroup()
@@ -1174,7 +1186,7 @@ function map.UnitManager_Create(wc3api, logging, commands)
     local playerUnits = {}
 
     local function CountUnitsOfPlayer()
-      local unit = wc3api.GetEnumUnit()
+      local unit = wc3api.GetEnumUnit() -- Why didn't GetTriggerUnit work?
       local owningPlayer = wc3api.GetOwningPlayer(unit)
       if(playerUnits[owningPlayer] == nil) then
         playerUnits[owningPlayer] = 1
@@ -1211,6 +1223,25 @@ function map.UnitManager_Create(wc3api, logging, commands)
     return biggestPlayer
   end
 
+  function unitManager.GetSingleUnitInRegionOrNil(region)
+    local unitCount = 0
+    local theUnit = nil
+    local function CountUnits()
+      theUnit = wc3api.GetEnumUnit()
+      unitCount = unitCount + 1
+    end
+    local g = wc3api.CreateGroup()
+    wc3api.GroupEnumUnitsInRect(g, region, wc3api.constants.NO_FILTER)
+    wc3api.ForGroup(g, CountUnits)
+    wc3api.DestroyGroup(g)
+    g = nil
+
+    if(unitCount ~= 1) then
+      theUnit = nil
+    end
+    return theUnit
+  end
+
 
   function unitManager.ScanAllUnitsOwnedByPlayer(player)
     local group g = wc3api.CreateGroup()
@@ -1239,6 +1270,10 @@ function map.UnitManager_Create(wc3api, logging, commands)
     wc3api.ForGroup(g, testGroups)
   end
 
+  function unitManager.ConvertUnitToOtherPlayer(unit, otherPlayer)
+    wc3api.SetUnitOwner(unit, otherPlayer, wc3api.constants.CHANGE_COLOR)
+  end
+
   return unitManager
 end
 --luacheck: push ignore
@@ -1264,6 +1299,9 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.NO_FILTER = nil
   realWc3Api.constants.EXACT_MATCH = true
   realWc3Api.constants.NO_EXACT_MATCH = false
+
+  realWc3Api.constants.CHANGE_COLOR = true
+  realWc3Api.constants.NO_CHANGE_COLOR = false
 
   realWc3Api.constants.IS_PERIODIC = true
   realWc3Api.constants.NOT_PERIODIC = false
@@ -1779,6 +1817,10 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.BlzSetUnitName(whichUnit, name)
     return BlzSetUnitName(whichUnit, name)
+  end
+
+  function realWc3Api.SetUnitOwner(whichUnit, whichPlayer, changeColor)
+    return SetUnitOwner(whichUnit, whichPlayer, changeColor)
   end
 
   function realWc3Api.GetUnitName(whichUnit)
