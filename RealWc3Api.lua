@@ -204,6 +204,7 @@ function map.RealWc3Api_Create()
 
 
   function realWc3Api.GetPlayerNeutralPassive()
+    -- NOTE: This returns the integer 27
     return GetPlayerNeutralPassive()
   end
 

@@ -3,6 +3,7 @@ gg_rct_TestRegion2 = nil
 gg_rct_TestRegion3 = nil
 gg_rct_TestRegion4 = nil
 gg_snd_NightElfDefeat = ""
+gg_trg_ConvertUnitToBlue = nil
 gg_trg_Untitled_Trigger_001 = nil
 gg_trg_replaceunit = nil
 gg_trg_resources = nil
@@ -13,8 +14,8 @@ gg_trg_quest = nil
 gg_trg_testcop = nil
 gg_trg_PeriodicPrint = nil
 gg_trg_LaunchLua = nil
-gg_trg_ConvertUnitToBlue = nil
 gg_unit_hfoo_0014 = nil
+gg_rct_TestRegion5 = nil
 function InitGlobals()
 end
 
@@ -46,6 +47,8 @@ u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2214.0, 2614.5, 72.314, FourCC("hk
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2353.4, 2619.3, 244.981, FourCC("hkni"))
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2396.9, 2373.0, 97.144, FourCC("hkni"))
 u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -1273.9, -2969.7, 98.726, FourCC("hfoo"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -409.1, 2650.7, 94.991, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -289.1, 2666.0, 229.709, FourCC("hkni"))
 end
 
 function CreateUnitsForPlayer1()
@@ -60,6 +63,52 @@ u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2891.8, 2416.4, 284.544, FourCC("h
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2740.5, 2406.4, 4.559, FourCC("hkni"))
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2275.9, 2438.1, 166.327, FourCC("hkni"))
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2153.5, 2485.2, 121.062, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -176.5, 2666.0, 279.248, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -79.8, 2676.2, 331.028, FourCC("hkni"))
+end
+
+function CreateUnitsForPlayer2()
+local p = Player(2)
+local u
+local unitID
+local t
+local life
+
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -421.2, 2498.0, 316.416, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -304.1, 2493.3, 67.579, FourCC("hkni"))
+end
+
+function CreateUnitsForPlayer3()
+local p = Player(3)
+local u
+local unitID
+local t
+local life
+
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -175.5, 2498.0, 255.143, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -81.7, 2512.4, 18.018, FourCC("hkni"))
+end
+
+function CreateUnitsForPlayer4()
+local p = Player(4)
+local u
+local unitID
+local t
+local life
+
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -401.4, 2335.6, 195.486, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -295.9, 2349.1, 214.932, FourCC("hkni"))
+end
+
+function CreateNeutralPassive()
+local p = Player(PLAYER_NEUTRAL_PASSIVE)
+local u
+local unitID
+local t
+local life
+
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -204.0, 2366.2, 51.088, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -82.8, 2379.8, 68.930, FourCC("hkni"))
 end
 
 function CreatePlayerBuildings()
@@ -69,10 +118,14 @@ end
 function CreatePlayerUnits()
 CreateUnitsForPlayer0()
 CreateUnitsForPlayer1()
+CreateUnitsForPlayer2()
+CreateUnitsForPlayer3()
+CreateUnitsForPlayer4()
 end
 
 function CreateAllUnits()
 CreatePlayerBuildings()
+CreateNeutralPassive()
 CreatePlayerUnits()
 end
 
@@ -83,11 +136,12 @@ gg_rct_TestRegion1 = Rect(-3136.0, 2272.0, -2624.0, 2784.0)
 gg_rct_TestRegion2 = Rect(-2528.0, 2272.0, -2016.0, 2784.0)
 gg_rct_TestRegion3 = Rect(-1888.0, 2272.0, -1376.0, 2784.0)
 gg_rct_TestRegion4 = Rect(-1216.0, 2272.0, -704.0, 2784.0)
+gg_rct_TestRegion5 = Rect(-512.0, 2272.0, 0.0, 2784.0)
 end
 
 map = {}
 map.version = "0.0.0"
-map.commit = "7f10a0ba0d201e37b5a4350937cf103c2a68f316"
+map.commit = "6fa943b0ab6c768a6943ed041ab22d61be871b59"
 function map.Commands_Create(wc3api)
   local commands = {}
   commands.list = {}
@@ -466,7 +520,7 @@ function map.Game_Initialize()
       assert(unitCount == 6, "TestRegion1: Unit count not 6")
 
       local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion1)
-      assert(biggestPlayer == wc3api.GetPlayerNeutralPassive(), "TestRegions1: Red and blue have same size")
+      assert(biggestPlayer == wc3api.Player(wc3api.GetPlayerNeutralPassive()), "TestRegions1: Red and blue have same size")
     end
     TestRegions1()
 
@@ -520,6 +574,18 @@ function map.Game_Initialize()
       assert(wc3api.IsUnitInRangeXY(theUnit, wc3api.GetRectCenterX(editor.TestRegion4), wc3api.GetRectCenterY(editor.TestRegion4), 10), "TestRegions4: Unit out of range")
     end
     TestRegions4()
+
+    -- Editor prepares region to have many different players and units
+    local function TestRegions5()
+      local playerUnits = unitManager.CountUnitsPerPlayerInRegion(editor.TestRegion5)
+      assert(playerUnits[wc3api.Player(0)] == 2, "TestRegions5: Red does not have 2 units")
+      assert(playerUnits[wc3api.Player(1)] == 2, "TestRegions5: Blue does not have 2 units")
+      assert(playerUnits[wc3api.Player(2)] == 2, "TestRegions5: Teal does not have 2 units")
+      assert(playerUnits[wc3api.Player(3)] == 2, "TestRegions5: Purple does not have 2 units")
+      assert(playerUnits[wc3api.Player(4)] == 2, "TestRegions5: Yellow does not have 2 units")
+      assert(playerUnits[wc3api.Player(wc3api.GetPlayerNeutralPassive())] == 2, "TestRegions5: Neutral does not have 2 units")
+    end
+    TestRegions5()
 
     return true
   end
@@ -1206,13 +1272,13 @@ function map.UnitManager_Create(wc3api, logging, commands)
 
 
   function unitManager.GetPlayerWithMostUnitsInRegion(region)
-    local biggestPlayer = wc3api.GetPlayerNeutralPassive()
+    local biggestPlayer = wc3api.Player(wc3api.GetPlayerNeutralPassive())
     local biggestCount = 0
     local playerUnits = unitManager.CountUnitsPerPlayerInRegion(region)
 
     for player,count in pairs(playerUnits) do
       if biggestCount == count then
-        biggestPlayer = wc3api.GetPlayerNeutralPassive()
+        biggestPlayer = wc3api.Player(wc3api.GetPlayerNeutralPassive())
       end
       if count > biggestCount then
         biggestPlayer = player
@@ -1274,6 +1340,20 @@ function map.UnitManager_Create(wc3api, logging, commands)
     wc3api.SetUnitOwner(unit, otherPlayer, wc3api.constants.CHANGE_COLOR)
   end
 
+
+  --[[ TODO: Implement a command to get useful info
+  -- Commands
+  local getUnitRegionInfo = {}
+  getUnitRegionInfo.activator = "-region"
+  getUnitRegionInfo.users = {wc3api.Player(0)}
+  -- getUnitRegionInfo.dummyVar = 0
+  function getUnitRegionInfo:Handler()
+    local cmdString = wc3api.GetEventPlayerChatString()
+    local splitString = utility.Split(cmdString)
+  end
+    commands.Add(getUnitRegionInfo)
+  --]]
+
   return unitManager
 end
 --luacheck: push ignore
@@ -1285,6 +1365,7 @@ function map.Editor_Create()
   editor.TestRegion2 = gg_rct_TestRegion2
   editor.TestRegion3 = gg_rct_TestRegion3
   editor.TestRegion4 = gg_rct_TestRegion4
+  editor.TestRegion5 = gg_rct_TestRegion5
 
   return editor
 end
@@ -1496,6 +1577,7 @@ function map.RealWc3Api_Create()
 
 
   function realWc3Api.GetPlayerNeutralPassive()
+    -- NOTE: This returns the integer 27
     return GetPlayerNeutralPassive()
   end
 

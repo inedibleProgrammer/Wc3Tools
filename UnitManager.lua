@@ -42,13 +42,13 @@ function map.UnitManager_Create(wc3api, logging, commands)
 
 
   function unitManager.GetPlayerWithMostUnitsInRegion(region)
-    local biggestPlayer = wc3api.GetPlayerNeutralPassive()
+    local biggestPlayer = wc3api.Player(wc3api.GetPlayerNeutralPassive())
     local biggestCount = 0
     local playerUnits = unitManager.CountUnitsPerPlayerInRegion(region)
 
     for player,count in pairs(playerUnits) do
       if biggestCount == count then
-        biggestPlayer = wc3api.GetPlayerNeutralPassive()
+        biggestPlayer = wc3api.Player(wc3api.GetPlayerNeutralPassive())
       end
       if count > biggestCount then
         biggestPlayer = player
@@ -109,6 +109,20 @@ function map.UnitManager_Create(wc3api, logging, commands)
   function unitManager.ConvertUnitToOtherPlayer(unit, otherPlayer)
     wc3api.SetUnitOwner(unit, otherPlayer, wc3api.constants.CHANGE_COLOR)
   end
+
+
+  --[[ TODO: Implement a command to get useful info
+  -- Commands
+  local getUnitRegionInfo = {}
+  getUnitRegionInfo.activator = "-region"
+  getUnitRegionInfo.users = {wc3api.Player(0)}
+  -- getUnitRegionInfo.dummyVar = 0
+  function getUnitRegionInfo:Handler()
+    local cmdString = wc3api.GetEventPlayerChatString()
+    local splitString = utility.Split(cmdString)
+  end
+    commands.Add(getUnitRegionInfo)
+  --]]
 
   return unitManager
 end

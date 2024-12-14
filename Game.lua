@@ -65,7 +65,7 @@ function map.Game_Initialize()
       assert(unitCount == 6, "TestRegion1: Unit count not 6")
 
       local biggestPlayer = unitManager.GetPlayerWithMostUnitsInRegion(editor.TestRegion1)
-      assert(biggestPlayer == wc3api.GetPlayerNeutralPassive(), "TestRegions1: Red and blue have same size")
+      assert(biggestPlayer == wc3api.Player(wc3api.GetPlayerNeutralPassive()), "TestRegions1: Red and blue have same size")
     end
     TestRegions1()
 
@@ -119,6 +119,18 @@ function map.Game_Initialize()
       assert(wc3api.IsUnitInRangeXY(theUnit, wc3api.GetRectCenterX(editor.TestRegion4), wc3api.GetRectCenterY(editor.TestRegion4), 10), "TestRegions4: Unit out of range")
     end
     TestRegions4()
+
+    -- Editor prepares region to have many different players and units
+    local function TestRegions5()
+      local playerUnits = unitManager.CountUnitsPerPlayerInRegion(editor.TestRegion5)
+      assert(playerUnits[wc3api.Player(0)] == 2, "TestRegions5: Red does not have 2 units")
+      assert(playerUnits[wc3api.Player(1)] == 2, "TestRegions5: Blue does not have 2 units")
+      assert(playerUnits[wc3api.Player(2)] == 2, "TestRegions5: Teal does not have 2 units")
+      assert(playerUnits[wc3api.Player(3)] == 2, "TestRegions5: Purple does not have 2 units")
+      assert(playerUnits[wc3api.Player(4)] == 2, "TestRegions5: Yellow does not have 2 units")
+      assert(playerUnits[wc3api.Player(wc3api.GetPlayerNeutralPassive())] == 2, "TestRegions5: Neutral does not have 2 units")
+    end
+    TestRegions5()
 
     return true
   end
