@@ -2,6 +2,7 @@ function map.Game_Initialize()
   local initFinished = false
   local game = {}
   local wc3api = map.RealWc3Api_Create()
+  local triggers = map.Triggers_Create(wc3api)
   local colors = map.Colors_Create()
   local utility = map.Utility_Create()
   local commands = map.Commands_Create(wc3api)
@@ -53,6 +54,15 @@ function map.Game_Initialize()
       assert(type(testTrigger) == "userdata")
     end
     TestTriggers1()
+
+    local function TestTriggers2()
+      local counter = 0
+      local function PrintHello()
+        wc3api.BJDebugMsg("Hello")
+      end
+      triggers.CreatePeriodicTrigger(1.0, PrintHello)
+    end
+    TestTriggers2()
 
     return true
   end
