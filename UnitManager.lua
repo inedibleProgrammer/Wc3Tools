@@ -110,6 +110,17 @@ function map.UnitManager_Create(wc3api, logging, commands)
     wc3api.SetUnitOwner(unit, otherPlayer, wc3api.constants.CHANGE_COLOR)
   end
 
+  function unitManager.ConvertUnitToOtherUnit(unit, otherUnitID)
+    local unitID = wc3api.GetUnitTypeId(unit)
+    local unitx = wc3api.GetUnitX(unit)
+    local unity = wc3api.GetUnitY(unit)
+    local unitface = wc3api.GetUnitFacing(unit)
+    local unitowner = wc3api.GetOwningPlayer(unit)
+    wc3api.RemoveUnit(unit)
+    local newUnit = wc3api.CreateUnit(unitowner, otherUnitID, unitx, unity, unitface)
+    return newUnit
+  end
+
 
   --[[ TODO: Implement a command to get useful info
   -- Commands

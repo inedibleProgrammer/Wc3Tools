@@ -4,6 +4,7 @@ Build.Combined = "Combined.lua"
 MAP_VERSION = "0.0.0"
 
 Build.SourceFiles = {
+  "Triggers.lua",
   "Commands.lua",
   "Colors.lua",
   "TestFramework.lua",

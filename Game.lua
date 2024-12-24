@@ -142,6 +142,19 @@ function map.Game_Initialize()
     end
     TestRegions5()
 
+    local function TestRegions6()
+      local th = wc3api.CreateUnit(wc3api.Player(0),
+                                     wc3api.FourCC("htow"),
+                                     wc3api.GetRectCenterX(editor.TestRegion6),
+                                     wc3api.GetRectCenterY(editor.TestRegion6),
+                                     0)
+
+      local newUnit = unitManager.ConvertUnitToOtherUnit(th, wc3api.FourCC("etol"))
+
+      assert(wc3api.GetUnitTypeId(newUnit) == wc3api.FourCC("etol"), "TestRegion6: not tree of life")
+    end
+    TestRegions6()
+
     return true
   end
   assert(TestRegions(), "Region tests did not finish.")
