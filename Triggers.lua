@@ -9,6 +9,8 @@ function map.Triggers_Create(wc3api)
     wc3api.TriggerAddAction(periodicTrigger.trigger, action)
     wc3api.TriggerRegisterTimerEvent(periodicTrigger.trigger, period, wc3api.constants.IS_PERIODIC)
 
+    -- TODO: Add a way to destroy/disable this trigger
+
     return periodicTrigger
   end
 

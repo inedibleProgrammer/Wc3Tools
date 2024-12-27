@@ -104,9 +104,9 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.PLAYER_SLOT_STATE_LEFT = PLAYER_SLOT_STATE_LEFT
 
   realWc3Api.constants.MAP_CONTROL_USER = MAP_CONTROL_USER
-  realWc3Api.constants.MAP_CONTROL_COMPUTER = MAP_CONTROL_COMPU
-  realWc3Api.constants.MAP_CONTROL_RESCUABLE = MAP_CONTROL_RESCU
-  realWc3Api.constants.MAP_CONTROL_NEUTRAL = MAP_CONTROL_NEUTR
+  realWc3Api.constants.MAP_CONTROL_COMPUTER = MAP_CONTROL_COMPUTER
+  realWc3Api.constants.MAP_CONTROL_RESCUABLE = MAP_CONTROL_RESCUABLE
+  realWc3Api.constants.MAP_CONTROL_NEUTRAL = MAP_CONTROL_NEUTRAL
   realWc3Api.constants.MAP_CONTROL_CREEP = MAP_CONTROL_CREEP
   realWc3Api.constants.MAP_CONTROL_NONE = MAP_CONTROL_NONE
 
@@ -466,6 +466,10 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetIssuedOrderId()
     return GetIssuedOrderId()
+  end
+
+  function realWc3Api.IssueBuildOrderById(whichPeon, unitId, x, y)
+    return IssueBuildOrderById(whichPeon, unitId, x, y)
   end
 
   function realWc3Api.GetOrderPointX()
