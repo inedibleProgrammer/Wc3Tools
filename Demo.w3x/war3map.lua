@@ -2,6 +2,7 @@ gg_rct_TestRegion1 = nil
 gg_rct_TestRegion2 = nil
 gg_rct_TestRegion3 = nil
 gg_rct_TestRegion4 = nil
+gg_rct_TestRegion5 = nil
 gg_snd_NightElfDefeat = ""
 gg_trg_ConvertUnitToBlue = nil
 gg_trg_Untitled_Trigger_001 = nil
@@ -15,7 +16,10 @@ gg_trg_testcop = nil
 gg_trg_PeriodicPrint = nil
 gg_trg_LaunchLua = nil
 gg_unit_hfoo_0014 = nil
-gg_rct_TestRegion5 = nil
+gg_rct_TestRegion6 = nil
+gg_trg_MoveFootie = nil
+gg_trg_ping = nil
+gg_trg_camera = nil
 function InitGlobals()
 end
 
@@ -137,11 +141,45 @@ gg_rct_TestRegion2 = Rect(-2528.0, 2272.0, -2016.0, 2784.0)
 gg_rct_TestRegion3 = Rect(-1888.0, 2272.0, -1376.0, 2784.0)
 gg_rct_TestRegion4 = Rect(-1216.0, 2272.0, -704.0, 2784.0)
 gg_rct_TestRegion5 = Rect(-512.0, 2272.0, 0.0, 2784.0)
+gg_rct_TestRegion6 = Rect(160.0, 2272.0, 672.0, 2784.0)
 end
 
 map = {}
 map.version = "0.0.0"
-map.commit = "6fa943b0ab6c768a6943ed041ab22d61be871b59"
+map.commit = "7e8a53f0860bb5a2312f9e915aac81ec64613ea4"
+function map.Triggers_Create(wc3api)
+  local triggers = {}
+
+
+  function triggers.CreatePeriodicTrigger(period, action)
+    local periodicTrigger = {}
+
+    periodicTrigger.trigger = wc3api.CreateTrigger()
+    wc3api.TriggerAddAction(periodicTrigger.trigger, action)
+    wc3api.TriggerRegisterTimerEvent(periodicTrigger.trigger, period, wc3api.constants.IS_PERIODIC)
+
+    -- TODO: Add a way to destroy/disable this trigger
+
+    return periodicTrigger
+  end
+
+  function triggers.CreateTimedTrigger(time, action)
+    local timedTrigger = {}
+
+    local function ActionWithCleanup()
+      action()
+      wc3api.DestroyTrigger(timedTrigger.trigger)
+    end
+
+    timedTrigger.trigger = wc3api.CreateTrigger()
+    wc3api.TriggerAddAction(timedTrigger.trigger, ActionWithCleanup)
+    wc3api.TriggerRegisterTimerEvent(timedTrigger.trigger, time, wc3api.constants.IS_NOT_PERIODIC)
+
+    return timedTrigger
+  end
+
+  return triggers
+end
 function map.Commands_Create(wc3api)
   local commands = {}
   commands.list = {}
@@ -457,6 +495,7 @@ function map.Game_Initialize()
   local initFinished = false
   local game = {}
   local wc3api = map.RealWc3Api_Create()
+  local triggers = map.Triggers_Create(wc3api)
   local colors = map.Colors_Create()
   local utility = map.Utility_Create()
   local commands = map.Commands_Create(wc3api)
@@ -467,13 +506,33 @@ function map.Game_Initialize()
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
   local unitManager = map.UnitManager_Create(wc3api, logging, commands)
   local editor = map.Editor_Create()
+  local world = map.World_Create(wc3api, players, commands)
   local debugTools = map.DebugTools_Create(wc3api, logging, players, commands, utility, colors)
 
   initFinished = true
   assert(initFinished, "Init did not finish.")
 
+
+
   function TestGeneral()
-    
+    local function TestPings()
+      local function Ping()
+        wc3api.PingMinimapEx(0, 0, 5, 255, 0, 0, false)
+      end
+      triggers.CreateTimedTrigger(1, Ping)
+    end
+    TestPings()
+
+    local function TestCamera()
+      local function Camera()
+        wc3api.PanCameraToForPlayer(wc3api.Player(0),
+                                    wc3api.GetRectCenterX(wc3api.GetWorldBounds()),
+                                    wc3api.GetRectCenterY(wc3api.GetWorldBounds()))
+      end
+      Camera()
+    end
+    TestCamera()
+
     return true
   end
   assert(TestGeneral(), "General tests did not finish.")
@@ -508,6 +567,15 @@ function map.Game_Initialize()
       assert(type(testTrigger) == "userdata")
     end
     TestTriggers1()
+
+    local function TestTriggers2()
+      local counter = 0
+      local function PrintHello()
+        wc3api.BJDebugMsg("Hello - test periodic")
+      end
+      triggers.CreatePeriodicTrigger(1.0, PrintHello)
+    end
+    TestTriggers2()
 
     return true
   end
@@ -586,6 +654,19 @@ function map.Game_Initialize()
       assert(playerUnits[wc3api.Player(wc3api.GetPlayerNeutralPassive())] == 2, "TestRegions5: Neutral does not have 2 units")
     end
     TestRegions5()
+
+    local function TestRegions6()
+      local th = wc3api.CreateUnit(wc3api.Player(0),
+                                     wc3api.FourCC("htow"),
+                                     wc3api.GetRectCenterX(editor.TestRegion6),
+                                     wc3api.GetRectCenterY(editor.TestRegion6),
+                                     0)
+
+      local newUnit = unitManager.ConvertUnitToOtherUnit(th, wc3api.FourCC("etol"))
+
+      assert(wc3api.GetUnitTypeId(newUnit) == wc3api.FourCC("etol"), "TestRegion6: not tree of life")
+    end
+    TestRegions6()
 
     return true
   end
@@ -766,7 +847,7 @@ function map.Clock_Create()
     local timeElapsed = clock.TimeElapsed()
 
     timeString = tostring(timeElapsed.hours) .. ":" .. tostring(timeElapsed.minutes) .. ":" .. tostring(timeElapsed.seconds)
-    -- timeString = string.format("10:07:00", timeElapsed.hours, timeElapsed.minutes, timeElapsed.seconds) -- This doesn't work in wc3 for some reason
+    -- timeString = string.format("-243315840:10:00", timeElapsed.hours, timeElapsed.minutes, timeElapsed.seconds) -- This doesn't work in wc3 for some reason
 
     return timeString
   end
@@ -1340,6 +1421,17 @@ function map.UnitManager_Create(wc3api, logging, commands)
     wc3api.SetUnitOwner(unit, otherPlayer, wc3api.constants.CHANGE_COLOR)
   end
 
+  function unitManager.ConvertUnitToOtherUnit(unit, otherUnitID)
+    local unitID = wc3api.GetUnitTypeId(unit)
+    local unitx = wc3api.GetUnitX(unit)
+    local unity = wc3api.GetUnitY(unit)
+    local unitface = wc3api.GetUnitFacing(unit)
+    local unitowner = wc3api.GetOwningPlayer(unit)
+    wc3api.RemoveUnit(unit)
+    local newUnit = wc3api.CreateUnit(unitowner, otherUnitID, unitx, unity, unitface)
+    return newUnit
+  end
+
 
   --[[ TODO: Implement a command to get useful info
   -- Commands
@@ -1366,6 +1458,7 @@ function map.Editor_Create()
   editor.TestRegion3 = gg_rct_TestRegion3
   editor.TestRegion4 = gg_rct_TestRegion4
   editor.TestRegion5 = gg_rct_TestRegion5
+  editor.TestRegion6 = gg_rct_TestRegion6
 
   return editor
 end
@@ -1477,9 +1570,9 @@ function map.RealWc3Api_Create()
   realWc3Api.constants.PLAYER_SLOT_STATE_LEFT = PLAYER_SLOT_STATE_LEFT
 
   realWc3Api.constants.MAP_CONTROL_USER = MAP_CONTROL_USER
-  realWc3Api.constants.MAP_CONTROL_COMPUTER = MAP_CONTROL_COMPU
-  realWc3Api.constants.MAP_CONTROL_RESCUABLE = MAP_CONTROL_RESCU
-  realWc3Api.constants.MAP_CONTROL_NEUTRAL = MAP_CONTROL_NEUTR
+  realWc3Api.constants.MAP_CONTROL_COMPUTER = MAP_CONTROL_COMPUTER
+  realWc3Api.constants.MAP_CONTROL_RESCUABLE = MAP_CONTROL_RESCUABLE
+  realWc3Api.constants.MAP_CONTROL_NEUTRAL = MAP_CONTROL_NEUTRAL
   realWc3Api.constants.MAP_CONTROL_CREEP = MAP_CONTROL_CREEP
   realWc3Api.constants.MAP_CONTROL_NONE = MAP_CONTROL_NONE
 
@@ -1493,6 +1586,22 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.BJDebugMsg(msg)
     return BJDebugMsg(msg)
+  end
+
+  function realWc3Api.GetWorldBounds()
+    return GetWorldBounds()
+  end
+
+  function realWc3Api.PingMinimap(x, y, duration)
+    return PingMinimap(x, y, duration)
+  end
+
+  function realWc3Api.PingMinimapEx(x, y, duration, red, green, blue, extraEffects)
+    return PingMinimapEx(x, y, duration, red, green, blue, extraEffects)
+  end
+
+  function realWc3Api.PanCameraToForPlayer(whichPlayer, x, y)
+    return PanCameraToForPlayer(whichPlayer, x, y)
   end
 
   function realWc3Api.CreateTrigger()
@@ -1839,6 +1948,10 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetIssuedOrderId()
     return GetIssuedOrderId()
+  end
+
+  function realWc3Api.IssueBuildOrderById(whichPeon, unitId, x, y)
+    return IssueBuildOrderById(whichPeon, unitId, x, y)
   end
 
   function realWc3Api.GetOrderPointX()
@@ -2525,6 +2638,26 @@ function map.RealWc3Api_Create()
 end
 --luacheck: pop
 
+function map.World_Create(wc3api, players, commands)
+  local world = {}
+
+  world.rect = wc3api.GetWorldBounds()
+
+  world.center = {}
+  world.center.x = wc3api.GetRectCenterX(world.rect)
+  world.center.y = wc3api.GetRectCenterY(world.rect)
+
+  local displayWorldBoundsCommand = {}
+  displayWorldBoundsCommand.activator = "-world"
+  displayWorldBoundsCommand.users = players.ALL_PLAYERS
+  function displayWorldBoundsCommand.Handler()
+    local message = "Center: " .. "(" .. tostring(world.center.x) .. "," .. tostring(world.center.y) .. ")"
+    wc3api.BJDebugMsg(message)
+  end
+  commands.Add(displayWorldBoundsCommand)
+
+  return world
+end
 function map.UnitTests()
   local testFramework = map.TestFramework_Create()
   map.Commands_Tests(testFramework)

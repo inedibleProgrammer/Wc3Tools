@@ -126,6 +126,18 @@ function map.RealWc3Api_Create()
     return GetWorldBounds()
   end
 
+  function realWc3Api.PingMinimap(x, y, duration)
+    return PingMinimap(x, y, duration)
+  end
+
+  function realWc3Api.PingMinimapEx(x, y, duration, red, green, blue, extraEffects)
+    return PingMinimapEx(x, y, duration, red, green, blue, extraEffects)
+  end
+
+  function realWc3Api.PanCameraToForPlayer(whichPlayer, x, y)
+    return PanCameraToForPlayer(whichPlayer, x, y)
+  end
+
   function realWc3Api.CreateTrigger()
     return CreateTrigger()
   end

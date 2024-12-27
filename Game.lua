@@ -19,8 +19,27 @@ function map.Game_Initialize()
   initFinished = true
   assert(initFinished, "Init did not finish.")
 
+
+
   function TestGeneral()
-    
+    local function TestPings()
+      local function Ping()
+        wc3api.PingMinimapEx(0, 0, 5, 255, 0, 0, false)
+      end
+      triggers.CreateTimedTrigger(1, Ping)
+    end
+    TestPings()
+
+    local function TestCamera()
+      local function Camera()
+        wc3api.PanCameraToForPlayer(wc3api.Player(0),
+                                    wc3api.GetRectCenterX(wc3api.GetWorldBounds()),
+                                    wc3api.GetRectCenterY(wc3api.GetWorldBounds()))
+      end
+      Camera()
+    end
+    TestCamera()
+
     return true
   end
   assert(TestGeneral(), "General tests did not finish.")
