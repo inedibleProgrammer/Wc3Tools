@@ -5,6 +5,7 @@ MAP_VERSION = "0.0.0"
 
 Build.SourceFiles = {
   "Triggers.lua",
+  "Sounds.lua",
   "Commands.lua",
   "Colors.lua",
   "TestFramework.lua",

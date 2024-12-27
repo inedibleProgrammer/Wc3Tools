@@ -1168,6 +1168,42 @@ function map.RealWc3Api_Create()
     return FogModifierStop(whichFogModifier)
   end
 
+  function realWc3Api.CreateSoundFromLabel(soundLabel, looping, is3D, stopwhenoutofrange, fadeInRate, fadeOutRate)
+    return CreateSoundFromLabel(soundLabel, looping, is3D, stopwhenoutofrange, fadeInRate, fadeOutRate)
+  end
+
+  function realWc3Api.StartSound(soundHandle)
+    return StartSound(soundHandle)
+  end
+
+  function realWc3Api.StopSound(soundHandle, killWhenDone, fadeOut)
+    return StopSound(soundHandle, killWhenDone, fadeOut)
+  end
+
+  function realWc3Api.SetMapMusic(musicName, random, index)
+    return SetMapMusic(musicName, random, index)
+  end
+
+  function realWc3Api.ClearMapMusic()
+    return ClearMapMusic()
+  end
+
+  function realWc3Api.PlayMusic(musicName)
+    return PlayMusic(musicName)
+  end
+
+  function realWc3Api.PlayMusicEx(musicName, frommsecs, fadeinmsecs)
+    return PlayMusicEx(musicName, frommsecs, fadeinmsecs)
+  end
+
+  function realWc3Api.StopMusic(fadeOut)
+    return StopMusic(fadeOut)
+  end
+
+  function realWc3Api.ResumeMusic()
+    return ResumeMusic()
+  end
+
   return realWc3Api
 end
 --luacheck: pop

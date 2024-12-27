@@ -2,6 +2,7 @@ function map.Game_Initialize()
   local initFinished = false
   local game = {}
   local wc3api = map.RealWc3Api_Create()
+  local sounds = map.Sounds_Create(wc3api)
   local triggers = map.Triggers_Create(wc3api)
   local colors = map.Colors_Create()
   local utility = map.Utility_Create()
@@ -39,6 +40,24 @@ function map.Game_Initialize()
       Camera()
     end
     TestCamera()
+
+
+    local function TestMusic()
+      local function Music()
+        sounds.PlayTension()
+        -- local g_musicpath = "Tension" .. ";NightElfDefeat"
+        -- wc3api.SetMapMusic(gg_snd_NightElfDefeat, false, 0)
+        -- wc3api.StopMusic(true)
+        -- wc3api.ClearMapMusic()
+        -- wc3api.SetMapMusic(g_musicpath, false, 0)
+        -- wc3api.StartSound(bj_victoryDialogSound)
+        -- wc3api.PlayMusic("Tension")
+        -- wc3api.StartSound(gg_snd_NightElfDefeat)
+        -- wc3api.PlayMusic(musicpath)
+      end
+      xpcall(Music, print)
+    end
+    TestMusic()
 
     return true
   end
