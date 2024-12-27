@@ -13,6 +13,7 @@ function map.Game_Initialize()
   local logging = map.Logging_Create(wc3api, gameClock, commands, players)
   local unitManager = map.UnitManager_Create(wc3api, logging, commands)
   local editor = map.Editor_Create()
+  local world = map.World_Create(wc3api, players, commands)
   local debugTools = map.DebugTools_Create(wc3api, logging, players, commands, utility, colors)
 
   initFinished = true
@@ -58,7 +59,7 @@ function map.Game_Initialize()
     local function TestTriggers2()
       local counter = 0
       local function PrintHello()
-        wc3api.BJDebugMsg("Hello")
+        wc3api.BJDebugMsg("Hello - test periodic")
       end
       triggers.CreatePeriodicTrigger(1.0, PrintHello)
     end

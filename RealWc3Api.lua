@@ -122,6 +122,10 @@ function map.RealWc3Api_Create()
     return BJDebugMsg(msg)
   end
 
+  function realWc3Api.GetWorldBounds()
+    return GetWorldBounds()
+  end
+
   function realWc3Api.CreateTrigger()
     return CreateTrigger()
   end

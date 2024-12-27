@@ -18,6 +18,7 @@ Build.SourceFiles = {
   "UnitManager.lua",
   "Editor.lua",
   "RealWc3Api.lua",
+  "World.lua",
   "LaunchLua.lua", -- Must be last
 }
 
