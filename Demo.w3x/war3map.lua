@@ -3,7 +3,6 @@ gg_rct_TestRegion2 = nil
 gg_rct_TestRegion3 = nil
 gg_rct_TestRegion4 = nil
 gg_rct_TestRegion5 = nil
-gg_snd_NightElfDefeat = ""
 gg_trg_ConvertUnitToBlue = nil
 gg_trg_Untitled_Trigger_001 = nil
 gg_trg_replaceunit = nil
@@ -20,10 +19,14 @@ gg_rct_TestRegion6 = nil
 gg_trg_MoveFootie = nil
 gg_trg_ping = nil
 gg_trg_camera = nil
+gg_trg_sound = nil
+gg_snd_Tension = ""
+gg_snd_NightElfDefeat = ""
 function InitGlobals()
 end
 
 function InitSounds()
+gg_snd_Tension = "Tension"
 gg_snd_NightElfDefeat = "NightElfDefeat"
 end
 
@@ -146,7 +149,7 @@ end
 
 map = {}
 map.version = "0.0.0"
-map.commit = "7e8a53f0860bb5a2312f9e915aac81ec64613ea4"
+map.commit = "0bef820d09f50924df2ef673949fc9603f8c5ced"
 function map.Triggers_Create(wc3api)
   local triggers = {}
 
@@ -179,6 +182,29 @@ function map.Triggers_Create(wc3api)
   end
 
   return triggers
+end
+function map.Sounds_Create(wc3api)
+  local sounds = {}
+
+  -- TODO: Implement music and sounds using the wc3 sound api
+  -- TODO: Add commands to get current music info
+  sounds.effects = {}
+
+  sounds.effects.kidlaughing = wc3api.CreateSoundFromLabel("H01VillagerC37", false, false, false, 10000, 10000)
+
+  sounds.music = {}
+
+  sounds.victoryDialogSound = wc3api.CreateSoundFromLabel("QuestCompleted", false, false, false, 10000, 10000)
+  sounds.music.tensionSong = wc3api.CreateSoundFromLabel("Tension", false, false, false, 10000, 10000)
+  
+
+  function sounds.PlayTension()
+    -- wc3api.StartSound(sounds.music.tensionSong)
+    -- wc3api.StartSound(sounds.victoryDialogSound)
+    wc3api.StartSound(sounds.effects.kidlaughing)
+  end
+
+  return sounds
 end
 function map.Commands_Create(wc3api)
   local commands = {}
@@ -495,6 +521,7 @@ function map.Game_Initialize()
   local initFinished = false
   local game = {}
   local wc3api = map.RealWc3Api_Create()
+  local sounds = map.Sounds_Create(wc3api)
   local triggers = map.Triggers_Create(wc3api)
   local colors = map.Colors_Create()
   local utility = map.Utility_Create()
@@ -532,6 +559,24 @@ function map.Game_Initialize()
       Camera()
     end
     TestCamera()
+
+
+    local function TestMusic()
+      local function Music()
+        sounds.PlayTension()
+        -- local g_musicpath = "Tension" .. ";NightElfDefeat"
+        -- wc3api.SetMapMusic(gg_snd_NightElfDefeat, false, 0)
+        -- wc3api.StopMusic(true)
+        -- wc3api.ClearMapMusic()
+        -- wc3api.SetMapMusic(g_musicpath, false, 0)
+        -- wc3api.StartSound(bj_victoryDialogSound)
+        -- wc3api.PlayMusic("Tension")
+        -- wc3api.StartSound(gg_snd_NightElfDefeat)
+        -- wc3api.PlayMusic(musicpath)
+      end
+      xpcall(Music, print)
+    end
+    TestMusic()
 
     return true
   end
@@ -665,6 +710,10 @@ function map.Game_Initialize()
       local newUnit = unitManager.ConvertUnitToOtherUnit(th, wc3api.FourCC("etol"))
 
       assert(wc3api.GetUnitTypeId(newUnit) == wc3api.FourCC("etol"), "TestRegion6: not tree of life")
+      local g = wc3api.CreateGroup()
+      wc3api.GroupEnumUnitsInRect(g, editor.TestRegion6, wc3api.constants.NO_FILTER)
+      assert(wc3api.BlzGroupGetSize(g) == 1, "TestRegions6: Group size")
+      assert(wc3api.BlzGroupUnitAt(g, 0) == newUnit, "TestRegions6: Wrong unit")
     end
     TestRegions6()
 
@@ -695,6 +744,17 @@ function map.Utility_Create()
     return t
   end
 
+  function utility.TableMerge(t1, t2)
+    local t3 = {}
+    for k,v in ipairs(t1) do
+      table.insert(t3, v)
+    end
+    for k,v in ipairs(t2) do
+      table.insert(t3, v)
+    end
+    return t3
+  end
+
   return utility
 end
 
@@ -720,6 +780,23 @@ function map.Utility_Tests(testFramework)
     assert(table.remove(splitString) == "a")
     assert(table.remove(splitString) == "is")
     assert(table.remove(splitString) == "This")
+  end
+
+  function tsu.Tests.MergeTest()
+    local t1 = {}
+    t1[1] = "first"
+    t1[2] = "second"
+    local t2 = {}
+    t2[1] = "third"
+    t2[2] = "fourth"
+
+    local utility = map.Utility_Create()
+
+    local t3 = utility.TableMerge(t1, t2)
+    assert(t3[1] == "first")
+    assert(t3[2] == "second")
+    assert(t3[3] == "third")
+    assert(t3[4] == "fourth")
   end
 end
 
@@ -1588,6 +1665,14 @@ function map.RealWc3Api_Create()
     return BJDebugMsg(msg)
   end
 
+  function realWc3Api.GetRandomInt(lowBound, highBound)
+    return GetRandomInt(lowBound, highBound)
+  end
+
+  function realWc3Api.GetRandomReal(lowBound, highBound)
+    return GetRandomReal(lowBound, highBound)
+  end
+
   function realWc3Api.GetWorldBounds()
     return GetWorldBounds()
   end
@@ -1944,6 +2029,14 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetOrderedUnit()
     return GetOrderedUnit()
+  end
+
+  function realWc3Api.GetUnitCurrentOrder(whichUnit)
+    return GetUnitCurrentOrder(whichUnit)
+  end
+
+  function realWc3Api.IssuePointOrder(whichUnit, order, x, y)
+    return IssuePointOrder(whichUnit, order, x, y)
   end
 
   function realWc3Api.GetIssuedOrderId()
@@ -2382,6 +2475,14 @@ function map.RealWc3Api_Create()
     return GetEnumUnit()
   end
 
+  function realWc3Api.BlzGroupGetSize(whichGroup)
+    return BlzGroupGetSize(whichGroup)
+  end
+
+  function realWc3Api.BlzGroupUnitAt(whichGroup, index)
+    return BlzGroupUnitAt(whichGroup, index)
+  end
+
   function realWc3Api.GroupEnumUnitsOfType(whichGroup, unitname, filter)
     return GroupEnumUnitsOfType(whichGroup, unitname, filter)
   end
@@ -2632,6 +2733,42 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.FogModifierStop(whichFogModifier)
     return FogModifierStop(whichFogModifier)
+  end
+
+  function realWc3Api.CreateSoundFromLabel(soundLabel, looping, is3D, stopwhenoutofrange, fadeInRate, fadeOutRate)
+    return CreateSoundFromLabel(soundLabel, looping, is3D, stopwhenoutofrange, fadeInRate, fadeOutRate)
+  end
+
+  function realWc3Api.StartSound(soundHandle)
+    return StartSound(soundHandle)
+  end
+
+  function realWc3Api.StopSound(soundHandle, killWhenDone, fadeOut)
+    return StopSound(soundHandle, killWhenDone, fadeOut)
+  end
+
+  function realWc3Api.SetMapMusic(musicName, random, index)
+    return SetMapMusic(musicName, random, index)
+  end
+
+  function realWc3Api.ClearMapMusic()
+    return ClearMapMusic()
+  end
+
+  function realWc3Api.PlayMusic(musicName)
+    return PlayMusic(musicName)
+  end
+
+  function realWc3Api.PlayMusicEx(musicName, frommsecs, fadeinmsecs)
+    return PlayMusicEx(musicName, frommsecs, fadeinmsecs)
+  end
+
+  function realWc3Api.StopMusic(fadeOut)
+    return StopMusic(fadeOut)
+  end
+
+  function realWc3Api.ResumeMusic()
+    return ResumeMusic()
   end
 
   return realWc3Api
