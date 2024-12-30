@@ -118,8 +118,28 @@ function map.RealWc3Api_Create()
 
   realWc3Api.constants.CAMERA_FIELD_TARGET_DISTANCE = CAMERA_FIELD_TARGET_DISTANCE
 
+  realWc3Api.constants.FOG_OF_WAR_MASKED = FOG_OF_WAR_MASKED
+  realWc3Api.constants.FOG_OF_WAR_FOGGED = FOG_OF_WAR_FOGGED
+  realWc3Api.constants.FOG_OF_WAR_VISIBLE = FOG_OF_WAR_VISIBLE
+
   function realWc3Api.BJDebugMsg(msg)
     return BJDebugMsg(msg)
+  end
+
+  function realWc3Api.FogModifierStart(whichFogModifier)
+    return FogModifierStart(whichFogModifier)
+  end
+
+  function realWc3Api.CreateFogModifierRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision, afterUnits)
+    return CreateFogModifierRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision, afterUnits)
+  end
+
+  function realWc3Api.GetRandomInt(lowBound, highBound)
+    return GetRandomInt(lowBound, highBound)
+  end
+
+  function realWc3Api.GetRandomReal(lowBound, highBound)
+    return GetRandomReal(lowBound, highBound)
   end
 
   function realWc3Api.GetWorldBounds()
@@ -480,6 +500,14 @@ function map.RealWc3Api_Create()
     return GetOrderedUnit()
   end
 
+  function realWc3Api.GetUnitCurrentOrder(whichUnit)
+    return GetUnitCurrentOrder(whichUnit)
+  end
+
+  function realWc3Api.IssuePointOrder(whichUnit, order, x, y)
+    return IssuePointOrder(whichUnit, order, x, y)
+  end
+
   function realWc3Api.GetIssuedOrderId()
     return GetIssuedOrderId()
   end
@@ -542,6 +570,10 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetSpellTargetUnit()
     return GetSpellTargetUnit()
+  end
+
+  function realWc3Api.GetFoodUsed(unitId)
+    return GetFoodUsed(unitId)
   end
 
   function realWc3Api.BlzSetUnitName(whichUnit, name)
@@ -856,6 +888,10 @@ function map.RealWc3Api_Create()
     return BlzSetUnitMaxHP(whichUnit, hp)
   end
 
+  function realWc3Api.SetUnitLifePercentBJ(whichUnit, percent)
+    return SetUnitLifePercentBJ(whichUnit, percent)
+  end
+
   function realWc3Api.BlzGetUnitMaxHP(whichUnit)
     return BlzGetUnitMaxHP(whichUnit)
   end
@@ -866,6 +902,14 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.IsHeroUnitId(unitId)
     return IsHeroUnitId(unitId)
+  end
+
+  function realWc3Api.SetUnitCreepGuard(whichUnit, creepGuard)
+    return SetUnitCreepGuard(whichUnit, creepGuard)
+  end
+
+  function realWc3Api.RemoveGuardPosition(hUnit)
+    return RemoveGuardPosition(hUnit)
   end
 
   function realWc3Api.GetObjectName(objectId)
@@ -914,6 +958,14 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.GetEnumUnit()
     return GetEnumUnit()
+  end
+
+  function realWc3Api.BlzGroupGetSize(whichGroup)
+    return BlzGroupGetSize(whichGroup)
+  end
+
+  function realWc3Api.BlzGroupUnitAt(whichGroup, index)
+    return BlzGroupUnitAt(whichGroup, index)
   end
 
   function realWc3Api.GroupEnumUnitsOfType(whichGroup, unitname, filter)

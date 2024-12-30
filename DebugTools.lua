@@ -113,8 +113,9 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
   local visibleCommand = {}
   visibleCommand.activator = "-visible"
   visibleCommand.users = players.AUTHENTICATED_PLAYERS
-  function visibleCommand.Visible()
-    
+  function visibleCommand.Handler()
+    local commandingPlayer = wc3api.GetTriggerPlayer()
+    wc3api.FogModifierStart(wc3api.CreateFogModifierRect(commandingPlayer, wc3api.constants.FOG_OF_WAR_VISIBLE, wc3api.GetWorldBounds(), true, true))
   end
 
 
@@ -123,6 +124,7 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
   commands.Add(setWoodCommand)
   commands.Add(killUnitCommand)
   commands.Add(removeUnitCommand)
+  commands.Add(visibleCommand)
 
   return debugTools
 end

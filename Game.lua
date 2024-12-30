@@ -191,6 +191,10 @@ function map.Game_Initialize()
       local newUnit = unitManager.ConvertUnitToOtherUnit(th, wc3api.FourCC("etol"))
 
       assert(wc3api.GetUnitTypeId(newUnit) == wc3api.FourCC("etol"), "TestRegion6: not tree of life")
+      local g = wc3api.CreateGroup()
+      wc3api.GroupEnumUnitsInRect(g, editor.TestRegion6, wc3api.constants.NO_FILTER)
+      assert(wc3api.BlzGroupGetSize(g) == 1, "TestRegions6: Group size")
+      assert(wc3api.BlzGroupUnitAt(g, 0) == newUnit, "TestRegions6: Wrong unit")
     end
     TestRegions6()
 

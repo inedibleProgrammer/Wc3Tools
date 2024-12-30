@@ -12,6 +12,17 @@ function map.Utility_Create()
     return t
   end
 
+  function utility.TableMerge(t1, t2)
+    local t3 = {}
+    for k,v in ipairs(t1) do
+      table.insert(t3, v)
+    end
+    for k,v in ipairs(t2) do
+      table.insert(t3, v)
+    end
+    return t3
+  end
+
   return utility
 end
 
@@ -37,6 +48,23 @@ function map.Utility_Tests(testFramework)
     assert(table.remove(splitString) == "a")
     assert(table.remove(splitString) == "is")
     assert(table.remove(splitString) == "This")
+  end
+
+  function tsu.Tests.MergeTest()
+    local t1 = {}
+    t1[1] = "first"
+    t1[2] = "second"
+    local t2 = {}
+    t2[1] = "third"
+    t2[2] = "fourth"
+
+    local utility = map.Utility_Create()
+
+    local t3 = utility.TableMerge(t1, t2)
+    assert(t3[1] == "first")
+    assert(t3[2] == "second")
+    assert(t3[3] == "third")
+    assert(t3[4] == "fourth")
   end
 end
 
