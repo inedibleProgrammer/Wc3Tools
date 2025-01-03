@@ -7,6 +7,7 @@ function map.UnitTests()
   map.Players_Tests(testFramework)
   map.Logging_Tests(testFramework)
   map.Colors_Tests(testFramework)
+  map.FileIO_Tests(testFramework)
   -- xpcall(testFramework.TestRunner, print)
   testFramework.TestRunner()
 end

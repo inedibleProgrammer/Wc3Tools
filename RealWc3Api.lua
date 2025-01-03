@@ -1256,6 +1256,42 @@ function map.RealWc3Api_Create()
     return ResumeMusic()
   end
 
+  function realWc3Api.Preload(filename)
+    return Preload(filename)
+  end
+
+  function realWc3Api.PreloadEnd(timeout)
+    return PreloadEnd(timeout)
+  end
+
+  function realWc3Api.PreloadStart()
+    return PreloadStart()
+  end
+
+  function realWc3Api.PreloadRefresh()
+    return PreloadRefresh()
+  end
+
+  function realWc3Api.PreloadEndEx()
+    return PreloadEndEx()
+  end
+
+  function realWc3Api.PreloadGenClear()
+    return PreloadGenClear()
+  end
+
+  function realWc3Api.PreloadGenStart()
+    return PreloadGenStart()
+  end
+
+  function realWc3Api.PreloadGenEnd(filename)
+    return PreloadGenEnd(filename)
+  end
+
+  function realWc3Api.Preloader(filename)
+    return Preloader(filename)
+  end
+
   return realWc3Api
 end
 --luacheck: pop

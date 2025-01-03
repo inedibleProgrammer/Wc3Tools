@@ -59,6 +59,91 @@ function map.Game_Initialize()
     end
     TestMusic()
 
+    local function TestCreateFile()
+      wc3api.PreloadGenClear()
+      wc3api.PreloadGenStart()
+      wc3api.Preload("Dummy1246\nDummy123")
+      wc3api.PreloadGenEnd("Dummy.txt")
+    end
+    xpcall(TestCreateFile, print)
+
+    local function TestFileIO()
+      local fileIO = map.FileIO_Create(wc3api)
+      fileIO.Init("FileIO.txt") -- Max you can write is apparently 259 bytes
+      for i=0, 20 do
+        local m = ""
+        m = m .. tostring(i) .. ":" .. "sometext"
+        fileIO.WriteLine(m)
+      end
+      fileIO.Flush()
+    end
+    xpcall(TestFileIO, print)
+
+    local function TestCeresFileIO()
+      local ofstream = {}
+      ofstream.raw_prefix = ']]i(p,[['
+      ofstream.raw_suffix = ']])--[['
+      ofstream.raw_size = 256 - #ofstream.raw_prefix - #ofstream.raw_suffix
+      ofstream.load_ability = FourCC('ANdc')
+
+      function ofstream.open(filename)
+        ofstream.name = filename
+        PreloadGenClear()
+        Preload('")\nendfunction\n//! beginusercode\nlocal p={} local i=table.insert--[[')
+      end
+
+      function ofstream.write(s)
+        for i=1, #s, ofstream.raw_size do
+          Preload(ofstream.raw_prefix..s:sub(i,i+ofstream.raw_size-1)..ofstream.raw_suffix)
+        end
+      end
+
+      function ofstream.close()
+        Preload(']]BlzSetAbilityTooltip('..ofstream.load_ability..', table.concat(p), 0) print("File '.. ofstream.name ..' loaded successfully!")\n//! endusercode\nfunction AAA takes nothing returns nothing\n//')
+        PreloadGenEnd( ofstream.name )
+        ofstream.name = nil
+      end
+
+      function loadfile(filename)
+        local s = BlzGetAbilityTooltip(ofstream.load_ability, 0)
+        BlzSetAbilityTooltip(ofstream.load_ability, '', 0)
+        Preloader(filename)
+        local loaded = BlzGetAbilityTooltip(ofstream.load_ability, 0)
+        BlzSetAbilityTooltip(ofstream.load_ability, s, 0)
+        return loaded
+      end
+
+      ofstream.open("TestCeresFileIO.txt")
+      for i=0, 999 do
+        ofstream.write("0123456789")
+      end
+      ofstream.close()
+    end
+    xpcall(TestCeresFileIO, print)
+
+    local function TestShell()
+      local shell = CreateTrigger()
+      TriggerRegisterPlayerChatEvent(shell, Player(0), '$', false)
+      TriggerAddAction(shell, function()
+                         local s = GetEventPlayerChatString()
+                         if s:sub(1,1) ~= '$' then
+                           return
+                         end
+                         s = s:sub(2)
+                         ExecuteString(s)
+      end)
+
+      function ExecuteString(s)
+        local f = load(s)
+        if not f then
+          Log.error('invalid shell command "' .. s .. '"')
+        end
+        print(f())
+        table.insert(cache, s)
+      end
+    end
+    TestShell()
+
     return true
   end
   assert(TestGeneral(), "General tests did not finish.")
