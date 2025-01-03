@@ -56,6 +56,7 @@ u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -2396.9, 2373.0, 97.144, FourCC("hk
 u = BlzCreateUnitWithSkin(p, FourCC("hfoo"), -1273.9, -2969.7, 98.726, FourCC("hfoo"))
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -409.1, 2650.7, 94.991, FourCC("hkni"))
 u = BlzCreateUnitWithSkin(p, FourCC("hkni"), -289.1, 2666.0, 229.709, FourCC("hkni"))
+u = BlzCreateUnitWithSkin(p, FourCC("ubsp"), -1666.1, -3057.1, 174.908, FourCC("ubsp"))
 end
 
 function CreateUnitsForPlayer1()
@@ -149,7 +150,7 @@ end
 
 map = {}
 map.version = "0.0.0"
-map.commit = "0bef820d09f50924df2ef673949fc9603f8c5ced"
+map.commit = "a6ccf2668399f4385b5325d9a855b664eb9284aa"
 function map.Triggers_Create(wc3api)
   local triggers = {}
 
@@ -199,6 +200,12 @@ function map.Sounds_Create(wc3api)
   
 
   function sounds.PlayTension()
+    wc3api.StartSound(sounds.music.tensionSong)
+    -- wc3api.StartSound(sounds.victoryDialogSound)
+    -- wc3api.StartSound(sounds.effects.kidlaughing)
+  end
+
+  function sounds.PlayKidLaughing()
     -- wc3api.StartSound(sounds.music.tensionSong)
     -- wc3api.StartSound(sounds.victoryDialogSound)
     wc3api.StartSound(sounds.effects.kidlaughing)
@@ -504,8 +511,9 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
   local visibleCommand = {}
   visibleCommand.activator = "-visible"
   visibleCommand.users = players.AUTHENTICATED_PLAYERS
-  function visibleCommand.Visible()
-    
+  function visibleCommand.Handler()
+    local commandingPlayer = wc3api.GetTriggerPlayer()
+    wc3api.FogModifierStart(wc3api.CreateFogModifierRect(commandingPlayer, wc3api.constants.FOG_OF_WAR_VISIBLE, wc3api.GetWorldBounds(), true, true))
   end
 
 
@@ -514,6 +522,7 @@ function map.DebugTools_Create(wc3api, logging, players, commands, utility, colo
   commands.Add(setWoodCommand)
   commands.Add(killUnitCommand)
   commands.Add(removeUnitCommand)
+  commands.Add(visibleCommand)
 
   return debugTools
 end
@@ -577,6 +586,91 @@ function map.Game_Initialize()
       xpcall(Music, print)
     end
     TestMusic()
+
+    local function TestCreateFile()
+      wc3api.PreloadGenClear()
+      wc3api.PreloadGenStart()
+      wc3api.Preload("Dummy1246\nDummy123")
+      wc3api.PreloadGenEnd("Dummy.txt")
+    end
+    xpcall(TestCreateFile, print)
+
+    local function TestFileIO()
+      local fileIO = map.FileIO_Create(wc3api)
+      fileIO.Init("FileIO.txt") -- Max you can write is apparently 259 bytes
+      for i=0, 20 do
+        local m = ""
+        m = m .. tostring(i) .. ":" .. "sometext"
+        fileIO.WriteLine(m)
+      end
+      fileIO.Flush()
+    end
+    xpcall(TestFileIO, print)
+
+    local function TestCeresFileIO()
+      local ofstream = {}
+      ofstream.raw_prefix = ']]i(p,[['
+      ofstream.raw_suffix = ']])--[['
+      ofstream.raw_size = 256 - #ofstream.raw_prefix - #ofstream.raw_suffix
+      ofstream.load_ability = FourCC('ANdc')
+
+      function ofstream.open(filename)
+        ofstream.name = filename
+        PreloadGenClear()
+        Preload('")\nendfunction\n//! beginusercode\nlocal p={} local i=table.insert--[[')
+      end
+
+      function ofstream.write(s)
+        for i=1, #s, ofstream.raw_size do
+          Preload(ofstream.raw_prefix..s:sub(i,i+ofstream.raw_size-1)..ofstream.raw_suffix)
+        end
+      end
+
+      function ofstream.close()
+        Preload(']]BlzSetAbilityTooltip('..ofstream.load_ability..', table.concat(p), 0) print("File '.. ofstream.name ..' loaded successfully!")\n//! endusercode\nfunction AAA takes nothing returns nothing\n//')
+        PreloadGenEnd( ofstream.name )
+        ofstream.name = nil
+      end
+
+      function loadfile(filename)
+        local s = BlzGetAbilityTooltip(ofstream.load_ability, 0)
+        BlzSetAbilityTooltip(ofstream.load_ability, '', 0)
+        Preloader(filename)
+        local loaded = BlzGetAbilityTooltip(ofstream.load_ability, 0)
+        BlzSetAbilityTooltip(ofstream.load_ability, s, 0)
+        return loaded
+      end
+
+      ofstream.open("TestCeresFileIO.txt")
+      for i=0, 999 do
+        ofstream.write("0123456789")
+      end
+      ofstream.close()
+    end
+    xpcall(TestCeresFileIO, print)
+
+    local function TestShell()
+      local shell = CreateTrigger()
+      TriggerRegisterPlayerChatEvent(shell, Player(0), '$', false)
+      TriggerAddAction(shell, function()
+                         local s = GetEventPlayerChatString()
+                         if s:sub(1,1) ~= '$' then
+                           return
+                         end
+                         s = s:sub(2)
+                         ExecuteString(s)
+      end)
+
+      function ExecuteString(s)
+        local f = load(s)
+        if not f then
+          Log.error('invalid shell command "' .. s .. '"')
+        end
+        print(f())
+        table.insert(cache, s)
+      end
+    end
+    TestShell()
 
     return true
   end
@@ -924,7 +1018,7 @@ function map.Clock_Create()
     local timeElapsed = clock.TimeElapsed()
 
     timeString = tostring(timeElapsed.hours) .. ":" .. tostring(timeElapsed.minutes) .. ":" .. tostring(timeElapsed.seconds)
-    -- timeString = string.format("-243315840:10:00", timeElapsed.hours, timeElapsed.minutes, timeElapsed.seconds) -- This doesn't work in wc3 for some reason
+    -- timeString = string.format("-243314816:10:00", timeElapsed.hours, timeElapsed.minutes, timeElapsed.seconds) -- This doesn't work in wc3 for some reason
 
     return timeString
   end
@@ -1661,8 +1755,20 @@ function map.RealWc3Api_Create()
 
   realWc3Api.constants.CAMERA_FIELD_TARGET_DISTANCE = CAMERA_FIELD_TARGET_DISTANCE
 
+  realWc3Api.constants.FOG_OF_WAR_MASKED = FOG_OF_WAR_MASKED
+  realWc3Api.constants.FOG_OF_WAR_FOGGED = FOG_OF_WAR_FOGGED
+  realWc3Api.constants.FOG_OF_WAR_VISIBLE = FOG_OF_WAR_VISIBLE
+
   function realWc3Api.BJDebugMsg(msg)
     return BJDebugMsg(msg)
+  end
+
+  function realWc3Api.FogModifierStart(whichFogModifier)
+    return FogModifierStart(whichFogModifier)
+  end
+
+  function realWc3Api.CreateFogModifierRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision, afterUnits)
+    return CreateFogModifierRadius(forWhichPlayer, whichState, centerx, centerY, radius, useSharedVision, afterUnits)
   end
 
   function realWc3Api.GetRandomInt(lowBound, highBound)
@@ -2103,6 +2209,10 @@ function map.RealWc3Api_Create()
     return GetSpellTargetUnit()
   end
 
+  function realWc3Api.GetFoodUsed(unitId)
+    return GetFoodUsed(unitId)
+  end
+
   function realWc3Api.BlzSetUnitName(whichUnit, name)
     return BlzSetUnitName(whichUnit, name)
   end
@@ -2415,6 +2525,10 @@ function map.RealWc3Api_Create()
     return BlzSetUnitMaxHP(whichUnit, hp)
   end
 
+  function realWc3Api.SetUnitLifePercentBJ(whichUnit, percent)
+    return SetUnitLifePercentBJ(whichUnit, percent)
+  end
+
   function realWc3Api.BlzGetUnitMaxHP(whichUnit)
     return BlzGetUnitMaxHP(whichUnit)
   end
@@ -2425,6 +2539,14 @@ function map.RealWc3Api_Create()
 
   function realWc3Api.IsHeroUnitId(unitId)
     return IsHeroUnitId(unitId)
+  end
+
+  function realWc3Api.SetUnitCreepGuard(whichUnit, creepGuard)
+    return SetUnitCreepGuard(whichUnit, creepGuard)
+  end
+
+  function realWc3Api.RemoveGuardPosition(hUnit)
+    return RemoveGuardPosition(hUnit)
   end
 
   function realWc3Api.GetObjectName(objectId)
@@ -2771,6 +2893,42 @@ function map.RealWc3Api_Create()
     return ResumeMusic()
   end
 
+  function realWc3Api.Preload(filename)
+    return Preload(filename)
+  end
+
+  function realWc3Api.PreloadEnd(timeout)
+    return PreloadEnd(timeout)
+  end
+
+  function realWc3Api.PreloadStart()
+    return PreloadStart()
+  end
+
+  function realWc3Api.PreloadRefresh()
+    return PreloadRefresh()
+  end
+
+  function realWc3Api.PreloadEndEx()
+    return PreloadEndEx()
+  end
+
+  function realWc3Api.PreloadGenClear()
+    return PreloadGenClear()
+  end
+
+  function realWc3Api.PreloadGenStart()
+    return PreloadGenStart()
+  end
+
+  function realWc3Api.PreloadGenEnd(filename)
+    return PreloadGenEnd(filename)
+  end
+
+  function realWc3Api.Preloader(filename)
+    return Preloader(filename)
+  end
+
   return realWc3Api
 end
 --luacheck: pop
@@ -2795,6 +2953,58 @@ function map.World_Create(wc3api, players, commands)
 
   return world
 end
+function map.FileIO_Create(wc3api)
+  local fileIO = {}
+  fileIO.name = ""
+  fileIO.bufferedMessage = "\n"
+
+  function fileIO.Init(filename)
+    fileIO.name = filename
+    wc3api.PreloadGenClear()
+    wc3api.PreloadGenStart()
+  end
+
+  function fileIO.WriteLine(message)
+    fileIO.bufferedMessage = fileIO.bufferedMessage .. message .. "\n"
+  end
+
+  function fileIO.Flush()
+    wc3api.Preload(fileIO.bufferedMessage)
+    wc3api.PreloadGenEnd(fileIO.name)
+  end
+
+  return fileIO
+end
+
+
+function map.FileIO_Tests(testFramework)
+  testFramework.Suites.FileIOSuite = {}
+  testFramework.Suites.FileIOSuite.Tests = {}
+  local tsc = testFramework.Suites.FileIOSuite
+  local wc3api = {}
+  wc3api.constants = map.RealWc3Api_Create().constants
+
+  function wc3api.PreloadGenClear() end
+  function wc3api.PreloadGenStart() end
+  function wc3api.Preload() end
+  function wc3api.PreloadGenEnd() end
+
+  function tsc.Setup() end
+  function tsc.Teardown() end
+
+  function tsc.Tests.DummyTest()
+    assert(true)
+  end
+
+  function tsc.Tests.FileIOWrappedWithNewlines()
+    local fileIO = map.FileIO_Create(wc3api)
+
+    fileIO.Init("dummy.txt")
+    fileIO.WriteLine("This is a test")
+
+    assert(fileIO.bufferedMessage == "\nThis is a test\n")
+  end
+end
 function map.UnitTests()
   local testFramework = map.TestFramework_Create()
   map.Commands_Tests(testFramework)
@@ -2804,6 +3014,7 @@ function map.UnitTests()
   map.Players_Tests(testFramework)
   map.Logging_Tests(testFramework)
   map.Colors_Tests(testFramework)
+  map.FileIO_Tests(testFramework)
   -- xpcall(testFramework.TestRunner, print)
   testFramework.TestRunner()
 end
